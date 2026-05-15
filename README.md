@@ -258,11 +258,26 @@ Stores Merkle root hashes immutably. Anyone can call `getBatchRoot(batchId)` to 
 
 ## Use Cases
 
-- **AI Agents** — Provably fair decisions for trading bots, game NPCs, autonomous agents
-- **Agent vs Agent** — Verifiable randomness in competitive multi-agent environments
-- **Gaming** — Slots, lotteries, card games with on-chain proof
-- **Governance** — Fair committee selection, random auditing
-- **Simulations** — Reproducible randomness with full audit trail
+### 🎰 Casino & Slot Machines
+Slot machine studios can use OpenRNG as their certified RNG backend. Every spin result comes with a Merkle proof anchored on Polygon — regulators and players can independently verify fairness without trusting the operator. Meets the auditability requirements of GLI-19 and similar standards.
+
+### 🎮 Game Loot & Item Drops
+Imagine Diablo-style loot where every item drop is cryptographically proven fair. **Even unidentified items carry verifiable proofs** — a player trading an unidentified legendary can prove its properties were determined fairly, not manipulated by the game company or another player. No more "the house always wins" suspicion.
+
+### 🤖 AI Agents
+Autonomous agents making high-stakes decisions — trading bots, game NPCs, governance voters — need randomness that's provably unbiased. OpenRNG gives every agent decision a cryptographic receipt. In multi-agent environments, no agent can claim the RNG was rigged against them.
+
+### 🌐 Metaverse & Virtual Worlds
+AI agents operating in metaverses need verifiable interactions: fair matchmaking, random events, resource distribution, NPC behavior. Every interaction backed by on-chain proof means disputes are settled by math, not moderators.
+
+### 🎲 Online Lotteries & Raffles
+Any lottery, raffle, or giveaway that needs to prove it wasn't rigged. Draw a winner, publish the proof, anyone can verify. Works for everything from national lotteries to Discord giveaways — the cryptographic proof is the same regardless of scale.
+
+### 🏦 Governance & Auditing
+Fair committee selection, random audit targeting, jury selection. When the selection process needs to be beyond reproach, every random choice comes with a proof that can be verified years later.
+
+### 🔬 Simulations & Research
+Reproducible randomness with full audit trails. Run a Monte Carlo simulation today, prove the exact randomness used ten years from now. Every random number is permanently verifiable on-chain.
 
 ## Testing
 
