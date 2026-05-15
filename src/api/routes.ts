@@ -18,6 +18,7 @@ import { isDatabaseConnected } from '../db/index';
 import * as repo from '../db/repositories';
 import * as apiKeys from '../db/api-keys';
 import { logger } from '../utils/logger';
+import { features } from '../config';
 
 // ============================================================
 // REQUEST SCHEMAS (Zod validation)
@@ -181,15 +182,64 @@ export function createRouter(poolManager: PoolManager) {
       const stats = poolManager.getStats();
       const healthy = stats.clients.every(c => c.fillPercent > 5);
 
+      // Enhanced pool metrics
+      const uptimeSeconds = process.uptime();
+      const uptimeHours = uptimeSeconds / 3600;
+      const generationRate = uptimeHours > 0
+        ? Math.round(stats.generatorStats.completedBatches / uptimeHours)
+        : 0;
+
+      // Build alerts array
+      const alerts: Array<{ level: string; message: string }> = [];
+      if (features.healthAlerts) {
+        // Pool depth alert
+        if (stats.sharedPool.fillPercent < 10) {
+          alerts.push({
+            level: 'critical',
+            message: `Shared pool depth critically low: ${stats.sharedPool.fillPercent.toFixed(1)}%`,
+          });
+        }
+
+        // Database connectivity alert
+        if (!isDatabaseConnected()) {
+          alerts.push({
+            level: 'warning',
+            message: 'Database disconnected — tokens not being persisted',
+          });
+        }
+
+        // Anchor queue backed up (more than 5 pending refills)
+        if (stats.refillQueueDepth > 5) {
+          alerts.push({
+            level: 'warning',
+            message: `Anchor/refill queue backed up: ${stats.refillQueueDepth} pending`,
+          });
+        }
+
+        // Per-client alerts
+        for (const client of stats.clients) {
+          if (client.poolMode === 'dedicated' && client.fillPercent < 10) {
+            alerts.push({
+              level: 'warning',
+              message: `Dedicated pool for ${client.clientId} low: ${client.fillPercent.toFixed(1)}%`,
+            });
+          }
+        }
+      }
+
       res.json({
         status: healthy ? 'ok' : 'degraded',
         timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
+        uptime: uptimeSeconds,
         pool: {
           clients: stats.clients.length,
           totalAnchors: stats.totalAnchors,
           p99LatencyMs: stats.p99LatencyMs,
+          depthPercent: Math.round(stats.sharedPool.fillPercent * 100) / 100,
+          tokensIssued: stats.totalTokensIssued,
+          generationRate,
         },
+        alerts,
         blockchain: 'polygon-amoy-testnet',
       });
     } catch (err: any) {
