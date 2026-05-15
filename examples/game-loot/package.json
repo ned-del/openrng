@@ -1,0 +1,15 @@
+{
+  "name": "openrng-game-loot-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Verifiable game loot with commit-reveal pattern",
+  "scripts": {
+    "demo": "npx ts-node demo.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.0.0"
+  }
+}
