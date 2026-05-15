@@ -431,7 +431,12 @@ export class PoolManager extends EventEmitter {
     this.p99Latencies.push(latencyMs);
     if (this.p99Latencies.length > 10000) this.p99Latencies.shift();
 
-    return this.buildResponse(tokens, request, latencyMs);
+    const response = this.buildResponse(tokens, request, latencyMs);
+
+    // Persist consumed tokens to DB async (non-blocking)
+    this.persistConsumedTokens(tokens, request.clientId);
+
+    return response;
   }
 
   private async getTokensFromDedicated(
@@ -462,7 +467,35 @@ export class PoolManager extends EventEmitter {
     this.p99Latencies.push(latencyMs);
     if (this.p99Latencies.length > 10000) this.p99Latencies.shift();
 
-    return this.buildResponse(tokens, request, latencyMs);
+    const response = this.buildResponse(tokens, request, latencyMs);
+
+    // Persist consumed tokens to DB async (non-blocking)
+    this.persistConsumedTokens(tokens, request.clientId);
+
+    return response;
+  }
+
+  // ============================================================
+  // PERSIST CONSUMED TOKENS (async, non-blocking)
+  // Only writes tokens when they're actually served — not during pre-warm
+  // ============================================================
+
+  private async persistConsumedTokens(tokens: RNToken[], clientId: string): Promise<void> {
+    if (!isDatabaseConnected() || tokens.length === 0) return;
+
+    try {
+      const records = tokens.map(t => ({
+        leafHash: t.leafHash,
+        nodeId: t.nodeId,
+        nodeIndex: t.nodeIndex,
+        batchId: t.batchId,
+        value: t.value,
+      }));
+
+      await repo.insertTokensBulk(records);
+    } catch (err: any) {
+      logger.warn(`DB: failed to persist ${tokens.length} consumed tokens for ${clientId}: ${err.message}`);
+    }
   }
 
   private buildResponse(tokens: RNToken[], request: TokenRequest, latencyMs: number): TokenResponse {
