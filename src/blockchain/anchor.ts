@@ -154,6 +154,14 @@ export class PolygonAnchor {
   private readonly chainId: number;
   private readonly isTestnet: boolean;
 
+  // Transaction queue — serializes anchor txs to prevent nonce collisions
+  private txQueue: Array<{
+    params: { batchId: string; merkleRoot: string; batchSize: number; clientId: string };
+    resolve: (result: AnchorResult) => void;
+    reject: (error: Error) => void;
+  }> = [];
+  private txProcessing = false;
+
   constructor(config: {
     rpcUrl: string;
     privateKey: string;
@@ -182,7 +190,43 @@ export class PolygonAnchor {
    * Cost: ~0.001 MATIC on Amoy testnet (free from faucet)
    * Cost on mainnet: ~$0.001-0.01 depending on gas price
    */
+  /**
+   * Queue an anchor transaction. All txs are serialized to prevent nonce collisions.
+   */
   async anchorBatch(params: {
+    batchId: string;
+    merkleRoot: string;
+    batchSize: number;
+    clientId: string;
+  }): Promise<AnchorResult> {
+    return new Promise<AnchorResult>((resolve, reject) => {
+      this.txQueue.push({ params, resolve, reject });
+      this.processQueue();
+    });
+  }
+
+  private async processQueue(): Promise<void> {
+    if (this.txProcessing || this.txQueue.length === 0) return;
+    this.txProcessing = true;
+
+    while (this.txQueue.length > 0) {
+      const item = this.txQueue.shift()!;
+      try {
+        const result = await this.sendAnchorTx(item.params);
+        item.resolve(result);
+      } catch (err: any) {
+        item.reject(err);
+      }
+    }
+
+    this.txProcessing = false;
+  }
+
+  /**
+   * Actually send one anchor tx to Polygon.
+   * Called sequentially from processQueue — never concurrently.
+   */
+  private async sendAnchorTx(params: {
     batchId: string;
     merkleRoot: string;
     batchSize: number;
@@ -190,7 +234,7 @@ export class PolygonAnchor {
   }): Promise<AnchorResult> {
     const { batchId, merkleRoot, batchSize, clientId } = params;
 
-    logger.info(`Anchoring batch ${batchId} root=${merkleRoot.slice(0, 12)}... to Polygon`);
+    logger.info(`Anchoring batch ${batchId} root=${merkleRoot.slice(0, 12)}... to Polygon (queue depth: ${this.txQueue.length})`);
 
     // Convert hex root to bytes32
     const rootBytes = ethers.hexlify(
