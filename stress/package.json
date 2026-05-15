@@ -1,0 +1,20 @@
+{
+  "name": "openrng-stress",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "stress": "npx ts-node run-all.ts",
+    "scenario1": "npx ts-node scenarios/sustained.ts",
+    "scenario2": "npx ts-node scenarios/burst.ts",
+    "scenario3": "npx ts-node scenarios/multi-client.ts",
+    "scenario4": "npx ts-node scenarios/batch-efficiency.ts"
+  },
+  "dependencies": {
+    "@openrng/sdk": "file:../sdk"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.2"
+  }
+}

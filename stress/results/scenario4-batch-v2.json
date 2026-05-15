@@ -1,0 +1,41 @@
+{
+  "scenario": "Scenario 4: Batch Efficiency (1000 individual vs 1 batch)",
+  "totalRequests": 1000,
+  "successes": 1000,
+  "errors": 0,
+  "errorRate": "0.000%",
+  "poolExhausted": 0,
+  "p50Ms": 0,
+  "p95Ms": 1,
+  "p99Ms": 1,
+  "avgMs": 0.24,
+  "maxMs": 7,
+  "durationSec": 0.2,
+  "reqPerSec": 4082,
+  "targets": {
+    "Batch faster than individual": {
+      "target": "speedup > 1x",
+      "actual": "26.2x",
+      "passed": true
+    },
+    "Batch proof completeness": {
+      "target": "1000 proofs",
+      "actual": "1000",
+      "passed": true
+    },
+    "Individual proof completeness": {
+      "target": "1000 proofs",
+      "actual": "1000",
+      "passed": true
+    }
+  },
+  "comparison": {
+    "individualTotalMs": 236,
+    "batchTotalMs": 9,
+    "speedup": 26.2,
+    "individualValues": 1000,
+    "individualProofs": 1000,
+    "batchValues": 1000,
+    "batchProofs": 1000
+  }
+}

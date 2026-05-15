@@ -1,0 +1,32 @@
+{
+  "scenario": "Scenario 1: Sustained Load (1K req/s × 60s)",
+  "totalRequests": 59472,
+  "successes": 59472,
+  "errors": 0,
+  "errorRate": "0.000%",
+  "poolExhausted": 0,
+  "p50Ms": 2,
+  "p95Ms": 8,
+  "p99Ms": 16,
+  "avgMs": 3.18,
+  "maxMs": 62,
+  "durationSec": 60.2,
+  "reqPerSec": 988,
+  "targets": {
+    "p99 < 10ms": {
+      "target": "<10ms",
+      "actual": "16ms",
+      "passed": false
+    },
+    "Error rate < 0.1%": {
+      "target": "<0.1%",
+      "actual": "0.000%",
+      "passed": true
+    },
+    "Zero pool exhaustions": {
+      "target": "0",
+      "actual": "0",
+      "passed": true
+    }
+  }
+}

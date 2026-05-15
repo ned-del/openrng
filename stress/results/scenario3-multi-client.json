@@ -1,0 +1,38 @@
+{
+  "scenario": "Scenario 3: Multi-Client (50 agents × 20 req/s)",
+  "totalRequests": 28272,
+  "successes": 2930,
+  "errors": 25342,
+  "errorRate": "89.636%",
+  "poolExhausted": 0,
+  "p50Ms": 2,
+  "p95Ms": 13,
+  "p99Ms": 135,
+  "avgMs": 5.81,
+  "maxMs": 224,
+  "durationSec": 30.1,
+  "reqPerSec": 97,
+  "targets": {
+    "p99 < 50ms": {
+      "target": "<50ms",
+      "actual": "135ms",
+      "passed": false
+    },
+    "Error rate < 0.1%": {
+      "target": "<0.1%",
+      "actual": "89.636%",
+      "passed": false
+    },
+    "Fairness > 0.5": {
+      "target": ">0.5",
+      "actual": "0.000",
+      "passed": false
+    }
+  },
+  "fairness": {
+    "avgPerClient": 59,
+    "minCount": 0,
+    "maxCount": 566,
+    "fairnessRatio": 0
+  }
+}

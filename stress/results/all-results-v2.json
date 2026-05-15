@@ -1,0 +1,125 @@
+[
+  {
+    "scenario": "Scenario 1: Sustained Load (1K req/s × 60s)",
+    "totalRequests": 59441,
+    "successes": 59441,
+    "errors": 0,
+    "errorRate": "0.000%",
+    "poolExhausted": 0,
+    "p50Ms": 3,
+    "p95Ms": 9,
+    "p99Ms": 17,
+    "avgMs": 3.35,
+    "maxMs": 61,
+    "durationSec": 60.2,
+    "reqPerSec": 987,
+    "targets": {
+      "p99 < 10ms": {
+        "target": "<10ms",
+        "actual": "17ms",
+        "passed": false
+      },
+      "Error rate < 0.1%": {
+        "target": "<0.1%",
+        "actual": "0.000%",
+        "passed": true
+      },
+      "Zero pool exhaustions": {
+        "target": "0",
+        "actual": "0",
+        "passed": true
+      }
+    }
+  },
+  {
+    "scenario": "Scenario 2: Burst Load (0→5K req/s, hold 30s)",
+    "totalRequests": 160777,
+    "successes": 152282,
+    "errors": 8495,
+    "errorRate": "5.284%",
+    "poolExhausted": 0,
+    "p50Ms": 2,
+    "p95Ms": 6,
+    "p99Ms": 9,
+    "avgMs": 2.74,
+    "maxMs": 424,
+    "durationSec": 40,
+    "reqPerSec": 3804,
+    "targets": {
+      "p99 < 50ms": {
+        "target": "<50ms",
+        "actual": "9ms",
+        "passed": true
+      },
+      "Error rate < 0.1%": {
+        "target": "<0.1%",
+        "actual": "5.284%",
+        "passed": false
+      }
+    }
+  },
+  {
+    "scenario": "Scenario 3: Multi-Client (50 agents × 20 req/s)",
+    "totalRequests": 28950,
+    "successes": 18271,
+    "errors": 10679,
+    "errorRate": "36.888%",
+    "poolExhausted": 0,
+    "p50Ms": 3,
+    "p95Ms": 6,
+    "p99Ms": 11,
+    "avgMs": 3.03,
+    "maxMs": 25,
+    "durationSec": 30,
+    "reqPerSec": 608,
+    "targets": {
+      "p99 < 50ms": {
+        "target": "<50ms",
+        "actual": "11ms",
+        "passed": true
+      },
+      "Error rate < 0.1%": {
+        "target": "<0.1%",
+        "actual": "36.888%",
+        "passed": false
+      },
+      "Fairness > 0.5": {
+        "target": ">0.5",
+        "actual": "0.997",
+        "passed": true
+      }
+    }
+  },
+  {
+    "scenario": "Scenario 4: Batch Efficiency (1000 individual vs 1 batch)",
+    "totalRequests": 1000,
+    "successes": 1000,
+    "errors": 0,
+    "errorRate": "0.000%",
+    "poolExhausted": 0,
+    "p50Ms": 0,
+    "p95Ms": 1,
+    "p99Ms": 1,
+    "avgMs": 0.15,
+    "maxMs": 6,
+    "durationSec": 0.2,
+    "reqPerSec": 6369,
+    "targets": {
+      "Batch faster than individual": {
+        "target": "speedup > 1x",
+        "actual": "18.6x",
+        "passed": true
+      },
+      "Batch proof completeness": {
+        "target": "1000 proofs",
+        "actual": "1000",
+        "passed": true
+      },
+      "Individual proof completeness": {
+        "target": "1000 proofs",
+        "actual": "1000",
+        "passed": true
+      }
+    }
+  }
+]
