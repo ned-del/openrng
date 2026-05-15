@@ -16,6 +16,7 @@ import { PoolManager } from '../rng/pool-manager';
 import { MerkleTreeBuilder } from '../rng/engine';
 import { isDatabaseConnected } from '../db/index';
 import * as repo from '../db/repositories';
+import * as apiKeys from '../db/api-keys';
 import { logger } from '../utils/logger';
 
 // ============================================================
@@ -65,13 +66,111 @@ export function createRouter(poolManager: PoolManager) {
   const router = express.Router();
 
   // ── Auth middleware ──────────────────────────────────────
-  const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  // Checks x-api-key header against:
+  //   1. API_SECRET env var (backward compat / operator key)
+  //   2. api_keys table (self-service registered keys)
+  const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
     const key = req.headers['x-api-key'] as string;
-    if (!key || key !== process.env.API_SECRET) {
-      return res.status(401).json({ error: 'Invalid API key' });
+    if (!key) {
+      return res.status(401).json({ error: 'Missing API key. Set x-api-key header.' });
     }
-    next();
+
+    // Check operator key first (fast path)
+    if (process.env.API_SECRET && key === process.env.API_SECRET) {
+      return next();
+    }
+
+    // Check api_keys table
+    if (isDatabaseConnected()) {
+      try {
+        const keyHash = apiKeys.hashApiKey(key);
+        const record = await apiKeys.getApiKeyByHash(keyHash);
+        if (record) {
+          // Attach key info to request for downstream use
+          (req as any).apiKeyRecord = record;
+          // Fire-and-forget last_used_at update
+          apiKeys.touchApiKey(keyHash).catch(() => {});
+          return next();
+        }
+      } catch (err: any) {
+        logger.error(`Auth: api_keys lookup failed: ${err.message}`);
+        // Fall through to rejection
+      }
+    }
+
+    return res.status(401).json({ error: 'Invalid API key' });
   };
+
+  // ============================================================
+  // POST /v1/keys/register
+  // Public — self-service API key signup
+  // ============================================================
+  const RegisterKeySchema = z.object({
+    email: z.string().email().max(256),
+    name: z.string().min(1).max(128),
+    agent_name: z.string().max(128).optional(),
+    framework: z.enum(['langchain', 'crewai', 'autogpt', 'openclaw', 'custom']).optional(),
+  });
+
+  router.post('/keys/register', async (req, res) => {
+    // Requires database
+    if (!isDatabaseConnected()) {
+      return res.status(503).json({
+        error: 'Database not available',
+        message: 'Self-service key registration requires PostgreSQL. Contact the operator for an API key.',
+      });
+    }
+
+    const parsed = RegisterKeySchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
+    }
+
+    const { email, name, agent_name, framework } = parsed.data;
+
+    try {
+      // Rate limit: max 3 keys per email
+      const existingCount = await apiKeys.countKeysByEmail(email);
+      if (existingCount >= 3) {
+        return res.status(429).json({
+          error: 'Key limit reached',
+          message: `Maximum 3 API keys per email. You have ${existingCount}.`,
+        });
+      }
+
+      // Generate and store key
+      const { raw, hash, prefix } = apiKeys.generateApiKey();
+      const inserted = await apiKeys.insertApiKey({
+        keyHash: hash,
+        keyPrefix: prefix,
+        email,
+        name,
+        agentName: agent_name,
+        framework,
+      });
+
+      if (!inserted) {
+        return res.status(500).json({ error: 'Failed to create API key' });
+      }
+
+      logger.info(`API key registered: prefix=${prefix} email=${email} name=${name}`);
+
+      res.status(201).json({
+        api_key: raw,
+        key_prefix: prefix,
+        tier: 'free',
+        rate_limit: '100 req/min',
+        message: 'Store this key securely — it cannot be retrieved again.',
+        usage: {
+          header: 'x-api-key',
+          example: `curl -H 'x-api-key: ${raw.slice(0, 8)}...' ${req.protocol}://${req.get('host')}/v1/tokens/request`,
+        },
+      });
+    } catch (err: any) {
+      logger.error(`Key registration failed for ${email}: ${err.message}`);
+      res.status(500).json({ error: 'Registration failed', message: err.message });
+    }
+  });
 
   // ============================================================
   // GET /v1/health

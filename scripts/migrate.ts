@@ -46,11 +46,29 @@ const MIGRATIONS = [
     consumed_by   VARCHAR(64)
   );`,
 
+  // API Keys table (self-service registration)
+  `CREATE TABLE IF NOT EXISTS api_keys (
+    id              SERIAL PRIMARY KEY,
+    key_hash        VARCHAR(64) NOT NULL UNIQUE,
+    key_prefix      VARCHAR(8) NOT NULL,
+    email           VARCHAR(256) NOT NULL,
+    name            VARCHAR(128) NOT NULL,
+    agent_name      VARCHAR(128),
+    framework       VARCHAR(32),
+    tier            VARCHAR(16) NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'pro', 'enterprise')),
+    rate_limit      INTEGER NOT NULL DEFAULT 100,
+    active          BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_used_at    TIMESTAMPTZ
+  );`,
+
   // Indexes for performance
   `CREATE INDEX IF NOT EXISTS idx_tokens_batch_id ON tokens(batch_id);`,
   `CREATE INDEX IF NOT EXISTS idx_tokens_consumed ON tokens(consumed) WHERE NOT consumed;`,
   `CREATE INDEX IF NOT EXISTS idx_batches_client_id ON batches(client_id);`,
   `CREATE INDEX IF NOT EXISTS idx_batches_status ON batches(status);`,
+  `CREATE INDEX IF NOT EXISTS idx_api_keys_email ON api_keys(email);`,
+  `CREATE INDEX IF NOT EXISTS idx_api_keys_key_hash ON api_keys(key_hash);`,
 ];
 
 async function migrate() {
