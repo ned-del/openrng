@@ -20,12 +20,14 @@
  */
 
 import { EventEmitter } from 'events';
-import { BatchGenerator, TokenPool, MerkleBatch, RNToken, TokenRequest, TokenResponse } from '../rng/engine';
+import { BatchGenerator, TokenPool, MerkleBatch, MerkleTreeBuilder, RNToken, TokenRequest, TokenResponse } from '../rng/engine';
 import { PolygonAnchor, MockPolygonAnchor } from '../blockchain/anchor';
 import { DrandClient } from '../rng/drand';
 import { isDatabaseConnected } from '../db/index';
 import * as repo from '../db/repositories';
 import { logger } from '../utils/logger';
+import { features } from '../config';
+import { createHash, randomBytes } from 'crypto';
 
 // ============================================================
 // CLIENT POOL (Dedicated mode)
@@ -417,6 +419,13 @@ export class PoolManager extends EventEmitter {
         `Shared pool insufficient: wanted ${request.quantity}, got ${tokens.length}`
       );
       this.checkSharedPoolRefill();
+
+      // On-demand fallback: generate remaining tokens synchronously
+      if (features.onDemandFallback) {
+        const remaining = request.quantity - tokens.length;
+        const onDemandTokens = await this.generateOnDemand(request.clientId, remaining);
+        tokens.push(...onDemandTokens);
+      }
     } else {
       // Proactively check refill threshold
       this.checkSharedPoolRefill();
@@ -452,6 +461,13 @@ export class PoolManager extends EventEmitter {
         `wanted ${request.quantity}, got ${tokens.length}`
       );
       this.triggerRefill(request.clientId, 'exhaustion');
+
+      // On-demand fallback: generate remaining tokens synchronously
+      if (features.onDemandFallback) {
+        const remaining = request.quantity - tokens.length;
+        const onDemandTokens = await this.generateOnDemand(request.clientId, remaining);
+        tokens.push(...onDemandTokens);
+      }
     }
 
     // Check if refill needed
@@ -669,6 +685,77 @@ export class PoolManager extends EventEmitter {
         break;
       }
     }
+  }
+
+  // ============================================================
+  // ON-DEMAND GENERATION (fallback when pool exhausted)
+  // ============================================================
+
+  private async generateOnDemand(clientId: string, quantity: number): Promise<RNToken[]> {
+    const start = Date.now();
+    const batchId = `ondemand-${randomBytes(8).toString('hex')}`;
+
+    // Generate leaf hashes for just the requested quantity
+    const rnGenParam = createHash('sha256')
+      .update(randomBytes(64).toString('hex') + Date.now().toString())
+      .digest('hex');
+
+    const nodeIds = Array.from({ length: quantity }, (_, i) =>
+      `node-${String(i).padStart(6, '0')}-${batchId.slice(9, 17)}`
+    );
+
+    const leaves = nodeIds.map(nodeId =>
+      MerkleTreeBuilder.sha256(rnGenParam + nodeId)
+    );
+
+    // Build a small Merkle tree so proofs are valid
+    const { root: merkleRoot, levels } = await MerkleTreeBuilder.buildTree(leaves);
+
+    const batch: MerkleBatch = {
+      batchId,
+      rnGenParam,
+      blockParam: createHash('sha256').update(randomBytes(32)).digest('hex'),
+      vdfOutput: rnGenParam, // simplified for on-demand
+      leaves,
+      merkleRoot,
+      levels,
+      nodeIds,
+      batchSize: quantity,
+      createdAt: new Date(),
+      tokensConsumed: 0,
+      status: 'ready',
+    };
+
+    // Register batch in generator so proofs can be retrieved later
+    this.generator.confirmAnchor(batchId, 'on-demand', 0);
+    // Store in completed batches via a direct generateBatch-like flow isn't possible,
+    // so we store it as a completed batch by emitting batchReady
+    // Instead, directly put it in the generator's memory:
+    (this.generator as any).completedBatches.push(batch);
+
+    const tokens: RNToken[] = leaves.map((leafHash, i) => ({
+      leafHash,
+      nodeId: nodeIds[i],
+      nodeIndex: i,
+      batchId,
+      value: parseInt(leafHash.slice(0, 8), 16) / 0xffffffff,
+      consumed: true,
+      consumedAt: new Date(),
+      consumedBy: clientId,
+    }));
+
+    const elapsed = Date.now() - start;
+    logger.warn(
+      `Pool exhausted for ${clientId}, generating on-demand (${quantity} tokens, ~${elapsed}ms)`
+    );
+
+    // Anchor on-demand batch async (non-blocking)
+    this.anchorBatchAsync(batchId, merkleRoot, quantity, clientId);
+
+    // Trigger pool refill so this doesn't happen again
+    this.checkSharedPoolRefill();
+
+    return tokens;
   }
 
   // ============================================================
