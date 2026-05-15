@@ -23,28 +23,37 @@ export async function initDatabase(): Promise<boolean> {
     return false;
   }
 
-  try {
-    pool = new Pool({
-      connectionString: databaseUrl,
-      max: 20,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
-    });
+  // Retry connection up to 3 times (Railway internal DNS can be slow on cold start)
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      pool = new Pool({
+        connectionString: databaseUrl,
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000,
+      });
 
-    // Test connection
-    const client = await pool.connect();
-    await client.query('SELECT 1');
-    client.release();
+      // Test connection
+      const client = await pool.connect();
+      await client.query('SELECT 1');
+      client.release();
 
-    isConnected = true;
-    logger.info('Database: PostgreSQL connected');
-    return true;
-  } catch (err: any) {
-    logger.warn(`Database: connection failed (${err.message}), running in-memory only`);
-    pool = null;
-    isConnected = false;
-    return false;
+      isConnected = true;
+      logger.info(`Database: PostgreSQL connected (attempt ${attempt})`);
+      return true;
+    } catch (err: any) {
+      logger.warn(`Database: connection attempt ${attempt}/3 failed (${err.message})`);
+      if (pool) { await pool.end().catch(() => {}); pool = null; }
+      if (attempt < 3) {
+        await new Promise(r => setTimeout(r, 2000 * attempt));
+      }
+    }
   }
+
+  logger.warn('Database: all connection attempts failed, running in-memory only');
+  pool = null;
+  isConnected = false;
+  return false;
 }
 
 /**
