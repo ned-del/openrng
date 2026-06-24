@@ -1,5 +1,44 @@
 # OpenRNG Developer Quickstart
 
+## Run Agent Arbiter (2 minutes)
+
+The fastest way to see VEO-1 in action. Three AI agents compete for tasks — every assignment is cryptographically verifiable.
+
+```bash
+git clone https://github.com/ned-del/openrng.git
+cd openrng/examples/agent-arbiter
+npx ts-node arbiter.ts
+```
+
+Add `--audit` to re-derive every assignment and verify every entropy object:
+
+```bash
+npx ts-node arbiter.ts --audit
+```
+
+Output:
+
+```
+  Task:    Summarize Q2 earnings report
+  Agent:   agent-gamma
+  ECS:     🟢 871 (AA)  🔏 signed
+  Entropy: 0x7a681b5578f41577...
+  Verify:  https://verify.openrng.io
+
+  Auditing: "Summarize Q2 earnings report"
+  Re-derived agent: agent-gamma ✓ MATCH
+  Verification: cryptographically_verified
+  Hash: ✓ | Signature: ✓ | Sources: ✓
+```
+
+By default it hits `localhost:3000`. Point at any OpenRNG instance:
+
+```bash
+OPENRNG_API=https://api.openrng.io npx ts-node arbiter.ts --audit
+```
+
+---
+
 ## Get a Verifiable Entropy Object
 
 ```bash
