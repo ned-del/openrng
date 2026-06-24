@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenRNG — VEO-1 Verifier</title>
+  <meta name="description" content="Independently verify any VEO-1 Verifiable Entropy Object. Check hash integrity, provider signatures, blockchain anchors, and policy compliance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">◆</span>
+        <span class="logo-text">OpenRNG</span>
+      </div>
+      <h1 class="title">VEO-1 Verifier</h1>
+      <p class="subtitle">Independently verify any Verifiable Entropy Object</p>
+    </header>
+
+    <!-- Input -->
+    <section class="input-section">
+      <div class="input-header">
+        <label for="veo-input">Paste VEO-1 JSON</label>
+        <div class="input-actions">
+          <button id="btn-example" class="btn-secondary" title="Load example">Example</button>
+          <button id="btn-clear" class="btn-secondary" title="Clear">Clear</button>
+        </div>
+      </div>
+      <textarea id="veo-input" placeholder='{"standard":"VEO-1","version":"1.0",...}' spellcheck="false"></textarea>
+      <button id="btn-verify" class="btn-primary">
+        <span class="btn-icon">⬡</span> Verify Object
+      </button>
+    </section>
+
+    <!-- Results -->
+    <section id="results" class="results hidden">
+      <!-- Verification Level Banner -->
+      <div id="level-banner" class="level-banner">
+        <div class="level-icon" id="level-icon"></div>
+        <div class="level-info">
+          <div class="level-label" id="level-label"></div>
+          <div class="level-desc" id="level-desc"></div>
+        </div>
+      </div>
+
+      <!-- Object Summary -->
+      <div class="card" id="summary-card">
+        <h3>Object Summary</h3>
+        <div class="grid-2" id="summary-grid"></div>
+      </div>
+
+      <!-- Checks -->
+      <div class="card">
+        <h3>Verification Checks</h3>
+        <div id="checks-list" class="checks-list"></div>
+      </div>
+
+      <!-- Statuses -->
+      <div class="card">
+        <h3>Trust Statuses</h3>
+        <div id="statuses-list" class="statuses-list"></div>
+      </div>
+
+      <!-- ECS -->
+      <div class="card" id="ecs-card">
+        <h3>Entropy Confidence Score</h3>
+        <div class="ecs-header" id="ecs-header"></div>
+        <div class="ecs-bars" id="ecs-bars"></div>
+      </div>
+
+      <!-- Sources -->
+      <div class="card" id="sources-card">
+        <h3>Entropy Sources</h3>
+        <div id="sources-list" class="sources-list"></div>
+      </div>
+
+      <!-- Anchor -->
+      <div class="card hidden" id="anchor-card">
+        <h3>Blockchain Anchor</h3>
+        <div id="anchor-info" class="anchor-info"></div>
+      </div>
+
+      <!-- Signature -->
+      <div class="card" id="sig-card">
+        <h3>Provider Signature</h3>
+        <div id="sig-info" class="sig-info"></div>
+      </div>
+
+      <!-- Errors -->
+      <div class="card hidden" id="errors-card">
+        <h3>Errors</h3>
+        <div id="errors-list" class="errors-list"></div>
+      </div>
+
+      <!-- Raw JSON -->
+      <details class="card raw-card">
+        <summary>Raw Verification Result</summary>
+        <pre id="raw-result"></pre>
+      </details>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>VEO-1 v1.0 — Protocol Hash: <code>0xcb21de...b7f7</code></p>
+      <p class="footer-links">
+        <a href="https://github.com/openrng/openrng" target="_blank">GitHub</a>
+        <span>·</span>
+        <a href="https://openrng.io" target="_blank">OpenRNG</a>
+        <span>·</span>
+        <a href="https://amoy.polygonscan.com/address/0xA79E149C35Ad47Ed270Bf4b16B80170eBF7B88F8" target="_blank">Contract</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+  <script src="verify.js"></script>
+</body>
+</html>
