@@ -212,6 +212,30 @@ Entropy Sources (drand · Bitcoin · Polygon)
 
 ---
 
+## FAQ
+
+**Why not just use `Math.random()`?**
+
+For most things, `Math.random()` is fine. You don't need verifiable entropy to shuffle a playlist. But when a random decision has consequences — an AI agent choosing which tool to call, a game determining a payout, a simulation producing a published result — you need to answer "was this fair?" after the fact. `Math.random()` can't answer that because it doesn't record where the randomness came from. A VEO can.
+
+**Why not Chainlink VRF?**
+
+Chainlink VRF proves that a specific output was derived from a specific seed and key. That's useful on-chain. But VRF proves *derivation*, not *entropy quality*. It uses a single source, doesn't score confidence, doesn't carry provenance metadata, and requires an on-chain callback. VEO wraps multiple sources, scores them, signs the result, and works off-chain with optional anchoring. VRF is a cryptographic primitive. VEO is an infrastructure layer.
+
+**Why not QRNG?**
+
+Quantum RNGs produce excellent entropy, but QRNG services return raw numbers with no provenance, no scoring, and no verification. You have to trust the QRNG provider. OpenRNG could use a QRNG as one of its entropy sources — the point isn't the source, it's the verifiable container around it.
+
+**Why not use drand directly?**
+
+We do use drand — it's one of our three sources. But drand is a single source. If you use only drand, your diversity score is low, and a drand outage means you have no entropy. OpenRNG aggregates drand with Bitcoin and Polygon block hashes, scores the combination, and signs the result. drand is an ingredient. VEO is the product.
+
+**Why would AI agents need this?**
+
+Today, when an agent randomly selects a tool, samples a response, or routes a task, nobody can verify the decision was fair. This is fine for chatbots. It's not fine for agents managing money, making medical triage decisions, or operating autonomously. As agents get more authority, their random decisions need audit trails. That's what VEO provides.
+
+---
+
 ## Protocol
 
 | Document | Link |
