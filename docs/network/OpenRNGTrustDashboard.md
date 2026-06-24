@@ -155,6 +155,24 @@ Static page at `status.openrng.io` or `openrng.io/status`:
 
 ---
 
+---
+
+## Primary Metric: Verified Decisions
+
+The launch metric is not "API requests" or "entropy generated."
+
+The launch metric is **Verified Decisions**:
+
+1. A VEO was consumed
+2. It influenced a decision
+3. The decision can be audited
+
+Agent Arbiter's `--audit` mode demonstrates a Verified Decision: the entropy was consumed, the agent was assigned, and the assignment is re-derivable + cryptographically verifiable.
+
+All dashboard language should reflect this metric.
+
+---
+
 ## Why This Matters
 
 Every potential consumer asks: "Is this reliable?" 
