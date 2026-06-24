@@ -6,8 +6,8 @@
  */
 
 import crypto from 'crypto';
-import { getPool, isDatabaseConnected } from './index';
-import { logger } from '../utils/logger';
+import { getPool, isDatabaseConnected } from './index.js';
+import { logger } from '../utils/logger.js';
 
 // ============================================================
 // Types

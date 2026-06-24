@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openrng.io/schemas/veo-1.schema.json",
+  "title": "VEO-1 Verifiable Entropy Object",
+  "description": "Frozen schema for VEO-1 v1.0. Required fields must not be removed or renamed.",
+  "type": "object",
+  "required": [
+    "standard",
+    "version",
+    "object_id",
+    "object_class",
+    "entropy",
+    "entropy_hash",
+    "issued_at",
+    "provider",
+    "sources",
+    "proof",
+    "confidence"
+  ],
+  "properties": {
+    "standard": {
+      "const": "VEO-1"
+    },
+    "version": {
+      "type": "string"
+    },
+    "object_id": {
+      "type": "string",
+      "pattern": "^veo_[0-9a-f]{32}$"
+    },
+    "object_class": {
+      "type": "string",
+      "enum": ["VEO-1A", "VEO-1B", "VEO-1C", "VEO-1D"]
+    },
+    "entropy": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]+$"
+    },
+    "entropy_hash": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "source_type", "timestamp", "entropy_hash"],
+        "properties": {
+          "source_id": { "type": "string" },
+          "source_type": { "type": "string" },
+          "source_reference": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "entropy_hash": { "type": "string" },
+          "signature": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "aggregation": {
+      "type": ["object", "null"],
+      "properties": {
+        "method": { "type": "string" },
+        "input_order": { "type": "array", "items": { "type": "string" } },
+        "aggregation_hash": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "confidence": {
+      "type": "object",
+      "required": ["score", "grade"],
+      "properties": {
+        "score": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "grade": { "type": "string", "enum": ["AAA", "AA", "A", "B", "C", "LOW"] },
+        "freshness": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "diversity": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "independence": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "manipulation_resistance": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "verification_success": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "availability": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "fallback_count": { "type": "integer", "minimum": 0 },
+        "live_source_count": { "type": "integer", "minimum": 0 },
+        "source_status": { "type": "string", "enum": ["live", "degraded", "fallback_only", "failed"] }
+      },
+      "additionalProperties": true
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "anchor": {
+      "type": ["object", "null"],
+      "properties": {
+        "anchor_type": { "type": "string" },
+        "anchor_status": { "type": "string" },
+        "chain": { "type": "string" },
+        "contract": { "type": "string" },
+        "transaction_hash": { "type": "string" },
+        "block_number": { "type": "integer" },
+        "batch_id": { "type": "string" },
+        "batch_size": { "type": "integer" },
+        "merkle_root": { "type": "string" },
+        "anchor_timestamp": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "lineage": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "policy": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

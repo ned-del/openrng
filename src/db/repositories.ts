@@ -6,9 +6,9 @@
  */
 
 import { Pool } from 'pg';
-import { getPool, isDatabaseConnected } from './index';
-import { MerkleBatch, RNToken } from '../rng/engine';
-import { logger } from '../utils/logger';
+import { getPool, isDatabaseConnected } from './index.js';
+import { MerkleBatch, RNToken } from '../rng/engine.js';
+import { logger } from '../utils/logger.js';
 
 // ============================================================
 // CLIENT REPOSITORY

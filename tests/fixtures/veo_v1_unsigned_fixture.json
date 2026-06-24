@@ -1,0 +1,72 @@
+{
+  "_meta": {
+    "description": "VEO-1 v1.0 golden fixture — unsigned composite entropy object",
+    "generated_at": "2026-06-24T12:06:59.567Z",
+    "canonical_hash": "0x1670a3a5f7d4b10bd3b7545969d3b27367c0d44217a6f17689bdfe819c556c81"
+  },
+  "object": {
+    "standard": "VEO-1",
+    "version": "1.0",
+    "object_id": "veo_9551805fbc78d80194852107cc0a7771",
+    "object_class": "VEO-1B",
+    "entropy": "0x609d96d49977fe11ceca5f696a2fa0c84f34467f540b496e1e439be6a6c5ddc4",
+    "entropy_hash": "0x93443f2b3b00e71c298e3c6c553f1c39ee4e61978955d3399f04e9efba1af6d0",
+    "issued_at": "2026-06-24T12:06:59.565Z",
+    "expires_at": null,
+    "provider": "OpenRNG",
+    "sources": [
+      {
+        "source_id": "drand-mainnet",
+        "source_type": "randomness_beacon",
+        "source_reference": "drand-round-29833151",
+        "timestamp": "2026-06-24T12:06:59.565Z",
+        "entropy_hash": "0xb1ff4246f56cb3ccd51383549f207fb1c0dadf9ca67ab8529b8849629b6a8519",
+        "signature": "0xb2a13ac84349d55ce623cd6214edea5ab0aa68c7e0a62b5103e3954ae69d3126a8ad6b5f14cfb9b556b120b0b456348b"
+      },
+      {
+        "source_id": "bitcoin",
+        "source_type": "blockchain_block_hash",
+        "source_reference": "block-955166",
+        "timestamp": "2026-06-24T12:06:59.531Z",
+        "entropy_hash": "0x455cf4b46345f4819406c904b6893366c87a1f28a30f437d56d99c8fa8202ce3"
+      },
+      {
+        "source_id": "polygon",
+        "source_type": "blockchain_block_hash",
+        "source_reference": "block-40714156",
+        "timestamp": "2026-06-24T12:06:59.000Z",
+        "entropy_hash": "0xf2332577fb98fa1d4e6f0355b13c3bb5f0e52fe0b1605814bec3dcaaf1844c4d"
+      }
+    ],
+    "aggregation": {
+      "method": "sha256_concat",
+      "input_order": [
+        "drand-mainnet",
+        "bitcoin",
+        "polygon"
+      ],
+      "aggregation_hash": "0x93443f2b3b00e71c298e3c6c553f1c39ee4e61978955d3399f04e9efba1af6d0"
+    },
+    "confidence": {
+      "score": 871,
+      "grade": "AA",
+      "freshness": 1000,
+      "diversity": 1000,
+      "independence": 667,
+      "manipulation_resistance": 900,
+      "verification_success": 850,
+      "availability": 800,
+      "fallback_count": 0,
+      "live_source_count": 3,
+      "source_status": "live"
+    },
+    "proof": {
+      "proof_type": "none",
+      "proof_status": "unsigned",
+      "verification_endpoint": "https://api.openrng.io/v2/entropy/verify"
+    },
+    "anchor": null,
+    "lineage": null,
+    "policy": null
+  }
+}

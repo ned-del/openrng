@@ -1,0 +1,9 @@
+VEO-1.0_PROTOCOL_HASH=0xcb21de7f1661548b85a8d9249cf2c1d939de93e1ce17ab22444238e3a466b7f7
+Generated from: RFC-0001-VEO1.md + ECS-v1.md + veo-1.schema.json
+Method: SHA-256 of concatenated file contents
+Command: cat docs/rfc/RFC-0001-VEO1.md docs/rfc/ECS-v1.md docs/rfc/veo-1.schema.json | shasum -a 256
+Date: 2026-06-24
+
+Purpose:
+Future auditors can verify that VEO-1.0 protocol documents have not silently changed.
+If the hash does not match, the protocol documents have been modified after freeze.

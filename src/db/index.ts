@@ -6,7 +6,7 @@
  */
 
 import { Pool, PoolClient } from 'pg';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 let pool: Pool | null = null;
 let isConnected = false;

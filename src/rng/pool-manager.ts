@@ -20,13 +20,13 @@
  */
 
 import { EventEmitter } from 'events';
-import { BatchGenerator, TokenPool, MerkleBatch, MerkleTreeBuilder, RNToken, TokenRequest, TokenResponse } from '../rng/engine';
-import { PolygonAnchor, MockPolygonAnchor } from '../blockchain/anchor';
-import { DrandClient } from '../rng/drand';
-import { isDatabaseConnected } from '../db/index';
-import * as repo from '../db/repositories';
-import { logger } from '../utils/logger';
-import { features } from '../config';
+import { BatchGenerator, TokenPool, MerkleBatch, MerkleTreeBuilder, RNToken, TokenRequest, TokenResponse } from '../rng/engine.js';
+import { PolygonAnchor, MockPolygonAnchor } from '../blockchain/anchor.js';
+import { DrandClient } from '../rng/drand.js';
+import { isDatabaseConnected } from '../db/index.js';
+import * as repo from '../db/repositories.js';
+import { logger } from '../utils/logger.js';
+import { features } from '../config.js';
 import { createHash, randomBytes } from 'crypto';
 
 // ============================================================
