@@ -1,7 +1,9 @@
 /**
- * @openrng/sdk — Verifiable random numbers for AI agents
+ * @openrng/sdk — Verifiable Entropy for AI agents
  */
 
+export { VEOClient } from './veo';
+export type { VEOObject, VEOVerifyResult, VEOStatus, VEOPolicy, GetEntropyOptions } from './veo';
 export { OpenRNG } from './openrng';
 export {
   OpenRNGError,
