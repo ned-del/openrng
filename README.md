@@ -10,6 +10,40 @@ Transform randomness from a disposable value into a verifiable digital object.
 
 ---
 
+## Demo: Agent Arbiter
+
+Three AI agents compete for tasks. Every assignment is backed by a Verifiable Entropy Object.
+
+```
+  ┌─ Assignment #1 ────────────────────────────────────
+  │ Task:    Summarize Q2 earnings report
+  │ Agent:   agent-gamma
+  │ ECS:     🟢 871 (AA)  🔏 signed
+  │ Entropy: 0x7a681b5578f41577...
+  │ VEO:     veo_a81714b0f24a09b2310703c7d5e1c578
+  │ Verify:  https://verify.openrng.io
+  └──────────────────────────────────────────────────────────
+```
+
+Audit mode re-derives every assignment and cryptographically verifies every entropy object:
+
+```
+  Auditing: "Summarize Q2 earnings report"
+  Claimed agent: agent-gamma
+  Re-derived agent: agent-gamma ✓ MATCH
+  Verification: cryptographically_verified
+  Hash: ✓ | Signature: ✓ | Sources: ✓
+```
+
+**With `Math.random()`:** "Agent-gamma was assigned. Trust me."
+**With VEO-1:** "Agent-gamma was assigned. Entropy from drand + Bitcoin + Polygon. ECS: 871 (AA). Signed by `0xD4F7...` — [verify it yourself](https://verify.openrng.io)."
+
+The assignment is the same. The proof is the difference.
+
+→ [Run it](examples/agent-arbiter/) · [Try the API](#quickstart) · [Read the whitepaper](docs/whitepaper/OpenRNG_Whitepaper_v1.md)
+
+---
+
 ## What is OpenRNG?
 
 OpenRNG is a **Verifiable Entropy Network** — infrastructure that sources entropy from multiple independent providers, measures its quality, signs it cryptographically, optionally anchors it to blockchain, and packages it as a standardized verifiable object.
