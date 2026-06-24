@@ -11,8 +11,8 @@
 
 import { createHash, randomBytes } from 'crypto';
 import { EventEmitter } from 'events';
-import { logger } from '../utils/logger';
-import type { DrandClient } from './drand';
+import { logger } from '../utils/logger.js';
+import type { DrandClient } from './drand.js';
 
 // ============================================================
 // TYPES
@@ -308,7 +308,7 @@ export class BatchGenerator extends EventEmitter {
     let entropySource: 'drand' | 'local-vdf' = 'local-vdf';
 
     if (this.drandClient) {
-      const { getVerifiableEntropy } = await import('./drand');
+      const { getVerifiableEntropy } = await import('./drand.js');
       const vdfSeed = MerkleTreeBuilder.sha256(blockParam + randomBytes(32).toString('hex'));
       const entropy = await getVerifiableEntropy(
         this.drandClient,

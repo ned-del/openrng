@@ -9,7 +9,7 @@
  */
 
 import { ethers, Contract, Wallet, JsonRpcProvider } from 'ethers';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // ============================================================
 // CONTRACT ABI

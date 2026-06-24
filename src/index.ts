@@ -16,12 +16,13 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
-import { PoolManager } from './rng/pool-manager';
-import { PolygonAnchor, MockPolygonAnchor } from './blockchain/anchor';
-import { initDatabase } from './db/index';
-import { createRouter } from './api/routes';
-import { logger } from './utils/logger';
-import { getLandingHTML } from './landing';
+import { PoolManager } from './rng/pool-manager.js';
+import { PolygonAnchor, MockPolygonAnchor } from './blockchain/anchor.js';
+import { initDatabase } from './db/index.js';
+import { createRouter } from './api/routes.js';
+import { logger } from './utils/logger.js';
+import { getLandingHTML } from './landing.js';
+import { veoRouter } from './veo/index.js';
 
 async function main() {
   logger.info('═══════════════════════════════════════');
@@ -117,6 +118,7 @@ async function main() {
 
   // Mount API
   app.use('/v1', createRouter(poolManager));
+  app.use('/v2', veoRouter);
 
   // Root — HTML for browsers, JSON for API clients
   app.get('/', (req, res) => {

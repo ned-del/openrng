@@ -12,13 +12,13 @@
 
 import express, { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { PoolManager } from '../rng/pool-manager';
-import { MerkleTreeBuilder } from '../rng/engine';
-import { isDatabaseConnected } from '../db/index';
-import * as repo from '../db/repositories';
-import * as apiKeys from '../db/api-keys';
-import { logger } from '../utils/logger';
-import { features } from '../config';
+import { PoolManager } from '../rng/pool-manager.js';
+import { MerkleTreeBuilder } from '../rng/engine.js';
+import { isDatabaseConnected } from '../db/index.js';
+import * as repo from '../db/repositories.js';
+import * as apiKeys from '../db/api-keys.js';
+import { logger } from '../utils/logger.js';
+import { features } from '../config.js';
 
 // ============================================================
 // REQUEST SCHEMAS (Zod validation)
