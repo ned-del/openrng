@@ -4,3 +4,12 @@ dist/
 *.log
 artifacts/
 cache/
+
+# Patent & IP — NEVER commit
+IP/
+docs/patent/
+docs/bible/
+docs/outreach/
+docs/whitepaper/
+marketing/
+bot/.env
