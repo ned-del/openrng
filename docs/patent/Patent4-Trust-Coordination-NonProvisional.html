@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Patent #4 Non-Provisional — Trust Coordination</title>
+<style>
+  @page { size: letter; margin: 25mm 25mm 30mm 25mm; @bottom-center { content: counter(page); font-family: 'Times New Roman', serif; font-size: 10pt; color: #666; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Times New Roman', 'Noto Serif TC', serif; font-size: 12pt; line-height: 2.0; color: #000; background: #fff; max-width: 8.5in; margin: 0 auto; padding: 1in; }
+  .cover { page-break-after: always; text-align: center; padding-top: 1.5in; }
+  .cover h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 0.4in; line-height: 1.5; }
+  .cover .doc-type { font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8in; }
+  .cover .meta { font-size: 11pt; line-height: 2.0; }
+  .cover .confidential { font-size: 10pt; font-weight: bold; text-transform: uppercase; letter-spacing: 3px; margin-top: 1in; padding: 8px 24px; border: 2px solid #000; display: inline-block; }
+  h2 { font-size: 12pt; font-weight: bold; text-transform: uppercase; margin-top: 24pt; margin-bottom: 12pt; text-align: center; }
+  h3 { font-size: 12pt; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; }
+  h4 { font-size: 12pt; font-weight: bold; font-style: italic; margin-top: 12pt; margin-bottom: 6pt; }
+  p { margin-bottom: 12pt; text-align: justify; text-indent: 0.5in; }
+  p.no-indent { text-indent: 0; }
+  p.claim { text-indent: 0; margin-left: 0.5in; margin-bottom: 8pt; }
+  p.sub-claim { text-indent: 0; margin-left: 1.0in; margin-bottom: 6pt; }
+  p.sub-sub-claim { text-indent: 0; margin-left: 1.5in; margin-bottom: 6pt; }
+  .para-num { font-weight: bold; margin-right: 8pt; }
+  ol, ul { margin: 6pt 0 12pt 0.75in; }
+  li { margin-bottom: 4pt; }
+  .figure { border: 1px solid #ccc; padding: 20px; margin: 20px 0; text-align: center; background: #f9f9f9; break-inside: avoid; }
+  .figure-label { font-weight: bold; font-size: 11pt; margin-bottom: 12px; }
+  .figure pre { font-family: 'Courier New', monospace; font-size: 8.5pt; line-height: 1.4; text-align: left; display: inline-block; white-space: pre; }
+  hr { border: none; border-top: 1px solid #999; margin: 24pt 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12pt 0; font-size: 11pt; }
+  th, td { border: 1px solid #999; padding: 6pt 8pt; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: bold; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="doc-type">Non-Provisional Patent Application</div>
+  <h1>Method and System for Verifiable Trust Coordination<br>Among Autonomous Computational Agents</h1>
+  <h1 style="font-size:11pt; font-weight:normal; text-transform:none; margin-bottom:0.4in;">自主計算代理間之可驗證信任協調方法與系統</h1>
+  <div class="meta">
+    Inventor: [Inventor Name]<br>
+    Date of Filing: [Filing Date]<br>
+    Priority Date: [Provisional Filing Date]<br>
+    Provisional Application No.: [Provisional Serial Number]<br>
+    <br>
+    Prepared for: Saint Island International Patent &amp; Law Offices<br>
+    聖島國際專利商標聯合事務所<br>
+  </div>
+  <div class="confidential">Attorney-Client Privileged &amp; Confidential</div>
+</div>
+
+<h2>Cross-Reference to Related Applications</h2>
+
+<p><span class="para-num">[0001]</span> This application claims the benefit of U.S. Provisional Application No. [Provisional Serial Number], filed [date], which is incorporated herein by reference in its entirety.</p>
+
+<p><span class="para-num">[0002]</span> This application is related to: the First Application (Patent #1 — Trust Source, Merkle batch RNG); the Second Application (Patent #2 — Trust Integrity, VDF anti-preview); the Third Application (Patent #3 — Trust Evidence, VEO trust artifacts); and the Fifth Application (Patent #5 — Trust Runtime, governance and compliance).</p>
+
+<p><span class="para-num">[0003]</span> The present invention provides the Trust Coordination layer (Layer 4). Where Patents #1–#3 address trust for individual computations (single agent, single decision, single artifact), the present invention addresses <strong>how trust propagates between multiple autonomous agents and across system boundaries</strong>. The invention is a protocol for trust transmission — it does not control what agents do; it ensures trust propagates correctly between them.</p>
+
+<hr>
+
+<h2>Field of the Invention</h2>
+
+<p><span class="para-num">[0004]</span> The present invention relates generally to systems and methods for coordinating, propagating, and verifying computational trust among autonomous agents. More specifically, the invention relates to: (a) trust chain construction via directed acyclic graph (DAG) lineage with cryptographic linking; (b) multi-agent trust consensus protocols using deterministic aggregation; (c) cross-organizational trust handoff with self-verifying trust packages; (d) trust propagation invariant enforcement; (e) trust chain traversal and independent verification algorithms; and (f) trust routing for optimal source selection in federated trust networks.</p>
+
+<hr>
+
+<h2>Background of the Invention</h2>
+
+<h3>1. The Multi-Agent Trust Gap</h3>
+
+<p><span class="para-num">[0005]</span> Modern computational systems are increasingly multi-agent. AI agent swarms collaborate on complex tasks (LangChain, CrewAI, AutoGPT). Robotic fleets coordinate warehouse operations. Distributed enterprise workflows span multiple services and organizations. Cross-organizational AI pipelines process data through multiple providers.</p>
+
+<p><span class="para-num">[0006]</span> In all these scenarios, trust must flow between autonomous agents. When Agent A allocates a task to Agent B based on verifiable entropy, Agent B needs assurance that the allocation was fair. Agent C (auditor) needs to verify the entire decision chain. The trust problem is no longer "is this random number trustworthy?" but "is the chain of decisions across multiple agents trustworthy?"</p>
+
+<h3>2. Limitations of Existing Approaches</h3>
+
+<p><span class="para-num">[0007]</span> <strong>Multi-agent frameworks:</strong> Orchestrate collaboration but log tasks without cryptographic trust linking. Auditors cannot independently verify decision chains.</p>
+
+<p><span class="para-num">[0008]</span> <strong>Blockchain consensus:</strong> Achieves shared state agreement but does not address trust in off-chain agent decisions. Records that decisions were made; does not verify that decision processes were trustworthy.</p>
+
+<p><span class="para-num">[0009]</span> <strong>PKI certificate chains:</strong> Verify identity hierarchies but not computational trust. A valid certificate proves identity, not that the certificate holder's computation was fair.</p>
+
+<p><span class="para-num">[0010]</span> <strong>Federated learning:</strong> Enables collaborative model training without sharing data but does not provide verifiable trust chains for individual decisions made by the trained models.</p>
+
+<p><span class="para-num">[0011]</span> No existing system provides a protocol for verifiable trust propagation — constructing, transmitting, and verifying trust chains across autonomous agents with enforced invariants.</p>
+
+<hr>
+
+<h2>Summary of the Invention</h2>
+
+<p><span class="para-num">[0012]</span> The present invention provides a protocol and system for trust coordination among autonomous computational agents, comprising: trust chain construction via DAG lineage, multi-agent trust consensus, cross-boundary trust handoff, propagation invariant enforcement, trust chain verification, and trust routing.</p>
+
+<hr>
+
+<h2>Detailed Description of Preferred Embodiments</h2>
+
+<h3>1. Trust Chain Construction</h3>
+
+<p><span class="para-num">[0013]</span> The system constructs trust chains by linking child trust artifacts to parent artifacts via lineage records containing: parent artifact identifier(s), a lineage hash (cryptographic hash over parent IDs and child entropy), derivation type, trust delta (quality score change record), and agent identifier (which agent created the child). The chain forms a DAG — a parent may have multiple children and a child may have multiple parents.</p>
+
+<p><span class="para-num">[0014]</span> Derivation types include but are not limited to: task_allocation (parent selects which agent receives a task), sub_task (parent task decomposed into children), delegation (agent delegates to another agent), tool_selection (agent selects a computational tool), consensus_input (artifact contributes to a multi-agent consensus), and cross_boundary (artifact handed off across organizational boundaries).</p>
+
+<h3>2. Multi-Agent Trust Consensus</h3>
+
+<p><span class="para-num">[0015]</span> The consensus protocol proceeds in phases: (a) each participant provides a signed trust artifact with independently sourced entropy; (b) contributions are combined using a deterministic aggregation function (cryptographic hash of concatenated entropies in defined order); (c) a consensus trust artifact is constructed referencing all contributors as parents, with ECS ≤ min(contributor ECS values); (d) any party verifies by independently verifying each contribution, reproducing the aggregation, and confirming the consensus entropy matches.</p>
+
+<p><span class="para-num">[0016]</span> In alternative embodiments, the aggregation function may use: XOR combination, polynomial evaluation at a shared point, verifiable secret sharing reconstruction, or any deterministic function that is publicly reproducible from the contributions. The consensus artifact may be jointly signed using threshold signatures (e.g., BLS threshold, Shamir-based multi-party signing) rather than signed by a single coordinator.</p>
+
+<h3>3. Cross-Boundary Trust Handoff</h3>
+
+<p><span class="para-num">[0017]</span> The handoff protocol enables trust to cross organizational boundaries without mutual trust: (a) the sender constructs a self-verifying handoff package (trust artifact + sender signature + handoff policy + handoff ID); (b) the package is transmitted via any channel; (c) the receiver verifies the artifact's provider signature and the sender's handoff signature independently; (d) both parties record the handoff as a lineage entry.</p>
+
+<p><span class="para-num">[0018]</span> Handoff policies specify: permitted derivation types the receiver may create, maximum trust chain depth extension, re-scoring requirements (whether the receiver must re-evaluate ECS under their own policy), and expiration (how long the handoff authorization remains valid).</p>
+
+<h3>4. Trust Propagation Invariants</h3>
+
+<p><span class="para-num">[0019]</span> Three invariants are computationally enforced at every trust chain operation:</p>
+
+<ol type="a">
+  <li><strong>Non-amplification:</strong> child_ECS ≤ min(parent_ECS_values). Enforced by capping child scores.</li>
+  <li><strong>Transparent degradation:</strong> Every ECS change is recorded in the trust delta with reason codes (source_reduction, processing_overhead, cross_boundary_penalty, time_decay).</li>
+  <li><strong>Independent verifiability:</strong> Every node is verifiable using only the artifact and the provider's public key. No intermediate node cooperation required.</li>
+</ol>
+
+<h3>5. Trust Chain Verification</h3>
+
+<p><span class="para-num">[0020]</span> The verification algorithm traverses from any leaf to root: (a) verify leaf artifact; (b) follow lineage references to parents; (c) verify each parent; (d) confirm child ECS ≤ min(parent ECS); (e) confirm trust delta correctness; (f) recurse to root; (g) verify root artifacts against original entropy sources. The algorithm produces a structured verification report with per-node pass/fail and overall chain status.</p>
+
+<h3>6. Alternative Embodiments</h3>
+
+<h4>6.1 Trust Routing</h4>
+
+<p><span class="para-num">[0021]</span> In a federated trust network with multiple trust providers, the system routes trust requests to the optimal provider based on: required ECS level, available entropy source diversity, latency constraints, cost, and regulatory requirements. Trust routing is analogous to network routing — finding the path that satisfies the trust requirements at minimum cost.</p>
+
+<h4>6.2 Trust Federation</h4>
+
+<p><span class="para-num">[0022]</span> Multiple independent trust providers form a federated trust network. Each provider independently generates and signs trust artifacts. Cross-provider trust chains are constructed using the handoff protocol. A federation registry maintains provider public keys and trust policies, enabling any party to verify artifacts from any federation member.</p>
+
+<h4>6.3 Robotic Swarm Coordination</h4>
+
+<p><span class="para-num">[0023]</span> In autonomous robotics, trust chains link task allocation decisions across a swarm. Each robot's task assignment is backed by a trust artifact with lineage to the swarm coordinator's allocation decision. Safety-critical decisions carry higher ECS requirements enforced by the propagation invariants.</p>
+
+<h4>6.4 Supply Chain Trust</h4>
+
+<p><span class="para-num">[0024]</span> In supply chain applications, trust artifacts accompany goods through multi-party supply chains. Each handoff between parties is recorded with trust handoff protocol, creating an end-to-end verifiable trust chain from origin to destination.</p>
+
+<h4>6.5 DAO and Governance Coordination</h4>
+
+<p><span class="para-num">[0025]</span> In decentralized governance, the multi-agent consensus protocol combines trust artifacts from multiple voters into a consensus result. Each voter's contribution is independently verifiable, and the consensus artifact proves the aggregation was correctly computed from the verified contributions.</p>
+
+<hr>
+
+<h2>Claims</h2>
+
+<p class="no-indent" style="font-style:italic; margin-bottom:18pt;">What is claimed is:</p>
+
+<p class="claim"><strong>1.</strong> A computer-implemented method for coordinating trust among a plurality of autonomous computational agents, comprising:</p>
+<p class="sub-claim">(a) generating, by a first computational agent, a first trust artifact comprising at least an entropy payload, source provenance, a quality score, and a cryptographic signature;</p>
+<p class="sub-claim">(b) performing a computational operation using the first trust artifact, the operation producing one or more child computations;</p>
+<p class="sub-claim">(c) generating one or more child trust artifacts, each child trust artifact including a lineage record cryptographically referencing the first trust artifact;</p>
+<p class="sub-claim">(d) enforcing a non-amplification invariant wherein each child trust artifact's quality score does not exceed the first trust artifact's quality score; and</p>
+<p class="sub-claim">(e) enabling independent verification of a trust chain from any child trust artifact to the first trust artifact without requiring cooperation from any agent in the chain.</p>
+
+<p class="claim"><strong>2.</strong> The method of claim 1, wherein the lineage record comprises a cryptographic hash computed over at least the parent artifact identifier and the child artifact's entropy payload, a derivation type, and a trust delta recording the quality score change with a reason code.</p>
+
+<p class="claim"><strong>3.</strong> The method of claim 1, wherein the trust chain forms a directed acyclic graph wherein a parent trust artifact may have a plurality of children and a child trust artifact may have a plurality of parents.</p>
+
+<p class="claim"><strong>4.</strong> The method of claim 1, further comprising recording a transparent degradation for each quality score change, the degradation record including a reason code selected from the group consisting of: source reduction, processing overhead, cross-boundary penalty, and time decay.</p>
+
+<p class="claim"><strong>5.</strong> A computer-implemented method for achieving verifiable trust consensus among a plurality of autonomous agents, comprising:</p>
+<p class="sub-claim">(a) receiving, from each of a plurality of participating agents, a respective signed trust artifact comprising independently sourced entropy;</p>
+<p class="sub-claim">(b) combining the entropies from the plurality of trust artifacts using a deterministic aggregation function;</p>
+<p class="sub-claim">(c) constructing a consensus trust artifact referencing all contributing trust artifacts as parents via lineage records, carrying the aggregated entropy, and having a quality score not exceeding the minimum quality score among the contributing artifacts; and</p>
+<p class="sub-claim">(d) enabling any party to independently verify the consensus by verifying each contributing artifact, reproducing the deterministic aggregation, and confirming the consensus entropy matches.</p>
+
+<p class="claim"><strong>6.</strong> The method of claim 5, wherein the deterministic aggregation function is selected from the group consisting of: concatenation followed by cryptographic hashing, XOR combination, polynomial evaluation, and verifiable secret sharing reconstruction.</p>
+
+<p class="claim"><strong>7.</strong> The method of claim 5, wherein the consensus trust artifact is signed using a threshold signature scheme wherein a minimum number of participating agents must contribute partial signatures.</p>
+
+<p class="claim"><strong>8.</strong> A computer-implemented method for trust handoff across organizational boundaries, comprising:</p>
+<p class="sub-claim">(a) constructing, by a sending entity, a trust handoff package comprising a trust artifact, a sender cryptographic signature, a handoff policy specifying permitted uses, and a handoff identifier;</p>
+<p class="sub-claim">(b) transmitting the trust handoff package to a receiving entity via any communication channel;</p>
+<p class="sub-claim">(c) verifying, by the receiving entity, the trust artifact's provider signature and the sender's handoff signature independently, without requiring mutual organizational trust; and</p>
+<p class="sub-claim">(d) recording the handoff event as a lineage entry by both the sending and receiving entities.</p>
+
+<p class="claim"><strong>9.</strong> The method of claim 8, wherein the handoff policy specifies at least one of: permitted derivation types, maximum trust chain depth extension, re-scoring requirements, and handoff authorization expiration.</p>
+
+<p class="claim"><strong>10.</strong> A computer-implemented method for verifying a trust chain, comprising:</p>
+<p class="sub-claim">(a) receiving a target trust artifact;</p>
+<p class="sub-claim">(b) verifying the target artifact's integrity, cryptographic signature, and quality score;</p>
+<p class="sub-claim">(c) traversing the target artifact's lineage references to identify parent artifacts;</p>
+<p class="sub-claim">(d) for each parent, independently verifying integrity, signature, and quality score;</p>
+<p class="sub-claim">(e) confirming the non-amplification invariant: target quality score ≤ minimum parent quality score;</p>
+<p class="sub-claim">(f) confirming the trust delta correctly accounts for the score difference;</p>
+<p class="sub-claim">(g) recursively repeating steps (c)–(f) until root artifacts are reached; and</p>
+<p class="sub-claim">(h) verifying root artifacts against their original entropy sources,</p>
+<p class="sub-claim">wherein the verification is performed without cooperation from any artifact generator or intermediate node, and produces a structured verification report with per-node results.</p>
+
+<p class="claim"><strong>11.</strong> A system for verifiable trust coordination among autonomous computational agents, comprising:</p>
+<p class="sub-claim">one or more processors; and</p>
+<p class="sub-claim">memory storing instructions that, when executed, cause the system to:</p>
+<p class="sub-sub-claim">(a) construct trust chains by linking child trust artifacts to parent trust artifacts via cryptographic lineage records forming directed acyclic graphs;</p>
+<p class="sub-sub-claim">(b) enforce propagation invariants including non-amplification, transparent degradation, and independent verifiability;</p>
+<p class="sub-sub-claim">(c) combine trust artifacts from multiple agents into consensus trust artifacts using deterministic aggregation;</p>
+<p class="sub-sub-claim">(d) enable cross-boundary trust handoff through self-verifying trust packages; and</p>
+<p class="sub-sub-claim">(e) provide trust chain verification through recursive traversal from any leaf to root with per-node verification reporting.</p>
+
+<p class="claim"><strong>12.</strong> The system of claim 11, further comprising a trust routing module that routes trust requests to optimal providers in a federated trust network based on required quality level, source diversity, latency, cost, and regulatory constraints.</p>
+
+<p class="claim"><strong>13.</strong> A non-transitory computer-readable medium storing instructions that, when executed by one or more processors, cause the one or more processors to:</p>
+<p class="sub-claim">(a) construct trust chains linking child trust artifacts to parent trust artifacts via lineage records;</p>
+<p class="sub-claim">(b) enforce a non-amplification invariant ensuring child quality scores do not exceed parent quality scores;</p>
+<p class="sub-claim">(c) achieve multi-agent trust consensus by deterministically aggregating trust artifacts from multiple agents;</p>
+<p class="sub-claim">(d) perform cross-boundary trust handoff using self-verifying packages requiring no mutual organizational trust; and</p>
+<p class="sub-claim">(e) verify complete trust chains from any leaf to root without cooperation from any intermediate node.</p>
+
+<hr>
+
+<h2>Abstract of the Disclosure</h2>
+
+<p class="no-indent">A method and system for coordinating, propagating, and verifying computational trust among autonomous agents in multi-agent systems. Trust chains are constructed by linking child trust artifacts to parent artifacts via cryptographic lineage records, forming directed acyclic graphs (DAGs) enabling complete decision-tree reconstruction. A multi-agent trust consensus protocol combines signed trust artifacts from multiple agents using deterministic aggregation into jointly verifiable consensus artifacts. Cross-boundary trust handoff enables trust to propagate across organizational boundaries through self-verifying packages without mutual organizational trust. Three propagation invariants are computationally enforced: non-amplification (child quality ≤ parent quality), transparent degradation (all trust changes recorded with reason codes), and independent verifiability (every node verifiable without intermediate cooperation). A verification algorithm traverses trust chains from any leaf to root with per-node results. Alternative embodiments include trust routing in federated networks, robotic swarm coordination, supply chain trust, and DAO governance.</p>
+
+</body>
+</html>

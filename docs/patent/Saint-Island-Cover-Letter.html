@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>聖島國際 — OpenRNG 專利家族策略說明</title>
+<style>
+  @page { size: A4; margin: 25mm 22mm 25mm 22mm; @bottom-center { content: counter(page); font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; font-size: 9pt; color: #999; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'Inter', sans-serif; font-size: 11pt; line-height: 1.9; color: #1a1a1a; background: #fff; max-width: 210mm; margin: 0 auto; padding: 22mm; }
+  .header { text-align: right; font-size: 10pt; color: #888; margin-bottom: 40px; line-height: 1.6; }
+  .header .date { font-weight: 600; color: #333; }
+  h1 { font-size: 18pt; font-weight: 800; color: #0a0a0a; margin-bottom: 4px; line-height: 1.3; }
+  h1.en { font-size: 12pt; font-weight: 400; color: #888; margin-bottom: 24px; }
+  h2 { font-size: 13pt; font-weight: 700; color: #0a0a0a; margin-top: 28px; margin-bottom: 10px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
+  h3 { font-size: 11pt; font-weight: 700; color: #333; margin-top: 18px; margin-bottom: 6px; }
+  p { margin-bottom: 12px; text-align: justify; }
+  .en-note { color: #666; font-size: 10pt; font-style: italic; }
+  ul, ol { margin: 6px 0 12px 22px; }
+  li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 10pt; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f5f5f8; font-weight: 700; }
+  .highlight { background: #f0faf5; }
+  .diagram { background: #0a0a1a; color: #e0e0e8; padding: 18px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 9pt; line-height: 1.4; margin: 14px 0; white-space: pre; overflow-x: auto; }
+  .callout { background: #f8f7ff; border-left: 4px solid #7c6aef; padding: 14px 18px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+  .callout p { margin-bottom: 6px; }
+  .sig { margin-top: 50px; font-size: 10pt; color: #555; line-height: 1.8; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="date">2026 年 6 月 27 日</div>
+  聖島國際專利商標聯合事務所<br>
+  Saint Island International Patent &amp; Law Offices
+</div>
+
+<h1>OpenRNG 專利家族策略說明暨後續申請指示</h1>
+<h1 class="en">OpenRNG Patent Family Strategy Briefing &amp; Filing Instructions</h1>
+
+<hr>
+
+<h2>一、第一案現狀 Current Status of Patent #1</h2>
+
+<p>第一案「遊戲隨機數生成方法與系統」（Method and System for Gaming Random Number Generation）已核准。該案保護的核心技術為：</p>
+
+<ul>
+  <li>Merkle-tree-based 批次隨機數生成</li>
+  <li>區塊鏈錨定（Polygon 智能合約）</li>
+  <li>每個隨機數值附帶 Merkle proof，可獨立驗證</li>
+</ul>
+
+<p>第一案建立了整個專利家族的基礎，但它只解決了<strong>一半的問題</strong>：</p>
+
+<div class="callout">
+  <p><strong>第一案證明的是：</strong>隨機數值在承諾（commitment）之後沒有被竄改。</p>
+  <p><strong>第一案沒有證明的是：</strong>隨機數值在承諾之前不能被預覽。</p>
+  <p class="en-note">Patent #1: Merkle proves values were not changed after commitment.<br>
+  Patent #1 does NOT prove values were not known before commitment.</p>
+</div>
+
+<p>這個缺口就是第二案要補的洞，也是整個專利家族從「單一專利」升級為「平台級 IP」的起點。</p>
+
+<h2>二、策略升級：從 OpenRNG 到 Computational Trust 從 OpenRNG 到計算信任</h2>
+
+<p>在第一案核准後，我們重新審視了整個技術的定位，做出了一個重要的策略轉向：</p>
+
+<h3>原本的思維（以專利為中心）</h3>
+<pre class="diagram">
+Patent #1 (Merkle RNG)
+     ↓
+Patent #2 (VDF)
+     ↓
+Patent #3 (VEO)
+     ↓
+各自獨立的發明
+</pre>
+
+<h3>現在的思維（以平台為中心）</h3>
+<pre class="diagram">
+Computational Trust Infrastructure（計算信任基礎設施）
+     │
+     ├── Layer 1: Trust Source      ← Patent #1（已核准）
+     ├── Layer 2: Trust Integrity   ← Patent #2（本次申請）
+     ├── Layer 3: Trust Evidence    ← Patent #3（本次申請）
+     ├── Layer 4: Trust Coordination ← 未來申請
+     └── Layer 5: Trust Runtime     ← 未來申請
+</pre>
+
+<p><strong>核心轉變：</strong>我們不再將每件專利視為獨立的技術發明，而是將它們定位為統一架構（Computational Trust Infrastructure）中各自負責一層的組件。就像 Apple 的晶片家族（A 系列、M 系列、S 系列）不是獨立產品，而是統一平台的不同層級。</p>
+
+<p><strong>Computational Trust（計算信任）的定義：</strong></p>
+
+<div class="callout">
+  <p>獨立驗證計算過程——其輸入、執行和輸出——正確、公平且未被操縱地發生的能力，無需依賴操作者的聲明。</p>
+  <p class="en-note">The ability to independently verify that a computational process — its inputs, execution, and outputs — occurred correctly, fairly, and without manipulation, without relying on the operator's assertion.</p>
+</div>
+
+<p>這不是安全（security）、不是隱私（privacy）、也不是合規（compliance）。它是一個<strong>新的基礎設施類別</strong>——如同 TLS 之於傳輸安全、OAuth 之於授權、JWT 之於身份。</p>
+
+<h2>三、為什麼第二案至關重要且必須盡快申請</h2>
+
+<h3>Patent #2：VDF-Protected Batch RNG / Anti-Preview</h3>
+<p class="en-note">Method and System for Verifiable Delay Function-Protected Batch Random Number Generation with Anti-Preview Guarantees</p>
+
+<h3>3.1 它解決什麼問題</h3>
+
+<p>第一案使用 Merkle tree 確保承諾後的完整性（post-commitment integrity）。但存在一個「內部預覽攻擊」（insider preview attack）：</p>
+
+<ol>
+  <li>系統操作者生成多個候選批次</li>
+  <li>在錨定 Merkle root 之前，預覽所有批次的數值</li>
+  <li>選擇性地錨定對操作者有利的批次</li>
+  <li>所有 Merkle 驗證檢查都通過——因為數值從未被修改，只是被選擇</li>
+</ol>
+
+<p>第二案引入 VDF（可驗證延遲函數），創造一個<strong>時間屏障</strong>：在 VDF 計算完成之前（T 秒），沒有任何人——包括系統操作者——能夠知道批次中的任何數值。</p>
+
+<div class="callout">
+  <p><strong>第一案 + 第二案的組合提供「雙重時間完整性」（Dual Temporal Integrity）：</strong></p>
+  <p>• 承諾前：數值<strong>不可知</strong>（VDF 保證）</p>
+  <p>• 承諾後：數值<strong>不可改</strong>（Merkle 保證）</p>
+  <p class="en-note">Before commitment: values UNKNOWABLE (VDF guarantee)<br>
+  After commitment: values UNALTERABLE (Merkle guarantee)</p>
+</div>
+
+<h3>3.2 為什麼必須盡快</h3>
+
+<p>VDF 相關的 prior art 正在快速增加：</p>
+<ul>
+  <li>Boneh et al. (2018) 定義了 VDF 原語</li>
+  <li>Tezos (2022) 在共識層整合了 VDF</li>
+  <li>StarkWare VeeDo 實作了 VDF + 鏈上驗證</li>
+  <li>Ethereum 研究社群持續提出 VDF 應用</li>
+  <li>Chainlink 專利（US12401532B2）的 disclosure 中提到了 VDF</li>
+</ul>
+
+<p><strong>我們的 novel combination 尚未被任何 prior art 涵蓋</strong>（VDF + batch generation + Merkle tree + async anchoring + shared pool + drand integration + multi-worker architecture），但每多等一天，prior art 就會增加，新穎性的窗口就會縮小。</p>
+
+<h2>四、為什麼第三案同樣重要</h2>
+
+<h3>Patent #3：Verifiable Entropy Objects (VEO)</h3>
+<p class="en-note">Method and System for Generating, Scoring, Signing, Anchoring, and Verifying Verifiable Trust Artifacts for Non-Deterministic Computation</p>
+
+<h3>4.1 它解決什麼問題</h3>
+
+<p>第一案和第二案解決了「如何生成可信的隨機數」。第三案解決的是更大的問題：<strong>如何將信任封裝為一個可攜帶、可驗證的數位物件。</strong></p>
+
+<p>VEO 是一個結構化的信任成品（trust artifact），攜帶：</p>
+<ul>
+  <li>熵載荷（entropy payload）</li>
+  <li>來源出處記錄（source provenance）</li>
+  <li>六維度品質評分（ECS, 0-1000）</li>
+  <li>密碼學簽名（provider signature）</li>
+  <li>可選的區塊鏈錨定（blockchain anchor）</li>
+  <li>血統參考（lineage graph）</li>
+</ul>
+
+<p>VEO 之於不確定性，如同 PDF 之於文件、JWT 之於身份。任何第三方都可以在離線、無網路的環境下，僅使用 VEO 物件和供應商的公鑰，獨立驗證整個信任斷言。</p>
+
+<h3>4.2 Non-Provisional 的關鍵升級</h3>
+
+<p>第三案的 non-provisional 版本相較於 provisional 做了重大的概念升級：</p>
+
+<table>
+  <thead><tr><th>項目</th><th>Provisional</th><th>Non-Provisional</th></tr></thead>
+  <tbody>
+    <tr><td>核心定位</td><td>Entropy object</td><td><strong>Trust assertion for non-deterministic computation</strong></td></tr>
+    <tr><td>標題</td><td>Verifiable Entropy Objects</td><td>Verifiable Trust Artifacts for Non-Deterministic Computation</td></tr>
+    <tr><td>簽名方案</td><td>僅 secp256k1</td><td>泛化：secp256k1 / Ed25519 / RSA / post-quantum</td></tr>
+    <tr><td>錨定目標</td><td>僅 blockchain</td><td>泛化：immutable verification substrate</td></tr>
+    <tr><td>ECS 權重</td><td>固定</td><td>可配置：per-policy / per-industry / ML-learned / regulator-defined</td></tr>
+    <tr><td>驗證框架</td><td>5 states</td><td>Trust state machine，可擴展至 10+ states</td></tr>
+    <tr><td>Decision Attestation</td><td>無</td><td>新增：VEO → AI decision 連結</td></tr>
+    <tr><td>Trust Stack</td><td>無</td><td>明確定位為 5 層架構的 Layer 3</td></tr>
+    <tr><td>Claims</td><td>20 項</td><td>21 項，含全新 decision attestation 獨立項</td></tr>
+  </tbody>
+</table>
+
+<h2>五、專利家族全貌 Complete Patent Family</h2>
+
+<table>
+  <thead><tr><th>專利</th><th>層級</th><th>核心保護</th><th>狀態</th></tr></thead>
+  <tbody>
+    <tr class="highlight"><td><strong>#1</strong></td><td>Layer 1: Trust Source</td><td>Merkle batch RNG + 區塊鏈錨定</td><td><strong>✅ 已核准</strong></td></tr>
+    <tr><td><strong>#2</strong></td><td>Layer 2: Trust Integrity</td><td>VDF anti-preview + dual temporal integrity</td><td>📋 本次申請（附件 A/B）</td></tr>
+    <tr><td><strong>#3</strong></td><td>Layer 3: Trust Evidence</td><td>VEO format + ECS scoring + signing + verification</td><td>📋 本次申請（附件 C/D）</td></tr>
+    <tr><td><strong>#4</strong></td><td>Layer 4: Trust Coordination</td><td>Multi-agent trust propagation protocol</td><td>🔜 未來申請</td></tr>
+    <tr><td><strong>#5</strong></td><td>Layer 5: Trust Runtime</td><td>Governance, compliance, continuous verification</td><td>🔜 未來申請</td></tr>
+  </tbody>
+</table>
+
+<p><strong>家族設計原則：</strong></p>
+<ul>
+  <li><strong>無重疊：</strong>每件專利主張一個獨特的層，邊界在架構上定義且技術上強制執行</li>
+  <li><strong>交叉引用：</strong>每件專利將其他專利引用為相關申請，建立家族關係</li>
+  <li><strong>分層授權：</strong>可個別層授權或全堆疊授權</li>
+  <li><strong>縱深防禦：</strong>即使一層的 claims 在審查中被縮窄，其餘層維持獨立保護</li>
+</ul>
+
+<h2>六、本次附件清單</h2>
+
+<table>
+  <thead><tr><th>附件</th><th>文件</th><th>說明</th></tr></thead>
+  <tbody>
+    <tr><td><strong>A</strong></td><td>Patent2-VDF-Anti-Preview.pdf</td><td>Patent #2 Provisional Application</td></tr>
+    <tr><td><strong>B</strong></td><td>Patent2-VDF-Anti-Preview-NonProvisional.pdf</td><td>Patent #2 Non-Provisional Application（含 20 claims, 7 figures, 8 alternative embodiments）</td></tr>
+    <tr><td><strong>C</strong></td><td>Patent3_VEO_Complete_v3.pdf</td><td>Patent #3 Provisional Application（已提供的版本）</td></tr>
+    <tr><td><strong>D</strong></td><td>Patent3-VEO-NonProvisional.pdf</td><td>Patent #3 Non-Provisional Application（含 21 claims, 9 figures, trust assertion 重構）</td></tr>
+  </tbody>
+</table>
+
+<h2>七、請求事項</h2>
+
+<ol>
+  <li><strong>Patent #2 請優先處理</strong>——VDF prior art 持續增加，新穎性窗口正在縮小。建議儘速提交 provisional，同步準備 non-provisional。</li>
+  <li><strong>Patent #3 建議同步提交 non-provisional</strong>——provisional 已於 6 月 25 日提交，non-provisional 需在 12 個月內提交。建議使用附件 D 的升級版本，其中包含重要的概念升級（trust assertion framing, decision attestation claims, generalized crypto schemes）。</li>
+  <li><strong>Cross-reference 串聯</strong>——請確保 Patent #2 和 #3 的 cross-reference 段落正確引用 Patent #1 的核准號碼，以及彼此的申請序號。</li>
+  <li><strong>Continuation 策略</strong>——Patent #3 的 non-provisional 中已預留 Patent #4（Verifiable Decision Objects, VDO）的延續基礎。請確認 continuation-in-part 的路徑是否需要在現階段額外處理。</li>
+</ol>
+
+<hr>
+
+<p>如有任何問題或需要進一步討論，請隨時聯繫。</p>
+
+<div class="sig">
+  [Inventor Name]<br>
+  [Contact Information]<br>
+  <br>
+  附件：A, B, C, D（共四份 PDF）
+</div>
+
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Provisional Patent Application — Verifiable Entropy Objects</title>
+<style>
+  @page {
+    size: letter;
+    margin: 1in 1.25in;
+  }
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 2;
+    color: #000;
+    max-width: 6.5in;
+    margin: 0 auto;
+    padding: 40px;
+  }
+  h1 {
+    font-size: 14pt;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0 0 24pt 0;
+    line-height: 1.6;
+  }
+  h2 {
+    font-size: 13pt;
+    text-transform: uppercase;
+    margin: 24pt 0 12pt 0;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 18pt 0 6pt 0;
+    page-break-after: avoid;
+  }
+  h4 {
+    font-size: 12pt;
+    font-style: italic;
+    font-weight: normal;
+    margin: 12pt 0 6pt 0;
+  }
+  p {
+    margin: 0 0 6pt 0;
+    text-align: justify;
+    text-indent: 0.5in;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+  p.para-num {
+    text-indent: 0;
+    margin-left: 0;
+  }
+  .para-num::before {
+    font-weight: bold;
+    margin-right: 12pt;
+  }
+  .center { text-align: center; }
+  .cover-block {
+    text-align: center;
+    margin: 60pt 0;
+    line-height: 2.4;
+  }
+  .cover-block .title {
+    font-size: 16pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 24pt;
+  }
+  table {
+    border-collapse: collapse;
+    margin: 12pt auto;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+  th, td {
+    border: 1px solid #000;
+    padding: 4pt 8pt;
+    text-align: left;
+  }
+  th {
+    font-weight: bold;
+    background: #f0f0f0;
+  }
+  .claim {
+    margin: 12pt 0 12pt 0.5in;
+    text-indent: -0.5in;
+    padding-left: 0.5in;
+  }
+  .sub-claim {
+    margin: 6pt 0 6pt 1in;
+    text-indent: -0.5in;
+    padding-left: 0.5in;
+  }
+  .figure-box {
+    border: 1px solid #999;
+    padding: 12pt;
+    margin: 12pt 0;
+    font-family: "Courier New", monospace;
+    font-size: 9pt;
+    line-height: 1.4;
+    white-space: pre;
+    page-break-inside: avoid;
+  }
+  .page-break { page-break-before: always; }
+  hr { border: none; border-top: 1px solid #000; margin: 24pt 0; }
+  .footnote { font-size: 10pt; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover-block">
+  <div class="title">
+    Provisional Patent Application
+  </div>
+  <div style="font-size:14pt; font-weight:bold; margin-bottom:36pt;">
+    Method and System for Generating, Scoring, Signing,<br>
+    Anchoring, and Verifying Verifiable Entropy Objects
+  </div>
+  <div>
+    Inventor: [Full Legal Name]<br><br>
+    Date: June 25, 2026<br><br>
+    Attorney Docket No.: [To be assigned]<br><br>
+  </div>
+</div>
+
+<hr>
+
+<!-- CROSS-REFERENCE -->
+<h2>Cross-Reference to Related Applications</h2>
+
+<p>[0001] This application is related to U.S. Patent Application [Serial No. — "Method and System for Gaming Random Number Generation"], which describes a Merkle-tree-based random number generation and verification system with blockchain anchoring.</p>
+
+<p>[0002] This application is also related to U.S. Patent Application [Serial No. — VDF Integration], which describes a Verifiable Delay Function pipeline integrated with the Merkle batch system for anti-preview entropy generation.</p>
+
+<p>[0003] The present invention extends the prior applications by introducing a structured, self-describing, cryptographically verifiable entropy object format; a multi-dimensional entropy quality scoring system; a deterministic canonicalization and signing protocol; and a multi-level verification framework.</p>
+
+<!-- FIELD -->
+<h2>Field of the Invention</h2>
+
+<p>[0004] The present invention relates to systems and methods for generating, representing, evaluating, cryptographically signing, blockchain-anchoring, and independently verifying entropy as a structured digital object. More specifically, the invention relates to a Verifiable Entropy Object (VEO) standard, an Entropy Confidence Score (ECS) system, a canonical signing protocol for entropy attestation, and a verification framework that distinguishes structural validity from cryptographic verification from blockchain-anchored verification.</p>
+
+<!-- BACKGROUND -->
+<h2>Background of the Invention</h2>
+
+<h3>The Problem with Traditional Random Number Generation</h3>
+
+<p>[0005] Conventional random number generators, including hardware RNGs, pseudo-random number generators, and cryptographic random number generators, produce numerical values as their output. Once generated, these values carry no metadata about their origin, generation process, source quality, or integrity guarantees. The generation process is discarded, and the consumer must trust the generator implicitly.</p>
+
+<p>[0006] This trust model is increasingly insufficient for modern applications where random or non-deterministic decisions have significant consequences:</p>
+
+<p>[0007] <b>AI Agent Systems.</b> Autonomous AI agents make decisions involving randomness, including tool selection, response sampling, task routing, and resource allocation. These decisions cannot be audited for fairness because the randomness carries no provenance.</p>
+
+<p>[0008] <b>Regulated Gaming.</b> Casino and lottery systems are required by regulators to prove that random outcomes were generated fairly. Current systems rely on audit logs produced by the same system being audited, creating a circular trust dependency.</p>
+
+<p>[0009] <b>Decentralized Systems.</b> Blockchain protocols, fair-launch mechanisms, and multi-party computations require randomness that is verifiably uncontrollable by any single party, including the generator.</p>
+
+<p>[0010] <b>Scientific Simulation.</b> Monte Carlo simulations, stochastic modeling, and experimental protocols require reproducible and auditable entropy sources to enable peer verification of published results.</p>
+
+<h3>Limitations of Existing Approaches</h3>
+
+<p>[0011] <b>Verifiable Random Functions (VRFs).</b> VRFs prove that a specific output was derived from a specific input using a specific key. However, VRFs prove derivation, not entropy quality. They typically use a single entropy source, do not quantify confidence, do not carry source provenance metadata, require on-chain callback mechanisms, and do not support offline verification.</p>
+
+<p>[0012] <b>Quantum Random Number Generators (QRNGs).</b> QRNGs produce high-quality entropy from quantum mechanical processes. However, QRNG services return raw numerical values without structured provenance, quality scoring, or independent verification capability. The consumer must trust the QRNG provider.</p>
+
+<p>[0013] <b>Public Randomness Beacons.</b> Systems such as drand produce publicly verifiable random values. However, these are single-source systems that do not aggregate entropy from multiple independent sources, do not score entropy quality, and do not produce self-describing verifiable objects.</p>
+
+<p>[0014] There exists a need for a system that transforms entropy from a disposable numerical output into a structured, self-describing, multi-source, quality-scored, cryptographically signed, optionally blockchain-anchored, and independently verifiable digital object.</p>
+
+<!-- SUMMARY -->
+<div class="page-break"></div>
+<h2>Summary of the Invention</h2>
+
+<p>[0015] The present invention provides:</p>
+
+<p>[0016] First, a <b>Verifiable Entropy Object (VEO) format</b> — a structured digital object that encapsulates entropy payload, source provenance records, aggregation metadata, quality scoring, cryptographic proof, optional blockchain anchoring, and lineage references.</p>
+
+<p>[0017] Second, an <b>Entropy Confidence Score (ECS) system</b> — a multi-dimensional, weighted quantitative assessment of entropy quality, producing a score from 0 to 1000 across six independently computed dimensions with defined grade boundaries and fallback penalty rules.</p>
+
+<p>[0018] Third, a <b>canonical signing protocol</b> — a deterministic method for transforming a VEO into a signing payload through deep key sorting, field inclusion and exclusion rules, and stable serialization, enabling cryptographic signatures that any party can independently verify through address recovery.</p>
+
+<p>[0019] Fourth, a <b>multi-level verification framework</b> — a structured verification output that distinguishes among five levels of trust: structural validity, cryptographic verification, blockchain-anchored verification, policy failure, and invalidity.</p>
+
+<p>[0020] Fifth, a <b>consumer policy system</b> — predefined and custom policy presets that specify minimum entropy quality, source count, and anchoring requirements, with honest failure when requirements cannot be met.</p>
+
+<p>[0021] Sixth, an <b>entropy provenance graph</b> — a lineage mechanism where each entropy object may reference parent objects, creating a directed acyclic graph of entropy derivation that enables full audit trails.</p>
+
+<!-- DETAILED DESCRIPTION -->
+<div class="page-break"></div>
+<h2>Detailed Description of the Invention</h2>
+
+<h3>1. Verifiable Entropy Object (VEO)</h3>
+
+<h4>1.1 Definition</h4>
+
+<p>[0022] A Verifiable Entropy Object (VEO) is defined as a cryptographically verifiable representation of uncertainty, including entropy payload, source provenance, confidence metrics, verification metadata, and trust assertions.</p>
+
+<h4>1.2 Object Classes</h4>
+
+<p>[0023] The invention defines a classification system for entropy objects based on their trust characteristics:</p>
+
+<table>
+  <tr><th>Class</th><th>Name</th><th>Description</th></tr>
+  <tr><td>VEO-1A</td><td>Raw Source</td><td>Entropy from a single source (randomness beacon, block hash, QRNG)</td></tr>
+  <tr><td>VEO-1B</td><td>Composite</td><td>Entropy aggregated from two or more independent sources</td></tr>
+  <tr><td>VEO-1C</td><td>Anchored</td><td>Composite entropy anchored to an immutable ledger</td></tr>
+  <tr><td>VEO-1D</td><td>Decision</td><td>Entropy linked to a specific decision or action</td></tr>
+</table>
+
+<h4>1.3 Required Fields</h4>
+
+<p>[0024] Each VEO contains the following required fields: a protocol standard identifier; a protocol version; a unique object identifier; an object class designation; a hexadecimal-encoded entropy payload; a SHA-256 hash of the entropy payload; an ISO 8601 generation timestamp; a provider identifier; an array of entropy source records; a cryptographic proof package; and an Entropy Confidence Score object.</p>
+
+<h4>1.4 Entropy Source Records</h4>
+
+<p>[0025] Each source record contains a source identifier, a source type classification, a source reference, a fetch timestamp, an individual source entropy hash, and an optional source-provided signature.</p>
+
+<h4>1.5 Multi-Source Aggregation</h4>
+
+<p>[0026] When multiple sources are used, the system aggregates entropy deterministically. The entropy values from each source are normalized to lowercase, concatenated with a delimiter character, and hashed using SHA-256. The aggregation record preserves the method identifier, input ordering, and resulting hash, enabling any verifier to reproduce the aggregation from the individual source records.</p>
+
+<h3>2. Entropy Confidence Score (ECS)</h3>
+
+<h4>2.1 Purpose</h4>
+
+<p>[0027] The ECS quantifies entropy quality as a single integer score from 0 to 1000, enabling consumers to programmatically evaluate whether an entropy object meets their requirements without inspecting individual sources.</p>
+
+<h4>2.2 Dimensions and Weights</h4>
+
+<p>[0028] The ECS is computed from six independently calculated dimensions, each producing a sub-score from 0 to 1000:</p>
+
+<table>
+  <tr><th>Dimension</th><th>Weight</th><th>Measurement</th></tr>
+  <tr><td>Freshness</td><td>20%</td><td>Time elapsed since generation; decays linearly</td></tr>
+  <tr><td>Diversity</td><td>15%</td><td>Ratio of unique live source identifiers to target count</td></tr>
+  <tr><td>Independence</td><td>20%</td><td>Ratio of unique source type categories to target count</td></tr>
+  <tr><td>Manipulation Resistance</td><td>20%</td><td>Difficulty of controlling aggregated output</td></tr>
+  <tr><td>Verification Success</td><td>15%</td><td>Rate of successful source verification</td></tr>
+  <tr><td>Availability</td><td>10%</td><td>Source availability at generation time</td></tr>
+</table>
+
+<p>[0029] The composite score is computed as the weighted sum of the dimension sub-scores, clamped to the range 0–1000.</p>
+
+<h4>2.3 Grade Boundaries</h4>
+
+<table>
+  <tr><th>Score Range</th><th>Grade</th></tr>
+  <tr><td>900–1000</td><td>AAA</td></tr>
+  <tr><td>800–899</td><td>AA</td></tr>
+  <tr><td>700–799</td><td>A</td></tr>
+  <tr><td>600–699</td><td>B</td></tr>
+  <tr><td>500–599</td><td>C</td></tr>
+  <tr><td>0–499</td><td>LOW</td></tr>
+</table>
+
+<h4>2.4 Fallback Penalty System</h4>
+
+<p>[0030] When a source adapter fails to retrieve live external entropy and falls back to local cryptographic randomness, defined penalties are applied. For one fallback source, the verification success dimension is reduced by 100 points and manipulation resistance is reduced by 50 points. For two fallback sources, verification success is reduced by 250, manipulation resistance by 150, and diversity by 150. When all sources fall back, all penalties are applied, the total score is capped at 650, and the grade cannot exceed B.</p>
+
+<p>[0031] The confidence metadata explicitly reports the fallback count, live source count, and an overall source status indicator, ensuring the score never misrepresents entropy quality.</p>
+
+<h3>3. Canonical Signing Protocol</h3>
+
+<h4>3.1 Canonicalization Rules</h4>
+
+<p>[0032] Before signing, a VEO is transformed into a deterministic canonical form using the following rules: (a) all object keys at every nesting level are sorted alphabetically; (b) undefined values are removed; (c) null values are preserved explicitly; (d) stable JSON serialization is applied to the sorted structure; (e) the same input must always produce the same canonical byte string.</p>
+
+<h4>3.2 Field Inclusion and Exclusion</h4>
+
+<p>[0033] The canonical signing payload includes the following VEO fields: standard, version, object identifier, object class, entropy, entropy hash, issuance timestamp, expiration, provider, sources, aggregation, confidence, lineage, and policy. The anchor field is always set to null in the canonical payload because the signature is computed before blockchain anchoring occurs.</p>
+
+<p>[0034] All fields within the proof object are excluded because the signature cannot include itself. All fields within the anchor object are excluded because transaction hash, block number, and timestamp are only known after anchoring.</p>
+
+<h4>3.3 Signing Process</h4>
+
+<p>[0035] The canonical payload is hashed using SHA-256. The hash is signed using EIP-191 personal message signing with the provider's secp256k1 private key. The provider's Ethereum address is recoverable from the signature, enabling any party to verify the signature without access to the private key.</p>
+
+<div class="page-break"></div>
+<h3>4. Multi-Level Verification Framework</h3>
+
+<h4>4.1 Verification Levels</h4>
+
+<p>[0036] The system defines five verification levels representing increasing degrees of trust:</p>
+
+<table>
+  <tr><th>Level</th><th>Requirements</th></tr>
+  <tr><td>Structurally Valid Unsigned</td><td>Schema valid; entropy hash matches; no signature; no anchor</td></tr>
+  <tr><td>Cryptographically Verified</td><td>Schema valid; hash matches; provider signature valid</td></tr>
+  <tr><td>Anchored Verified</td><td>Schema valid; hash matches; signature valid if present; anchor verified on-chain</td></tr>
+  <tr><td>Policy Failed</td><td>Object may be valid but does not meet consumer policy</td></tr>
+  <tr><td>Invalid</td><td>One or more verification checks failed</td></tr>
+</table>
+
+<h4>4.2 Verification Checks</h4>
+
+<p>[0037] The verification output includes individual check results for: schema validity, hash integrity, signature verification (true, false, or null), source record validity, confidence score range, blockchain anchor verification (true, false, or null), and policy compliance.</p>
+
+<h4>4.3 Signature Verification</h4>
+
+<p>[0038] To verify a provider signature, the system reconstructs the canonical signing payload from the VEO, computes its SHA-256 hash, recovers the signer's Ethereum address from the EIP-191 signature, and compares the recovered address to the claimed provider address. A match yields a positive verification; a mismatch yields a negative verification; the absence of a signature yields a null result.</p>
+
+<h4>4.4 Anchor Verification</h4>
+
+<p>[0039] To verify a blockchain anchor, the system queries the on-chain smart contract using the batch identifier from the anchor metadata, retrieves the stored Merkle root, and compares it to the Merkle root recorded in the VEO anchor metadata. A match confirms the anchor is valid.</p>
+
+<h3>5. Consumer Policy System</h3>
+
+<p>[0040] The system provides predefined policy presets that consumers may invoke by name. Each preset specifies a minimum ECS score, minimum source count, and whether blockchain anchoring is required. When the system cannot satisfy a requested policy, it returns an explicit error rather than returning a degraded entropy object at a higher trust level. This prevents false trust assertions.</p>
+
+<h3>6. Entropy Provenance Graph</h3>
+
+<p>[0041] Each VEO may reference parent entropy objects by their object identifiers, creating a directed acyclic graph of entropy lineage. A lineage hash is computed over the sorted parent object identifiers, enabling verification that the claimed lineage has not been altered. This enables audit trails that trace a final entropy value back through every source that contributed to it, supports replay by reconstructing a VEO from the same source inputs, and provides cryptographic evidence for dispute resolution.</p>
+
+<h3>7. Blockchain Anchoring</h3>
+
+<p>[0042] For applications requiring the highest trust level, the entropy hash is anchored to a blockchain smart contract. The system computes the entropy hash, uses it as a Merkle leaf, submits the Merkle root to the on-chain anchoring contract, waits for block confirmations, reads back the stored root to confirm it matches, and records the transaction hash, block number, batch identifier, and on-chain timestamp in the VEO anchor metadata. The object class is upgraded to VEO-1C only after successful anchoring and readback verification.</p>
+
+<p>[0043] Any party can independently verify the anchor by querying the smart contract directly using the batch identifier and comparing the on-chain root to the root recorded in the VEO. No trust in the VEO provider is required.</p>
+
+<!-- CLAIMS -->
+<div class="page-break"></div>
+<h2>Claims</h2>
+
+<p class="no-indent" style="margin-bottom:18pt;">What is claimed is:</p>
+
+<p class="claim"><b>1.</b> A computer-implemented method for generating a verifiable entropy object, comprising: (a) obtaining entropy from a plurality of independent entropy sources; (b) computing an individual entropy hash for each source; (c) aggregating the entropy from the plurality of sources using a deterministic aggregation function; (d) computing an aggregated entropy hash; (e) computing an Entropy Confidence Score from a plurality of weighted dimensions including freshness, diversity, independence, manipulation resistance, verification success, and availability; (f) assigning a grade classification based on the computed score; (g) constructing a structured digital object containing the aggregated entropy, the aggregated hash, the individual source records, the confidence score, and metadata; and (h) outputting the structured digital object as a Verifiable Entropy Object.</p>
+
+<p class="claim"><b>2.</b> A computer-implemented method for computing an Entropy Confidence Score, comprising: (a) computing a freshness score based on time elapsed since entropy generation; (b) computing a diversity score based on the number of unique independent entropy sources; (c) computing an independence score based on the number of unique entropy source type categories; (d) computing a manipulation resistance score based on the difficulty of controlling the aggregated output; (e) computing a verification success score based on the rate of successful source verification; (f) computing an availability score based on source availability at generation time; (g) applying a weighted sum of the computed dimension scores to produce a composite score; (h) applying penalty rules when one or more sources have fallen back to local cryptographic randomness; and (i) assigning a grade classification based on defined score boundaries.</p>
+
+<p class="claim"><b>3.</b> A computer-implemented method for signing a verifiable entropy object, comprising: (a) constructing a canonical signing payload by deep-sorting all object keys alphabetically, removing undefined values, preserving null values, excluding self-referential signature fields and post-anchor transaction fields, and applying stable JSON serialization; (b) computing a cryptographic hash of the canonical payload; (c) generating a digital signature over the hash using a provider private key; and (d) embedding the signature, provider public key, provider address, and canonical hash in the object's proof package.</p>
+
+<p class="claim"><b>4.</b> A computer-implemented method for verifying a verifiable entropy object at multiple trust levels, comprising: (a) validating the object schema and required field presence; (b) recomputing the entropy hash and comparing it to the stored hash; (c) if a provider signature is present, reconstructing the canonical signing payload, computing its hash, recovering the signer address from the signature, and comparing it to the claimed provider address; (d) if a blockchain anchor is present, querying the on-chain smart contract to retrieve the stored root hash and comparing it to the anchor metadata in the object; (e) evaluating the object against an optional consumer policy specifying minimum confidence score, minimum source count, and anchoring requirements; and (f) assigning a verification level selected from the group consisting of: structurally valid unsigned, cryptographically verified, anchored verified, policy failed, and invalid.</p>
+
+<p class="claim"><b>5.</b> A computer-implemented system for verifiable entropy generation, comprising: (a) a plurality of entropy source adapters, each configured to retrieve entropy from an independent external source and produce a source record; (b) an aggregation module that deterministically combines entropy from the plurality of source adapters; (c) a scoring module that computes an Entropy Confidence Score across a plurality of weighted dimensions; (d) a signing module that produces a deterministic canonical representation of the entropy object and generates a cryptographic signature; (e) an anchoring module that writes the entropy hash to a blockchain smart contract and records the transaction metadata; and (f) a verification module that independently verifies the entropy hash, provider signature, and blockchain anchor at multiple trust levels.</p>
+
+<p class="claim"><b>6.</b> The method of claim 1, further comprising classifying the verifiable entropy object into one of a plurality of object classes based on its trust characteristics, wherein the classes include: raw source, composite, anchored, and decision-linked.</p>
+
+<p class="claim"><b>7.</b> The method of claim 2, wherein the penalty rules comprise reducing specific dimension scores by defined amounts based on the number of sources that have fallen back to local cryptographic randomness, and capping the total score and grade when all sources are in fallback.</p>
+
+<p class="claim"><b>8.</b> The method of claim 3, wherein the canonical signing payload always sets the anchor field to null because the signature is computed before blockchain anchoring occurs, and the anchor transaction metadata is not known at signing time.</p>
+
+<p class="claim"><b>9.</b> The method of claim 4, wherein the consumer policy system returns an explicit error when requirements cannot be satisfied, rather than returning a degraded entropy object at a higher trust level.</p>
+
+<p class="claim"><b>10.</b> The method of claim 1, further comprising recording parent object identifiers in a lineage field, computing a lineage hash over the parent identifiers, and enabling construction of a directed acyclic graph of entropy provenance.</p>
+
+<p class="claim"><b>11.</b> The system of claim 5, wherein the plurality of entropy source adapters includes at least one public randomness beacon, at least one blockchain block hash source, and a fallback adapter that generates local cryptographic randomness with an associated quality penalty.</p>
+
+<p class="claim"><b>12.</b> The method of claim 4, wherein the blockchain anchor verification comprises querying a smart contract function that returns the stored Merkle root for a given batch identifier, and comparing the returned root to the Merkle root recorded in the entropy object's anchor metadata.</p>
+
+<!-- ABSTRACT -->
+<div class="page-break"></div>
+<h2>Abstract of the Disclosure</h2>
+
+<p class="no-indent">A method and system for generating, scoring, signing, anchoring, and verifying Verifiable Entropy Objects. The system obtains entropy from multiple independent sources, aggregates it deterministically, computes a multi-dimensional Entropy Confidence Score that quantifies quality across freshness, diversity, independence, manipulation resistance, verification success, and availability dimensions, and packages the result as a structured digital object with source provenance records. A canonical signing protocol transforms the objects into deterministic payloads for cryptographic signing, enabling independent signature verification through address recovery. Optionally, the entropy hash is anchored to a blockchain smart contract for immutable timestamping. A multi-level verification framework distinguishes structural validity from cryptographic verification from blockchain-anchored verification from policy failure from invalidity. Consumer policies specify minimum quality requirements with honest failure when requirements cannot be met. The system transforms entropy from a disposable numerical output into a portable, auditable, and independently verifiable digital object.</p>
+
+<!-- FIGURES -->
+<div class="page-break"></div>
+<h2>Brief Description of the Drawings</h2>
+
+<p class="no-indent"><b>FIG. 1</b> is a block diagram illustrating the overall system architecture for generating a Verifiable Entropy Object.</p>
+
+<p class="no-indent"><b>FIG. 2</b> is a diagram illustrating the computation of the Entropy Confidence Score from six weighted dimensions.</p>
+
+<p class="no-indent"><b>FIG. 3</b> is a flowchart illustrating the multi-level verification process.</p>
+
+<p class="no-indent"><b>FIG. 4</b> is a diagram illustrating the Entropy Provenance Graph showing object lineage.</p>
+
+<p class="no-indent"><b>FIG. 5</b> is a diagram illustrating the VEO object class hierarchy.</p>
+
+<h2>Drawings</h2>
+
+<p class="no-indent"><b>FIG. 1 — System Architecture</b></p>
+<div class="figure-box">
+     ┌──────────────────────────────────────┐
+     │          Entropy Sources             │
+     │   Source A · Source B · Source C      │
+     └────────────────┬─────────────────────┘
+                      │ Source Records
+               ┌──────▼──────┐
+               │ Aggregation  │  Deterministic SHA-256
+               └──────┬──────┘
+                      │
+               ┌──────▼──────┐
+               │ ECS Scoring  │  6-Dimension Weighted
+               └──────┬──────┘
+                      │
+               ┌──────▼──────┐
+               │ VEO Assembly │  Structured Object
+               └──────┬──────┘
+                      │
+               ┌──────▼──────┐
+               │   Signing    │  Canonical → SHA-256 → EIP-191
+               └──────┬──────┘
+                      │
+               ┌──────▼──────┐
+               │  Anchoring   │  Smart Contract → Readback
+               └──────┬──────┘
+                      │
+               ┌──────▼──────┐
+               │  VEO Output  │  Verifiable Entropy Object
+               └──────────────┘
+</div>
+
+<p class="no-indent"><b>FIG. 2 — Entropy Confidence Score Computation</b></p>
+<div class="figure-box">
+  Sources ──► Freshness (20%) ─────────────┐
+           ► Diversity (15%) ──────────────┤
+           ► Independence (20%) ───────────┤
+           ► Manipulation Resistance (20%) ┼──► Weighted Sum ──► Clamp ──► Score
+           ► Verification Success (15%) ───┤                              (0-1000)
+           ► Availability (10%) ───────────┘                           ──► Grade
+                                                                         (AAA-LOW)
+  Fallback Detection ──► Penalty Rules ──► Score Adjustment
+</div>
+
+<p class="no-indent"><b>FIG. 3 — Verification Flow</b></p>
+<div class="figure-box">
+  Input: VEO Object
+    │
+    ├── Schema Check ──────────────── pass / fail
+    ├── Hash Check (SHA-256) ──────── pass / fail
+    ├── Signature Check ───────────── pass / fail / null
+    │     └── Canonicalize → Hash → Recover Address → Compare
+    ├── Anchor Check ──────────────── pass / fail / null
+    │     └── Query Contract → Compare Root
+    ├── Policy Check ──────────────── pass / fail
+    │
+    └── Verification Level:
+          ● structurally_valid_unsigned
+          ● cryptographically_verified
+          ● anchored_verified
+          ● policy_failed
+          ● invalid
+</div>
+
+<p class="no-indent"><b>FIG. 4 — Entropy Provenance Graph</b></p>
+<div class="figure-box">
+  VEO-1C (object_id: veo_003, anchored)
+    │
+    └── VEO-1B (object_id: veo_002, composite)
+         ├── VEO-1A (source: drand beacon, round 29830144)
+         ├── VEO-1A (source: Bitcoin block hash, block 955153)
+         └── VEO-1A (source: Polygon block hash, block 40708144)
+</div>
+
+<p class="no-indent"><b>FIG. 5 — Object Class Hierarchy</b></p>
+<div class="figure-box">
+  VEO-1A ────► VEO-1B ────► VEO-1C ────► VEO-1D
+  (raw)        (composite)   (anchored)   (decision)
+    │              │             │             │
+  single        multi-       blockchain    linked to
+  source        source       anchored      specific
+                aggregated   + signed      decision
+</div>
+
+</body>
+</html>

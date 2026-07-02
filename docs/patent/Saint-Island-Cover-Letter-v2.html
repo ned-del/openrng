@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>聖島 — Cover Letter v2</title>
+<style>
+  @page { size: A4; margin: 28mm 24mm 28mm 24mm; @bottom-center { content: counter(page); font-family: 'Noto Sans TC', sans-serif; font-size: 9pt; color: #999; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'Inter', sans-serif; font-size: 11.5pt; line-height: 1.9; color: #1a1a1a; background: #fff; max-width: 210mm; margin: 0 auto; padding: 24mm; }
+  .header { text-align: right; font-size: 10pt; color: #888; margin-bottom: 36px; line-height: 1.6; }
+  .header .date { font-weight: 600; color: #333; }
+  h1 { font-size: 16pt; font-weight: 800; color: #0a0a0a; margin-bottom: 4px; line-height: 1.3; }
+  h1.sub { font-size: 11pt; font-weight: 400; color: #888; margin-bottom: 28px; }
+  h2 { font-size: 13pt; font-weight: 700; color: #0a0a0a; margin-top: 26px; margin-bottom: 10px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
+  p { margin-bottom: 12px; text-align: justify; }
+  .en { color: #555; font-size: 10pt; font-style: italic; }
+  ul, ol { margin: 6px 0 12px 22px; }
+  li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 10.5pt; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f5f5f8; font-weight: 700; }
+  .highlight { background: #f0faf5; }
+  .callout { background: #f8f7ff; border-left: 4px solid #7c6aef; padding: 14px 18px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+  .question { background: #fff8f0; border-left: 4px solid #e8a040; padding: 14px 18px; margin: 14px 0; border-radius: 0 6px 6px 0; }
+  .question strong { color: #b07020; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
+  .sig { margin-top: 40px; font-size: 10pt; color: #555; line-height: 1.8; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="date">2026 年 6 月 27 日</div>
+  聖島國際專利商標聯合事務所<br>
+  Saint Island International Patent &amp; Law Offices
+</div>
+
+<h1>OpenRNG 專利案件指示函</h1>
+<h1 class="sub">Patent #2 &amp; #3 Filing Instructions</h1>
+
+<hr>
+
+<h2>一、現狀 Current Status</h2>
+
+<p>第一案「遊戲隨機數生成方法與系統」已核准，保護 Merkle-tree-based 批次隨機數生成與區塊鏈錨定。</p>
+
+<p>本次提交兩件新申請，與第一案構成專利家族：</p>
+
+<table>
+  <thead><tr><th>案件</th><th>主題</th><th>與第一案的關係</th><th>附件</th></tr></thead>
+  <tbody>
+    <tr class="highlight"><td><strong>#1</strong></td><td>Merkle Batch RNG</td><td>—</td><td>（已核准）</td></tr>
+    <tr><td><strong>#2</strong></td><td>VDF Anti-Preview</td><td>補 #1 的 pre-commitment 缺口</td><td>附件 A（Prov.）+ B（Non-Prov.）</td></tr>
+    <tr><td><strong>#3</strong></td><td>VEO Trust Artifacts</td><td>將 #1/#2 的輸出封裝為可驗證物件</td><td>附件 C（Prov.尚未提交）+ D（Non-Prov.）</td></tr>
+  </tbody>
+</table>
+
+<h2>二、Patent #2 — VDF Anti-Preview</h2>
+
+<p><strong>核心問題：</strong>第一案的 Merkle tree 確保數值在 commitment 後不被竄改，但無法防止操作者在 commitment 前預覽數值並選擇性地提交有利的批次（insider preview attack）。</p>
+
+<p><strong>解決方案：</strong>引入 VDF（Verifiable Delay Function）創造時間屏障——T 秒的循序計算完成前，任何人無法得知批次中的數值。</p>
+
+<div class="callout">
+  <p><strong>第一案：</strong>Merkle proves values were not changed <em>after</em> commitment.</p>
+  <p><strong>第二案：</strong>VDF proves values were not known <em>before</em> commitment.</p>
+  <p>兩者組合 = Dual Temporal Integrity（雙重時間完整性）。</p>
+</div>
+
+<p><strong>時效考量：</strong>VDF 相關 prior art 持續增加（Boneh 2018, Tezos 2022, StarkWare VeeDo, Chainlink US12401532B2 的 VDF disclosure）。我們的 novel combination（VDF + batch + Merkle + async anchoring + shared pool + drand + multi-worker）尚未被涵蓋，但新穎性窗口正在縮小，建議優先處理。</p>
+
+<h2>三、Patent #3 — VEO Trust Artifacts</h2>
+
+<p><strong>核心問題：</strong>即使隨機數的生成和完整性都已解決（#1 + #2），消費者收到的仍然只是一個數字。沒有標準化的方式來攜帶出處、品質、簽名和驗證證據。</p>
+
+<p><strong>解決方案：</strong>VEO（Verifiable Entropy Object）——一個結構化的數位物件，攜帶熵載荷、來源出處、六維度品質評分（ECS, 0-1000）、密碼學簽名、可選區塊鏈錨定、以及血統圖譜。任何第三方可離線獨立驗證。</p>
+
+<p><strong>Provisional（附件 C）尚未提交。</strong>Non-Provisional（附件 D）做了重大概念升級：將 VEO 從 "entropy object" 升級為 "cryptographically verifiable trust assertion regarding non-deterministic computation"。此外泛化了簽名方案（secp256k1 → 含 Ed25519、RSA、post-quantum）、錨定目標（blockchain → immutable verification substrate）、ECS 權重（固定 → 可配置），並新增了 Decision Attestation claims（連結 VEO 到 AI 決策）。請貴所建議：應先提交 provisional 再轉 non-provisional，或直接提交 non-provisional。</p>
+
+<h2>四、希望貴所評估的問題</h2>
+
+<p>以下問題我們希望在後續討論中獲得貴所的專業評估：</p>
+
+<div class="question">
+  <p><strong>A. Patent #2 — Claim 範圍策略</strong></p>
+  <p>哪些 claims 有機會維持最廣的範圍？哪些在 prosecution 中可能需要限縮？特別是 Claim 16（Dual Temporal Integrity — 方法項）是否能作為獨立且可防禦的核心主張？</p>
+</div>
+
+<div class="question">
+  <p><strong>B. Patent #3 — Trust Assertion 的 Patentability</strong></p>
+  <p>Non-provisional 將 VEO 重新定位為 "trust assertion for non-deterministic computation"。此概念框架是否有足夠的 patentability？美國審查實務中，這是否會觸及 Alice/101 的抽象概念問題？貴所的建議策略為何？</p>
+</div>
+
+<div class="question">
+  <p><strong>C. VEO 的 Claim 分類</strong></p>
+  <p>VEO 應該被主張為 computer data structure、protocol、computer-readable object、還是 method of verification？不同的主張策略對保護範圍和審查風險有何影響？</p>
+</div>
+
+<div class="question">
+  <p><strong>D. 送案策略</strong></p>
+  <p>Patent #2 和 #3 是否建議一起送、分開送？時間上如何安排最有利？</p>
+</div>
+
+<div class="question">
+  <p><strong>E. 國際布局</strong></p>
+  <p>CIP、Continuation、PCT、US、台灣——針對這個家族，建議的申請路徑為何？哪一條路徑對長期 IP 價值最有利？</p>
+</div>
+
+<h2>五、長期背景（供參考，非 claim 限制）</h2>
+
+<p>我們的長期願景是朝向我們目前內部稱為「Computational Trust Infrastructure」的方向發展。附件中的申請案應各自以其獨立的技術優點進行評估。我們在另附的背景文件（Patent Family Strategy）中描述了分層架構，作為長期專利家族規劃的參考背景，而非對 claim 範圍的限制。</p>
+
+<p class="en">Our long-term vision is to build toward what we currently describe internally as a Computational Trust Infrastructure. The attached applications should be evaluated independently on their own technical merits. The layered architecture described in the accompanying strategy document is provided as context for long-term patent family planning rather than as a limitation on claim scope.</p>
+
+<p>背景文件（OpenRNG Patent Family Strategy）將另行提供，供 Partner 和首席專利工程師作為參考。</p>
+
+<h2>六、附件清單</h2>
+
+<table>
+  <thead><tr><th>附件</th><th>文件</th><th>頁數</th><th>說明</th></tr></thead>
+  <tbody>
+    <tr><td>A</td><td>Patent2-VDF-Anti-Preview.pdf</td><td>~16p</td><td>#2 Provisional（16 claims, 3 FIG）</td></tr>
+    <tr><td>B</td><td>Patent2-VDF-Anti-Preview-NonProvisional.pdf</td><td>~28p</td><td>#2 Non-Provisional（20 claims, 7 FIG, 8 alt. embodiments）</td></tr>
+    <tr><td>C</td><td>Patent3_VEO_Complete_v3.pdf</td><td>—</td><td>#3 Provisional（已提交版本）</td></tr>
+    <tr><td>D</td><td>Patent3-VEO-NonProvisional.pdf</td><td>~30p</td><td>#3 Non-Provisional（21 claims, 9 FIG, trust assertion 重構）</td></tr>
+  </tbody>
+</table>
+
+<h2>七、請求事項</h2>
+
+<ol>
+  <li><strong>Patent #2 — 請優先處理。</strong>VDF prior art 持續增加，建議儘速提交 provisional 並同步準備 non-provisional。</li>
+  <li><strong>Patent #3 — Provisional 尚未提交。</strong>建議使用附件 C 作為 provisional 提交，或直接以附件 D 的 non-provisional 版本提交（若貴所評估後認為適合）。Non-provisional 版本包含重要的概念升級（trust assertion framing, decision attestation claims, generalized crypto schemes），若直接提交 non-provisional 可省去 provisional → non-provisional 的轉換時間。請貴所建議最佳路徑。</li>
+  <li><strong>Cross-reference — 請確保</strong> Patent #2 和 #3 的相關申請段落正確引用 Patent #1 的核准號碼及彼此的申請序號。</li>
+  <li><strong>建議安排一次 Workshop（1-2 小時）</strong>，由發明人與貴所團隊一起檢視整個家族的邊界設計和 claim 策略。</li>
+</ol>
+
+<hr>
+
+<p>如有任何問題或需要進一步討論，請隨時聯繫。</p>
+
+<div class="sig">
+  [Inventor Name]<br>
+  [Contact Information]<br>
+  <br>
+  附件：A, B, C, D（共四份 PDF）
+</div>
+
+</body>
+</html>

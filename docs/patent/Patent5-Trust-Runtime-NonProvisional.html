@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Patent #5 Non-Provisional — Trust Runtime</title>
+<style>
+  @page { size: letter; margin: 25mm 25mm 30mm 25mm; @bottom-center { content: counter(page); font-family: 'Times New Roman', serif; font-size: 10pt; color: #666; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Times New Roman', 'Noto Serif TC', serif; font-size: 12pt; line-height: 2.0; color: #000; background: #fff; max-width: 8.5in; margin: 0 auto; padding: 1in; }
+  .cover { page-break-after: always; text-align: center; padding-top: 1.5in; }
+  .cover h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 0.4in; line-height: 1.5; }
+  .cover .doc-type { font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8in; }
+  .cover .meta { font-size: 11pt; line-height: 2.0; }
+  .cover .confidential { font-size: 10pt; font-weight: bold; text-transform: uppercase; letter-spacing: 3px; margin-top: 1in; padding: 8px 24px; border: 2px solid #000; display: inline-block; }
+  h2 { font-size: 12pt; font-weight: bold; text-transform: uppercase; margin-top: 24pt; margin-bottom: 12pt; text-align: center; }
+  h3 { font-size: 12pt; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; }
+  h4 { font-size: 12pt; font-weight: bold; font-style: italic; margin-top: 12pt; margin-bottom: 6pt; }
+  p { margin-bottom: 12pt; text-align: justify; text-indent: 0.5in; }
+  p.no-indent { text-indent: 0; }
+  p.claim { text-indent: 0; margin-left: 0.5in; margin-bottom: 8pt; }
+  p.sub-claim { text-indent: 0; margin-left: 1.0in; margin-bottom: 6pt; }
+  p.sub-sub-claim { text-indent: 0; margin-left: 1.5in; margin-bottom: 6pt; }
+  .para-num { font-weight: bold; margin-right: 8pt; }
+  ol, ul { margin: 6pt 0 12pt 0.75in; }
+  li { margin-bottom: 4pt; }
+  .figure { border: 1px solid #ccc; padding: 20px; margin: 20px 0; text-align: center; background: #f9f9f9; break-inside: avoid; }
+  .figure-label { font-weight: bold; font-size: 11pt; margin-bottom: 12px; }
+  .figure pre { font-family: 'Courier New', monospace; font-size: 8.5pt; line-height: 1.4; text-align: left; display: inline-block; white-space: pre; }
+  hr { border: none; border-top: 1px solid #999; margin: 24pt 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12pt 0; font-size: 11pt; }
+  th, td { border: 1px solid #999; padding: 6pt 8pt; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: bold; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="doc-type">Non-Provisional Patent Application</div>
+  <h1>Method and System for Runtime Governance,<br>Compliance Attestation, and Continuous Verification<br>of Computational Trust Infrastructure</h1>
+  <h1 style="font-size:11pt; font-weight:normal; text-transform:none; margin-bottom:0.4in;">計算信任基礎設施之運行時治理、<br>合規證明與持續驗證方法與系統</h1>
+  <div class="meta">
+    Inventor: [Inventor Name]<br>
+    Date of Filing: [Filing Date]<br>
+    Priority Date: [Provisional Filing Date]<br>
+    Provisional Application No.: [Provisional Serial Number]<br>
+    <br>
+    Prepared for: Saint Island International Patent &amp; Law Offices<br>
+    聖島國際專利商標聯合事務所<br>
+  </div>
+  <div class="confidential">Attorney-Client Privileged &amp; Confidential</div>
+</div>
+
+<h2>Cross-Reference to Related Applications</h2>
+
+<p><span class="para-num">[0001]</span> This application claims the benefit of U.S. Provisional Application No. [Provisional Serial Number], filed [date], which is incorporated herein by reference.</p>
+
+<p><span class="para-num">[0002]</span> This application is related to Patents #1–#4: Trust Source (Merkle batch RNG), Trust Integrity (VDF anti-preview), Trust Evidence (VEO trust artifacts), and Trust Coordination (multi-agent trust propagation).</p>
+
+<p><span class="para-num">[0003]</span> The present invention provides the Trust Runtime layer (Layer 5). The boundary with Patent #4 is precise: <strong>Coordination (Patent #4) is horizontal</strong> — governing trust flow between peers. <strong>Runtime (this invention) is vertical</strong> — governing trust enforcement from top to bottom. Coordination is a protocol. Runtime is a governance engine.</p>
+
+<hr>
+
+<h2>Field of the Invention</h2>
+
+<p><span class="para-num">[0004]</span> The present invention relates to systems and methods for continuous runtime governance of computational trust infrastructure, comprising: (a) cross-lifecycle policy engines evaluating trust telemetry against configurable rules; (b) automated compliance attestation generation mapping trust operations to regulatory framework requirements; (c) multi-dimensional trust health monitoring with anomaly detection and automated response; (d) pluggable regulatory framework adapters; (e) trust audit interfaces for third-party examination; and (f) predictive trust quality analytics.</p>
+
+<hr>
+
+<h2>Background of the Invention</h2>
+
+<h3>1. The Governance Gap</h3>
+
+<p><span class="para-num">[0005]</span> Trust infrastructure that generates, packages, and propagates trust artifacts requires continuous governance. Per-request authorization is insufficient. Cross-lifecycle policies (source rotation, chain depth limits, anchoring frequency) require continuous evaluation. Regulatory compliance requires automated evidence generation. Trust degradation must be detected before downstream impact.</p>
+
+<h3>2. Limitations of Existing Approaches</h3>
+
+<p><span class="para-num">[0006]</span> <strong>SIEM systems</strong> (Splunk, Elastic SIEM) monitor security events but do not understand trust artifact quality scores, trust chains, or entropy source provenance. They detect security anomalies, not trust quality anomalies.</p>
+
+<p><span class="para-num">[0007]</span> <strong>GRC platforms</strong> (ServiceNow GRC, Archer) manage compliance workflows but require manual evidence collection. They do not automatically generate compliance attestations from trust infrastructure telemetry.</p>
+
+<p><span class="para-num">[0008]</span> <strong>APM tools</strong> (Datadog, New Relic) monitor application performance but do not evaluate trust quality metrics or enforce trust-specific policies.</p>
+
+<p><span class="para-num">[0009]</span> No existing system provides runtime governance specifically designed for computational trust infrastructure — understanding trust artifacts, trust chains, entropy source quality, and mapping operations to regulatory trust requirements.</p>
+
+<hr>
+
+<h2>Summary of the Invention</h2>
+
+<p><span class="para-num">[0010]</span> The invention provides: a runtime policy engine for cross-lifecycle trust governance, a compliance attestation generator with pluggable regulatory adapters, a trust health monitor with anomaly detection and automated response, a trust audit interface for third-party examination, and predictive analytics for trust quality forecasting.</p>
+
+<hr>
+
+<h2>Detailed Description of Preferred Embodiments</h2>
+
+<h3>1. Runtime Policy Engine</h3>
+
+<p><span class="para-num">[0011]</span> The policy engine evaluates trust telemetry against structured rules. Each policy comprises: scope (what it applies to), metric (what is measured), window (evaluation period), threshold (boundary), severity (warning/critical), and action (alert/degrade/block/log/auto-adjust).</p>
+
+<p><span class="para-num">[0012]</span> Policy categories include:</p>
+
+<ul>
+  <li><strong>Source governance:</strong> Entropy source concentration limits, source rotation requirements, minimum source diversity per time window, source health thresholds.</li>
+  <li><strong>Chain governance:</strong> Maximum trust chain depth (from Patent #4), maximum chain fan-out (children per parent), cross-boundary handoff frequency limits.</li>
+  <li><strong>Quality governance:</strong> Minimum ECS floor per regulatory context, maximum ECS variance tolerance, fallback frequency limits.</li>
+  <li><strong>Temporal governance:</strong> Anchoring latency limits, timestamp consistency enforcement, trust artifact expiration enforcement.</li>
+  <li><strong>Consumption governance:</strong> Per-consumer rate limits, unusual consumption pattern detection, burst detection.</li>
+</ul>
+
+<p><span class="para-num">[0013]</span> In alternative embodiments, policies may be: statically defined in configuration, dynamically loaded from a policy repository, generated by machine learning models analyzing historical trust patterns, or received from external regulatory systems via API.</p>
+
+<h3>2. Compliance Attestation Generator</h3>
+
+<p><span class="para-num">[0014]</span> The generator produces structured attestations containing: framework identifier, coverage period, requirement-by-requirement mapping (requirement ID → how satisfied → evidence references → status), aggregate pass/fail, attestation timestamp, and cryptographic signature. Attestations are machine-readable (JSON, XML, or future formats).</p>
+
+<p><span class="para-num">[0015]</span> Regulatory framework adapters define: requirement catalogs, mapping rules (which trust telemetry satisfies which requirement), evidence collection specifications, and reporting formats. Adapters are pluggable modules — new frameworks are supported by adding adapters without modifying the core system. Multiple adapters operate simultaneously.</p>
+
+<p><span class="para-num">[0016]</span> Supported frameworks in the preferred embodiment include: EU AI Act (transparency, human oversight, auditability), NIST AI RMF (GOVERN function), GLI-19/GLI-33 (RNG certification for gaming), ISO 42001 (AI management system), SOX (financial controls), HIPAA (healthcare data handling), FDA 21 CFR Part 11 (electronic records), and FedRAMP (government cloud). In alternative embodiments, any current or future regulatory framework may be supported by creating an adapter.</p>
+
+<h3>3. Trust Health Monitor</h3>
+
+<p><span class="para-num">[0017]</span> The monitor continuously computes metrics: average ECS (rolling mean), source availability (per-source uptime), source diversity (type distribution), verification success rate, anchoring latency (creation-to-confirmation), chain depth distribution, consumption patterns, and fallback frequency. Each metric is evaluated against configurable thresholds with severity levels (info/warning/critical).</p>
+
+<p><span class="para-num">[0018]</span> Anomaly alerts contain: metric ID, observed value, threshold, severity, time window, and recommended action. In the preferred embodiment, automated responses include: increasing source diversity requirements on concentration detection, increasing anchoring frequency on latency detection, temporarily raising ECS floor on quality drift detection, and rate-limiting consumers exhibiting anomalous patterns.</p>
+
+<h3>4. Trust Audit Interface</h3>
+
+<p><span class="para-num">[0019]</span> The audit interface provides read-only access for third-party auditors: artifact query (by ID, time range, consumer, score range, source type), chain traversal (complete DAG traversal from any artifact to root), policy history (evaluations, violations, enforcement actions), health history (metric time series), and attestation archive (all past compliance attestations). The interface does not grant write access. All data returned by the interface is independently verifiable by the auditor using the verification methods from Patent #3.</p>
+
+<h3>5. Alternative Embodiments</h3>
+
+<h4>5.1 Predictive Trust Analytics</h4>
+
+<p><span class="para-num">[0020]</span> Machine learning models trained on historical trust telemetry predict future trust quality: ECS score forecasting (detecting degradation trends before they breach thresholds), source failure prediction (identifying sources likely to become unavailable), capacity planning (predicting pool exhaustion and scheduling pre-emptive batch generation), and compliance risk scoring (estimating probability of compliance violations based on current operational trends).</p>
+
+<h4>5.2 Multi-Tenant Governance</h4>
+
+<p><span class="para-num">[0021]</span> In a multi-tenant deployment, separate policy configurations, health monitors, and compliance attestations operate per-tenant. Tenant isolation ensures one tenant's policies and metrics do not affect another's. Cross-tenant governance policies (e.g., platform-wide source diversity minimums) operate at the platform level.</p>
+
+<h4>5.3 Real-Time Compliance Dashboard</h4>
+
+<p><span class="para-num">[0022]</span> A real-time interface displays trust health metrics, policy compliance status, active anomalies, and compliance attestation status across all regulatory frameworks simultaneously. In alternative embodiments, the dashboard integrates with enterprise monitoring systems (Grafana, Datadog, ServiceNow) via standard APIs.</p>
+
+<h4>5.4 Automated Regulatory Update</h4>
+
+<p><span class="para-num">[0023]</span> When regulatory frameworks are updated (new requirements, changed thresholds, additional audit evidence requirements), updated adapter configurations are loaded without system restart. The system re-evaluates historical trust telemetry against updated requirements and generates gap analysis reports identifying operations that would have violated the new requirements.</p>
+
+<hr>
+
+<h2>Claims</h2>
+
+<p class="no-indent" style="font-style:italic; margin-bottom:18pt;">What is claimed is:</p>
+
+<p class="claim"><strong>1.</strong> A computer-implemented method for runtime governance of a computational trust infrastructure, comprising:</p>
+<p class="sub-claim">(a) receiving trust telemetry data from a trust infrastructure that generates, scores, signs, and distributes trust artifacts;</p>
+<p class="sub-claim">(b) evaluating the trust telemetry against a plurality of runtime policies, each policy specifying at least a scope, a metric, a time window, a threshold, and an enforcement action;</p>
+<p class="sub-claim">(c) detecting policy violations by comparing measured metrics against policy thresholds over rolling time windows spanning multiple trust lifecycles; and</p>
+<p class="sub-claim">(d) executing enforcement actions in response to detected violations.</p>
+
+<p class="claim"><strong>2.</strong> The method of claim 1, wherein the runtime policies include at least one of: entropy source concentration limits over configurable time windows, trust chain depth limits, immutable ledger anchoring frequency requirements, temporal consistency enforcement, quality score floors for designated regulatory contexts, and consumption pattern anomaly detection.</p>
+
+<p class="claim"><strong>3.</strong> The method of claim 1, wherein the enforcement actions include at least one of: generating a structured alert, degrading the affected trust service, blocking the affected operation, recording the violation, and automatically adjusting trust infrastructure parameters.</p>
+
+<p class="claim"><strong>4.</strong> The method of claim 1, wherein the runtime policies are dynamically loadable from a policy repository without system restart, and wherein policy updates trigger re-evaluation of recent trust telemetry against updated rules.</p>
+
+<p class="claim"><strong>5.</strong> A computer-implemented method for generating compliance attestations for a computational trust infrastructure, comprising:</p>
+<p class="sub-claim">(a) receiving trust telemetry from a trust infrastructure;</p>
+<p class="sub-claim">(b) selecting a regulatory framework adapter from a plurality of pluggable adapters;</p>
+<p class="sub-claim">(c) mapping trust operations to requirements of the regulatory framework using the selected adapter;</p>
+<p class="sub-claim">(d) generating a structured, machine-readable compliance attestation comprising: framework identifier, requirement-by-requirement mapping with evidence references, coverage period, aggregate pass/fail status, and attestation timestamp; and</p>
+<p class="sub-claim">(e) cryptographically signing the compliance attestation.</p>
+
+<p class="claim"><strong>6.</strong> The method of claim 5, wherein a plurality of adapters operate simultaneously, generating compliance attestations for multiple regulatory frameworks from the same trust telemetry.</p>
+
+<p class="claim"><strong>7.</strong> The method of claim 5, wherein the regulatory framework adapter is updatable without system restart, and wherein updated adapters trigger retroactive gap analysis comparing historical operations against new requirements.</p>
+
+<p class="claim"><strong>8.</strong> A computer-implemented method for monitoring trust health, comprising:</p>
+<p class="sub-claim">(a) continuously computing a plurality of trust health metrics from trust infrastructure telemetry;</p>
+<p class="sub-claim">(b) evaluating each metric against configurable anomaly thresholds with severity levels;</p>
+<p class="sub-claim">(c) generating structured anomaly alerts when metrics breach thresholds; and</p>
+<p class="sub-claim">(d) automatically adjusting trust infrastructure parameters in response to detected anomalies.</p>
+
+<p class="claim"><strong>9.</strong> The method of claim 8, wherein the trust health metrics include at least: average trust quality score over time, per-source availability, source type diversity distribution, verification success rate, anchoring latency, trust chain depth distribution, and per-consumer consumption patterns.</p>
+
+<p class="claim"><strong>10.</strong> The method of claim 8, further comprising training predictive models on historical trust telemetry to forecast trust quality degradation, source failures, and compliance risk before they occur.</p>
+
+<p class="claim"><strong>11.</strong> A system for runtime governance and compliance of computational trust infrastructure, comprising:</p>
+<p class="sub-claim">one or more processors; and</p>
+<p class="sub-claim">memory storing instructions that, when executed, cause the system to:</p>
+<p class="sub-sub-claim">(a) evaluate trust telemetry against cross-lifecycle runtime policies;</p>
+<p class="sub-sub-claim">(b) generate compliance attestations using pluggable regulatory framework adapters;</p>
+<p class="sub-sub-claim">(c) monitor trust health metrics and detect anomalies;</p>
+<p class="sub-sub-claim">(d) automatically adjust infrastructure parameters in response to anomalies; and</p>
+<p class="sub-sub-claim">(e) provide a read-only audit interface for third-party examination of trust operations, policy history, health metrics, and compliance attestations.</p>
+
+<p class="claim"><strong>12.</strong> The system of claim 11, supporting multi-tenant governance with per-tenant policy configurations, health monitors, and compliance attestations operating in isolation, with platform-level cross-tenant governance policies.</p>
+
+<p class="claim"><strong>13.</strong> A non-transitory computer-readable medium storing instructions that, when executed, cause one or more processors to:</p>
+<p class="sub-claim">(a) evaluate trust infrastructure telemetry against runtime policies spanning multiple trust lifecycles;</p>
+<p class="sub-claim">(b) generate machine-readable compliance attestations mapping trust operations to regulatory requirements via pluggable adapters;</p>
+<p class="sub-claim">(c) monitor trust health metrics and automatically respond to anomalies; and</p>
+<p class="sub-claim">(d) provide third-party auditors read-only access to trust operations, policy evaluations, and compliance attestation archives.</p>
+
+<hr>
+
+<h2>Abstract of the Disclosure</h2>
+
+<p class="no-indent">A method and system for continuous runtime governance, automated compliance attestation, and trust health monitoring for computational trust infrastructure. A runtime policy engine evaluates trust telemetry against cross-lifecycle policies including entropy source concentration limits, trust chain depth limits, anchoring frequency requirements, and quality score floors, enforcing violations through alerts, degradation, blocking, or automated parameter adjustment. A compliance attestation generator produces structured, machine-readable attestations mapping trust operations to regulatory framework requirements using pluggable adapters supporting EU AI Act, NIST AI RMF, GLI-19, ISO 42001, SOX, HIPAA, and other frameworks simultaneously. A trust health monitor continuously computes quality scores, source availability, diversity, verification rates, and anchoring latency, detecting anomalies and triggering automated responses. A trust audit interface provides read-only third-party access to artifacts, chain traversals, policy history, and compliance archives. Alternative embodiments include predictive trust analytics using machine learning, multi-tenant governance with per-tenant isolation, real-time compliance dashboards, and automated regulatory update with retroactive gap analysis.</p>
+
+</body>
+</html>
