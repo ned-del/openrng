@@ -1,0 +1,298 @@
+<!-- Chapter 1: The Computational Trust Problem -->
+<section class="chapter" id="chapter-1">
+  <div class="chapter-number">Chapter 1</div>
+  <h2>The Computational Trust Problem</h2>
+  <h2 class="zh-title">計算信任問題</h2>
+  <p class="chapter-subtitle">Why AI needs a new infrastructure layer</p>
+  <p class="chapter-subtitle zh">為什麼 AI 需要一個新的基礎設施層</p>
+
+  <section class="section" id="section-1-1">
+    <h3>1.1 — The Trust Gap in Autonomous Systems</h3>
+    <h3 class="zh-section-title">1.1 — 自主系統中的信任缺口</h3>
+
+    <div class="en">
+      <p>Machines are making decisions with real consequences. An AI agent selects which medical records to surface for a physician. A trading algorithm decides when to execute a block order. A content moderation system determines which posts reach millions of users. A robotic warehouse system allocates tasks among hundreds of autonomous units.</p>
+      <p>These decisions share a common structure: they involve non-deterministic processes — randomness, sampling, probabilistic selection — and they produce outcomes that affect real people, real money, and real systems. Yet in every case, the process that produced the decision is invisible. The decision arrives. The outcome is delivered. But the computational path that led from input to output — including any random or non-deterministic steps — is gone. It was never recorded in a verifiable form. It cannot be independently audited. It cannot be proven fair.</p>
+      <p>This is the trust gap. Not a gap in security (the systems are well-protected), not a gap in capability (the systems perform well), but a gap in <strong>verifiability</strong>. No independent party can examine the computational process after the fact and confirm that it operated correctly, fairly, and without manipulation.</p>
+      <p>For decades, this gap did not matter. Computational decisions were made by deterministic software under direct human supervision. If a question arose, a human could explain the decision. But the rise of autonomous AI systems — agents that act independently, at scale, without human-in-the-loop oversight — has made this gap untenable. When no human is watching, and the machine's decisions have material consequences, the question "can we verify what happened?" becomes existential.</p>
+    </div>
+
+    <div class="zh">
+      <p>機器正在做出具有真實後果的決策。AI 代理選擇為醫生呈現哪些醫療記錄。交易演算法決定何時執行大宗訂單。內容審核系統決定哪些貼文觸及數百萬用戶。機器人倉庫系統在數百個自主單元之間分配任務。</p>
+      <p>這些決策有著共同的結構：它們涉及非確定性過程——隨機性、抽樣、機率選擇——並產生影響真實的人、真實的資金和真實系統的結果。然而在每種情況下，產生決策的過程都是不可見的。決策到達了。結果被交付了。但從輸入到輸出的計算路徑——包括任何隨機或非確定性步驟——已經消失。它從未以可驗證的形式被記錄。它無法被獨立稽核。它無法被證明是公平的。</p>
+      <p>這就是信任缺口。不是安全缺口（系統受到良好保護），不是能力缺口（系統表現良好），而是<strong>可驗證性</strong>的缺口。沒有獨立方可以在事後檢查計算過程並確認其運作正確、公平且未被操縱。</p>
+      <p>幾十年來，這個缺口無關緊要。計算決策由確定性軟體在直接人類監督下做出。如果出現問題，人類可以解釋決策。但自主 AI 系統的興起——獨立行動、大規模運作、無需人類介入監督的代理——使這個缺口變得不可持續。當沒有人類在觀察，而機器的決策具有重大後果時，「我們能否驗證發生了什麼？」這個問題變得至關重要。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-1-2">
+    <h3>1.2 — Why This Is Not a Security Problem</h3>
+    <h3 class="zh-section-title">1.2 — 為什麼這不是安全問題</h3>
+
+    <div class="en">
+      <p>The instinct when confronting a trust gap is to reach for security tools: encryption, access control, firewalls, intrusion detection. But the Computational Trust problem is fundamentally different from a security problem.</p>
+      <p><strong>Security</strong> prevents unauthorized access. It asks: "Can an attacker breach this system?" The tools are encryption (protecting data in transit and at rest), authentication (verifying identity), authorization (controlling access), and monitoring (detecting intrusions). Security assumes that if the system is well-protected, its outputs can be trusted.</p>
+      <p><strong>Privacy</strong> prevents unauthorized disclosure. It asks: "Can sensitive data be exposed?" The tools are anonymization, differential privacy, data minimization, and consent management. Privacy assumes that if data is properly protected, its handling can be trusted.</p>
+      <p><strong>Trust</strong> proves that a process occurred correctly. It asks: "Can we verify, after the fact, that this computation was performed fairly, with proper inputs, and without manipulation — even by the operator?" This question cannot be answered by encryption (the data is not being stolen), by access control (the operator is authorized), or by monitoring (the system is not being attacked). The system is operating normally. The question is whether "normally" means "correctly and verifiably."</p>
+      <p>The difference is structural. Security protects the perimeter. Trust proves the interior. A perfectly secure system can still produce decisions that cannot be independently verified — and in a world of autonomous AI, unverifiable decisions are unacceptable regardless of how secure the system is.</p>
+    </div>
+
+    <div class="zh">
+      <p>面對信任缺口時的直覺反應是使用安全工具：加密、存取控制、防火牆、入侵偵測。但計算信任問題與安全問題根本不同。</p>
+      <p><strong>安全</strong>防止未經授權的存取。它問的是：「攻擊者能否突破此系統？」工具是加密（保護傳輸中和靜態的資料）、認證（驗證身份）、授權（控制存取）和監控（偵測入侵）。安全假設如果系統受到良好保護，其輸出就可以被信任。</p>
+      <p><strong>隱私</strong>防止未經授權的洩露。它問的是：「敏感資料能否被暴露？」工具是匿名化、差分隱私、資料最小化和同意管理。隱私假設如果資料受到適當保護，其處理就可以被信任。</p>
+      <p><strong>信任</strong>證明過程正確發生。它問的是：「我們能否在事後驗證此計算是公平執行的、使用了適當的輸入、且未被操縱——即使是被操作者自己？」這個問題無法由加密回答（資料沒有被竊取）、無法由存取控制回答（操作者是被授權的）、也無法由監控回答（系統沒有被攻擊）。系統正常運作。問題是「正常」是否意味著「正確且可驗證」。</p>
+      <p>差異是結構性的。安全保護邊界。信任證明內部。一個完全安全的系統仍然可以產生無法獨立驗證的決策——而在自主 AI 的世界中，不可驗證的決策是不可接受的，無論系統有多安全。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-1-3">
+    <h3>1.3 — Why This Is Not a Randomness Problem</h3>
+    <h3 class="zh-section-title">1.3 — 為什麼這不是隨機性問題</h3>
+
+    <div class="en">
+      <p>Random number generation is a solved problem. Every programming language has a built-in RNG. Every operating system provides cryptographic randomness through <code>/dev/urandom</code> or equivalent. Every cloud provider offers randomness as a service. The world does not need another random number generator.</p>
+      <p>The problem is not generation. The problem is <strong>trust</strong>.</p>
+      <p>When a traditional RNG produces a number, the number arrives and the process disappears. The consumer receives a value but cannot answer three fundamental questions: Where did this randomness come from? Was it generated fairly? Can anyone verify this after the fact? These questions are unanswerable because traditional RNG was never designed to answer them. The random number is the product; the process is discarded.</p>
+      <p>Randomness is merely the first domain where the Computational Trust gap becomes critical — because randomness is inherently unobservable. You cannot "look at" a random number and determine whether it was truly random, whether it was manipulated, or whether it came from a single weak source or multiple independent strong sources. This makes randomness the hardest case for trust, and therefore the right place to build the trust infrastructure that will eventually extend to all non-deterministic computation.</p>
+      <p>The vision is not "better randomness." The vision is <strong>Computational Trust as infrastructure</strong> — starting with entropy (the hardest case) and extending to decisions, computations, and processes of all kinds.</p>
+    </div>
+
+    <div class="zh">
+      <p>隨機數生成是一個已解決的問題。每種程式語言都有內建的 RNG。每個作業系統透過 <code>/dev/urandom</code> 或等效方式提供密碼學隨機性。每個雲端供應商都提供隨機性即服務。世界不需要另一個隨機數生成器。</p>
+      <p>問題不是生成。問題是<strong>信任</strong>。</p>
+      <p>當傳統 RNG 產生一個數字時，數字到達了但過程消失了。消費者收到一個值但無法回答三個基本問題：這個隨機性從哪裡來？它是公平生成的嗎？事後有人能驗證嗎？這些問題無法回答，因為傳統 RNG 從未被設計來回答它們。隨機數是產品；過程被丟棄了。</p>
+      <p>隨機性只是計算信任缺口變得關鍵的第一個領域——因為隨機性本質上是不可觀察的。你無法「看著」一個隨機數並判斷它是否真正隨機、是否被操縱、或者它來自單一弱來源還是多個獨立強來源。這使得隨機性成為信任最困難的案例，因此也是建構信任基礎設施的正確起點——這個基礎設施最終將擴展到所有非確定性計算。</p>
+      <p>願景不是「更好的隨機性」。願景是<strong>計算信任作為基礎設施</strong>——從熵（最困難的案例）開始，擴展到所有類型的決策、計算和過程。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-1-4">
+    <h3>1.4 — Defining Computational Trust</h3>
+    <h3 class="zh-section-title">1.4 — 定義計算信任</h3>
+
+    <div class="en">
+      <div class="definition-box">
+        <p><strong>Computational Trust</strong> is the ability to independently verify that a computational process — its inputs, execution, and outputs — occurred correctly, fairly, and without manipulation, without relying on the operator's assertion.</p>
+      </div>
+      <p>This definition has three critical components:</p>
+      <p><strong>Independently</strong> — verification does not require cooperation from the operator. A third party with access to the trust evidence can verify everything without the operator's involvement, permission, or even awareness. This is what distinguishes Computational Trust from audit logging: an audit log is written by the operator; a trust object is verified by anyone.</p>
+      <p><strong>The entire process</strong> — not just the output, but the inputs (where did the data come from?), the execution (was the correct algorithm applied?), and the outputs (was the result delivered without modification?). Partial trust is insufficient. A system that proves its output is correct but cannot prove its inputs were fair provides a false sense of assurance.</p>
+      <p><strong>Without relying on the operator's assertion</strong> — the operator may be honest, compromised, or adversarial. Computational Trust works in all three cases. It is not a trust framework (which assumes good faith); it is a verification framework (which assumes nothing).</p>
+      <p>Computational Trust rests on three pillars:</p>
+      <p><strong>Provenance:</strong> Where did the inputs come from? Every input to a trusted computation must be traceable to its source, with cryptographic evidence linking each step. Provenance answers the question "was this built on legitimate foundations?"</p>
+      <p><strong>Integrity:</strong> Was the process tampered with? Cryptographic hashes and signatures ensure that any modification to inputs, intermediate values, or outputs is detectable. Integrity answers the question "was this altered after creation?"</p>
+      <p><strong>Auditability:</strong> Can a third party reconstruct and verify what happened? Every step in the process produces a verifiable artifact that can be examined independently, in any order, at any time in the future. Auditability answers the question "can we prove this to someone who wasn't there?"</p>
+    </div>
+
+    <div class="zh">
+      <div class="definition-box">
+        <p><strong>計算信任</strong>是獨立驗證計算過程——其輸入、執行和輸出——正確、公平且未被操縱地發生的能力，無需依賴操作者的聲明。</p>
+      </div>
+      <p>此定義有三個關鍵組成部分：</p>
+      <p><strong>獨立地</strong>——驗證不需要操作者的配合。擁有信任證據的第三方可以在不需要操作者參與、許可甚至知曉的情況下驗證一切。這就是計算信任與稽核日誌的區別：稽核日誌由操作者撰寫；信任物件由任何人驗證。</p>
+      <p><strong>整個過程</strong>——不僅是輸出，還有輸入（資料從哪裡來？）、執行（是否使用了正確的演算法？）和輸出（結果是否未經修改地交付？）。部分信任是不夠的。一個能證明輸出正確但無法證明輸入公平的系統提供的是虛假的保證。</p>
+      <p><strong>無需依賴操作者的聲明</strong>——操作者可能是誠實的、被入侵的或是對抗性的。計算信任在所有三種情況下都有效。它不是信任框架（假設善意）；它是驗證框架（不做任何假設）。</p>
+      <p>計算信任建立在三個支柱之上：</p>
+      <p><strong>出處（Provenance）：</strong>輸入從哪裡來？受信任計算的每個輸入都必須可追溯到其來源，每個步驟都有密碼學證據連結。出處回答「這是建立在合法基礎上的嗎？」</p>
+      <p><strong>完整性（Integrity）：</strong>過程是否被篡改？密碼學雜湊和簽名確保對輸入、中間值或輸出的任何修改都可被偵測。完整性回答「這在建立後是否被更改？」</p>
+      <p><strong>可稽核性（Auditability）：</strong>第三方能否重建並驗證所發生的事情？過程中的每一步都產生可驗證的成品，可以獨立地、以任何順序、在未來任何時間進行檢查。可稽核性回答「我們能否向不在場的人證明這件事？」</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-1-5">
+    <h3>1.5 — The Inevitability Argument</h3>
+    <h3 class="zh-section-title">1.5 — 必然性論證</h3>
+
+    <div class="en">
+      <p>Three converging forces make Computational Trust Infrastructure inevitable:</p>
+      <p><strong>Force 1: AI Agents Are Gaining Authority.</strong> The trajectory is clear: AI agents are moving from advisory roles (suggesting actions for humans to approve) to autonomous roles (taking actions independently). OpenAI's agents can execute multi-step workflows. Anthropic's agents can use computers. Google's agents can manage enterprise processes. As these agents gain authority over financial transactions, medical decisions, legal processes, and physical systems, their decisions will require the same level of verification that human decisions require today. There is no infrastructure for this.</p>
+      <p><strong>Force 2: Regulatory Frameworks Are Converging.</strong> The EU AI Act (effective 2026) requires transparency and auditability for high-risk AI systems. The NIST AI Risk Management Framework demands governance and accountability. ISO 42001 establishes management system requirements for AI. The SEC is examining AI-driven trading decisions. Healthcare regulators are scrutinizing AI triage systems. Every major regulatory body is independently arriving at the same requirement: AI decisions must be verifiable. But none of them specifies <em>how</em> — because the infrastructure to do so does not yet exist.</p>
+      <p><strong>Force 3: No Existing Infrastructure Provides This.</strong> As Chapter 2 will detail, the current technology landscape — TLS, OAuth, TEE, VRF, MPC, blockchain consensus, audit logs — provides individual components of trust but does not connect them into a verifiable lifecycle. Each technology solves its piece of the puzzle. None solves the puzzle. The gap is not that existing technologies are insufficient; it is that no one has built the layer that connects them.</p>
+      <p>The convergence is clear: autonomous systems are proliferating, regulators are demanding verifiability, and no infrastructure exists to provide it. This is the classic precondition for a new infrastructure category — the same precondition that preceded TLS (the web needed encrypted communication), OAuth (applications needed delegated authorization), and containerization (applications needed portable deployment). Computational Trust is the next category. The question is not whether it will be built, but by whom.</p>
+    </div>
+
+    <div class="zh">
+      <p>三股匯聚的力量使計算信任基礎設施不可避免：</p>
+      <p><strong>力量一：AI 代理正在獲得權限。</strong>軌跡是明確的：AI 代理正從諮詢角色（為人類建議需批准的行動）轉向自主角色（獨立採取行動）。OpenAI 的代理可以執行多步驟工作流程。Anthropic 的代理可以使用電腦。Google 的代理可以管理企業流程。隨著這些代理對金融交易、醫療決策、法律程序和實體系統獲得權限，它們的決策將需要與今天人類決策相同水準的驗證。目前沒有這方面的基礎設施。</p>
+      <p><strong>力量二：監管框架正在趨同。</strong>EU AI Act（2026 年生效）要求高風險 AI 系統的透明度和可稽核性。NIST AI 風險管理框架要求治理和問責。ISO 42001 建立 AI 管理系統要求。SEC 正在審查 AI 驅動的交易決策。醫療保健監管機構正在審視 AI 分診系統。每個主要監管機構都獨立地得出相同的要求：AI 決策必須可驗證。但沒有一個指定<em>如何</em>做到——因為做到這一點的基礎設施尚不存在。</p>
+      <p><strong>力量三：沒有現有基礎設施提供這一點。</strong>如第二章將詳述的，當前的技術版圖——TLS、OAuth、TEE、VRF、MPC、區塊鏈共識、稽核日誌——提供信任的個別組件，但沒有將它們連接成可驗證的生命週期。每種技術解決了拼圖的一塊。沒有一個解決了整個拼圖。缺口不是現有技術不足，而是沒有人建構了連接它們的那一層。</p>
+      <p>趨同是明確的：自主系統正在擴散、監管機構正在要求可驗證性、而沒有基礎設施來提供它。這是新基礎設施類別的典型前提條件——與 TLS（網路需要加密通訊）、OAuth（應用程式需要委託授權）和容器化（應用程式需要可攜帶部署）之前的前提條件相同。計算信任是下一個類別。問題不是它是否會被建構，而是由誰來建構。</p>
+    </div>
+  </section>
+</section>
+
+<!-- Chapter 2: Why Existing Infrastructure Fails -->
+<section class="chapter" id="chapter-2">
+  <div class="chapter-number">Chapter 2</div>
+  <h2>Why Existing Infrastructure Falls Short</h2>
+  <h2 class="zh-title">為什麼現有基礎設施不足</h2>
+  <p class="chapter-subtitle">A systematic analysis of the current trust landscape</p>
+  <p class="chapter-subtitle zh">當前信任格局的系統性分析</p>
+
+  <section class="section" id="section-2-intro">
+    <div class="en">
+      <p>The technologies examined in this chapter are not failing. They are excellent solutions to the problems they were designed to solve. The point of this analysis is not to diminish them but to demonstrate that Computational Trust is a <em>distinct problem</em> that none of them were designed to address. They are complementary layers in a complete trust architecture — but the trust layer itself is missing.</p>
+    </div>
+    <div class="zh">
+      <p>本章檢視的技術並沒有失敗。它們是為其設計目的而設的優秀解決方案。本分析的目的不是要貶低它們，而是要證明計算信任是一個<em>獨特的問題</em>，它們都不是為解決這個問題而設計的。在完整的信任架構中，它們是互補的層——但信任層本身是缺失的。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-1">
+    <h3>2.1 — Transport Security (TLS / mTLS)</h3>
+    <h3 class="zh-section-title">2.1 — 傳輸安全（TLS / mTLS）</h3>
+
+    <div class="en">
+      <p><strong>What it solves:</strong> TLS (Transport Layer Security) provides encrypted, authenticated communication between two parties. It ensures that data in transit cannot be intercepted, read, or modified by third parties. mTLS extends this with mutual authentication — both parties verify each other's identity.</p>
+      <p><strong>What it does not solve:</strong> TLS proves that the pipe is secure. It says nothing about the water flowing through the pipe. A perfectly encrypted channel can transmit a manipulated random number, a biased AI decision, or a falsified audit record. TLS guarantees that no one <em>outside</em> the communication tampered with the data. It provides no guarantee about what the <em>sender</em> did before transmitting.</p>
+      <p><strong>The gap:</strong> TLS is perimeter security for communication. Computational Trust requires process verification for computation. They operate at different layers and solve different problems.</p>
+    </div>
+    <div class="zh">
+      <p><strong>它解決什麼：</strong>TLS（傳輸層安全）提供兩方之間的加密、認證通訊。它確保傳輸中的資料不會被第三方攔截、讀取或修改。mTLS 透過相互認證擴展——雙方都驗證對方的身份。</p>
+      <p><strong>它不解決什麼：</strong>TLS 證明管道是安全的。它對流過管道的水不做任何聲明。一個完全加密的通道可以傳輸被操縱的隨機數、有偏見的 AI 決策或偽造的稽核記錄。TLS 保證通訊<em>外部</em>沒有人篡改資料。它不保證<em>發送者</em>在傳輸前做了什麼。</p>
+      <p><strong>缺口：</strong>TLS 是通訊的邊界安全。計算信任需要的是計算的過程驗證。它們運作在不同的層級，解決不同的問題。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-2">
+    <h3>2.2 — Authentication &amp; Authorization (OAuth, JWT, RBAC)</h3>
+    <h3 class="zh-section-title">2.2 — 認證與授權（OAuth、JWT、RBAC）</h3>
+
+    <div class="en">
+      <p><strong>What they solve:</strong> OAuth provides delegated authorization — a user grants an application limited access to their resources. JWT (JSON Web Tokens) provides portable, signed identity claims. RBAC (Role-Based Access Control) restricts actions based on assigned roles. Together, they answer: "Who is this user, and what are they allowed to do?"</p>
+      <p><strong>What they do not solve:</strong> Whether what the authorized user <em>did</em> was correct, fair, or verifiable. An AI agent may be fully authorized via OAuth to make trading decisions. RBAC may correctly grant it access to the trading API. JWT may correctly assert its identity. None of these mechanisms verify that the trading decision itself was made using fair, unmanipulated inputs. Authorization asks "may you act?" Trust asks "did you act correctly?"</p>
+      <p><strong>The gap:</strong> Authorization is a gate — it controls entry. Computational Trust is a proof system — it verifies the process after entry. A fully authorized actor can still produce unverifiable decisions.</p>
+    </div>
+    <div class="zh">
+      <p><strong>它們解決什麼：</strong>OAuth 提供委託授權——用戶授予應用程式有限的資源存取權。JWT（JSON Web Tokens）提供可攜帶、已簽名的身份聲明。RBAC（基於角色的存取控制）根據分配的角色限制操作。它們共同回答：「這個用戶是誰，他們被允許做什麼？」</p>
+      <p><strong>它們不解決什麼：</strong>被授權的用戶所<em>做的</em>是否正確、公平或可驗證。AI 代理可能完全透過 OAuth 被授權做出交易決策。RBAC 可能正確地授予它存取交易 API 的權限。JWT 可能正確地聲明它的身份。這些機制都不驗證交易決策本身是否使用了公平、未被操縱的輸入。授權問的是「你可以行動嗎？」信任問的是「你的行動正確嗎？」</p>
+      <p><strong>缺口：</strong>授權是閘門——它控制進入。計算信任是證明系統——它在進入後驗證過程。一個完全被授權的行為者仍然可以產生不可驗證的決策。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-3">
+    <h3>2.3 — Audit Logs</h3>
+    <h3 class="zh-section-title">2.3 — 稽核日誌</h3>
+
+    <div class="en">
+      <p><strong>What they solve:</strong> Audit logs record that events occurred — who did what, when, and to which resource. They are the standard mechanism for after-the-fact examination in enterprise systems, cloud platforms, and regulated industries.</p>
+      <p><strong>What they do not solve:</strong> Audit logs are written by the same system they are supposed to audit. This creates a circular trust dependency: to trust the log, you must trust the system that wrote the log. But if you already trust the system, you don't need the log. And if you don't trust the system, you can't trust the log either. A compromised or adversarial operator can modify audit logs, selectively omit entries, or generate fabricated records. Append-only logs and log aggregation services mitigate but do not eliminate this problem — the aggregation service itself becomes another trusted party.</p>
+      <p><strong>The gap:</strong> Audit logs are operator-written records. Trust evidence is independently verifiable proof. The difference is the direction of trust: logs require you to trust the writer; trust objects require you to trust only mathematics.</p>
+    </div>
+    <div class="zh">
+      <p><strong>它解決什麼：</strong>稽核日誌記錄事件的發生——誰做了什麼、何時、對哪個資源。它們是企業系統、雲端平台和受監管行業中事後檢查的標準機制。</p>
+      <p><strong>它不解決什麼：</strong>稽核日誌由它們應該稽核的同一系統撰寫。這造成了循環信任依賴：要信任日誌，你必須信任撰寫日誌的系統。但如果你已經信任系統，你就不需要日誌。如果你不信任系統，你也不能信任日誌。被入侵或對抗性的操作者可以修改稽核日誌、選擇性地遺漏條目，或生成偽造的記錄。僅可追加日誌和日誌聚合服務緩解但不能消除此問題——聚合服務本身成為另一個需要信任的方。</p>
+      <p><strong>缺口：</strong>稽核日誌是操作者撰寫的記錄。信任證據是可獨立驗證的證明。差異在於信任的方向：日誌要求你信任撰寫者；信任物件只要求你信任數學。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-4">
+    <h3>2.4 — Verifiable Random Functions (VRF)</h3>
+    <h3 class="zh-section-title">2.4 — 可驗證隨機函數（VRF）</h3>
+
+    <div class="en">
+      <p><strong>What they solve:</strong> A VRF (such as Chainlink VRF) produces a random output along with a proof that the output was correctly derived from a specific input and a specific secret key. This proof can be verified on-chain, ensuring that the randomness provider cannot manipulate the result after seeing the input.</p>
+      <p><strong>What they do not solve:</strong> VRFs prove <em>derivation</em>, not <em>trust</em>. Specifically: (1) VRFs typically use a single entropy source — they do not aggregate multiple independent sources or measure source diversity. (2) VRFs do not score entropy quality — there is no confidence metric indicating how trustworthy the entropy is. (3) VRFs require on-chain callback for verification — they cannot be verified offline. (4) VRFs do not produce self-describing objects — the proof is tied to a specific contract and chain, not portable across systems. (5) VRFs do not carry provenance metadata — the consumer knows the output is correctly derived but does not know the quality or independence of the underlying entropy.</p>
+      <p><strong>The gap:</strong> VRF is a cryptographic primitive. Computational Trust is an infrastructure layer. VRF proves that a function was computed correctly; it does not prove that the inputs, quality, and lifecycle were trustworthy. OpenRNG can use VRF as one of its source verification mechanisms — the layers are complementary, not competing.</p>
+    </div>
+    <div class="zh">
+      <p><strong>它解決什麼：</strong>VRF（如 Chainlink VRF）產生一個隨機輸出以及一個證明，證明該輸出是從特定輸入和特定秘密金鑰正確導出的。此證明可以在鏈上驗證，確保隨機性供應商在看到輸入後無法操縱結果。</p>
+      <p><strong>它不解決什麼：</strong>VRF 證明的是<em>導出</em>，不是<em>信任</em>。具體而言：(1) VRF 通常使用單一熵源——它不聚合多個獨立來源或衡量來源多樣性。(2) VRF 不對熵品質評分——沒有信心指標表明熵有多值得信賴。(3) VRF 需要鏈上回呼進行驗證——無法離線驗證。(4) VRF 不產生自描述物件——證明綁定到特定合約和鏈，無法跨系統攜帶。(5) VRF 不攜帶出處元數據——消費者知道輸出被正確導出，但不知道底層熵的品質或獨立性。</p>
+      <p><strong>缺口：</strong>VRF 是密碼學原語。計算信任是基礎設施層。VRF 證明函數被正確計算；它不證明輸入、品質和生命週期是可信賴的。OpenRNG 可以使用 VRF 作為其來源驗證機制之一——這些層是互補的，不是競爭的。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-5">
+    <h3>2.5 — Trusted Execution Environments (TEE)</h3>
+    <h3 class="zh-section-title">2.5 — 可信執行環境（TEE）</h3>
+
+    <div class="en">
+      <p><strong>What they solve:</strong> TEEs (Intel SGX, ARM TrustZone, AWS Nitro Enclaves) provide hardware-isolated execution environments that even the host operating system and cloud provider cannot inspect or tamper with. Code running inside a TEE produces an attestation proving it ran in a protected environment.</p>
+      <p><strong>What they do not solve:</strong> TEEs prove execution <em>isolation</em>, not process <em>correctness</em>. A TEE guarantees that the code inside was not tampered with during execution. It does not guarantee that the code is correct, that the inputs were fair, or that the outputs are trustworthy. A TEE can faithfully execute a biased algorithm on manipulated inputs and produce a valid attestation. The attestation proves the environment was secure; it says nothing about the computation's fairness or the quality of its non-deterministic components.</p>
+      <p><strong>The gap:</strong> TEE protects the execution environment. Computational Trust verifies the computational process. A TEE can host a Trust Stack implementation — providing hardware-level assurance that the trust logic itself was not tampered with — but the TEE alone does not provide computational trust.</p>
+    </div>
+    <div class="zh">
+      <p><strong>它解決什麼：</strong>TEE（Intel SGX、ARM TrustZone、AWS Nitro Enclaves）提供硬體隔離的執行環境，即使主機作業系統和雲端供應商也無法檢查或篡改。在 TEE 內運行的程式碼產生證明其在受保護環境中運行的證明。</p>
+      <p><strong>它不解決什麼：</strong>TEE 證明的是執行<em>隔離</em>，不是過程<em>正確性</em>。TEE 保證內部的程式碼在執行期間未被篡改。它不保證程式碼是正確的、輸入是公平的，或者輸出是可信賴的。TEE 可以在被操縱的輸入上忠實地執行有偏見的演算法，並產生有效的證明。證明證明的是環境是安全的；它對計算的公平性或其非確定性組件的品質不做任何說明。</p>
+      <p><strong>缺口：</strong>TEE 保護執行環境。計算信任驗證計算過程。TEE 可以託管信任堆疊實作——提供硬體層級的保證，確保信任邏輯本身未被篡改——但 TEE 本身不提供計算信任。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-6">
+    <h3>2.6 — Multi-Party Computation (MPC)</h3>
+    <h3 class="zh-section-title">2.6 — 多方計算（MPC）</h3>
+
+    <div class="en">
+      <p><strong>What it solves:</strong> MPC enables multiple parties to jointly compute a function over their private inputs without revealing those inputs to each other. It is used in privacy-preserving analytics, secure auctions, and threshold cryptography.</p>
+      <p><strong>What it does not solve:</strong> MPC proves that a computation was performed correctly across parties without revealing inputs. However, MPC does not produce portable, independently verifiable trust evidence. The proof of correct computation is internal to the MPC protocol — a third party who was not a participant cannot independently verify the result without re-running the protocol. MPC also does not address entropy quality, source provenance, or trust lifecycle management.</p>
+      <p><strong>The gap:</strong> MPC is a computation protocol for privacy. Computational Trust is a verification infrastructure for auditability. MPC can be a component within the Trust Stack — for example, multi-party entropy generation could use MPC to ensure no single party controls the randomness — but MPC alone does not provide computational trust.</p>
+    </div>
+    <div class="zh">
+      <p><strong>它解決什麼：</strong>MPC 使多方能夠在各自的私有輸入上共同計算一個函數，而不向彼此揭露這些輸入。它用於隱私保護分析、安全拍賣和門限密碼學。</p>
+      <p><strong>它不解決什麼：</strong>MPC 證明計算在各方之間正確執行，而不揭露輸入。然而，MPC 不產生可攜帶、可獨立驗證的信任證據。正確計算的證明是 MPC 協議內部的——不是參與者的第三方無法在不重新運行協議的情況下獨立驗證結果。MPC 也不涉及熵品質、來源出處或信任生命週期管理。</p>
+      <p><strong>缺口：</strong>MPC 是用於隱私的計算協議。計算信任是用於可稽核性的驗證基礎設施。MPC 可以是信任堆疊中的一個組件——例如，多方熵生成可以使用 MPC 來確保沒有單一方控制隨機性——但 MPC 本身不提供計算信任。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-7">
+    <h3>2.7 — Blockchain Consensus</h3>
+    <h3 class="zh-section-title">2.7 — 區塊鏈共識</h3>
+
+    <div class="en">
+      <p><strong>What it solves:</strong> Blockchain consensus mechanisms (Proof of Work, Proof of Stake, BFT variants) enable untrusted parties to agree on a shared state without a central authority. They provide immutable, append-only ledgers that no single party can alter retroactively.</p>
+      <p><strong>What it does not solve:</strong> Blockchain consensus proves that on-chain state transitions are valid. It does not prove that off-chain computations — the vast majority of real-world computing — were performed correctly. An AI agent making decisions off-chain can record a hash on-chain, but the hash only proves that something existed at a point in time. It does not prove that the computation was fair, that the inputs were unmanipulated, or that the entropy was high-quality. Blockchain provides temporal anchoring and immutability — valuable components of trust — but not the full trust lifecycle.</p>
+      <p><strong>The gap:</strong> Blockchain is an anchoring mechanism. Computational Trust uses blockchain as one component (Layer 3 anchoring) but provides the full lifecycle — from source generation through evidence construction through coordination through governance — that blockchain alone cannot.</p>
+    </div>
+    <div class="zh">
+      <p><strong>它解決什麼：</strong>區塊鏈共識機制（工作量證明、權益證明、BFT 變體）使不受信任的各方能夠在沒有中央權威的情況下就共享狀態達成一致。它們提供不可變的、僅可追加的帳本，任何單一方都無法追溯更改。</p>
+      <p><strong>它不解決什麼：</strong>區塊鏈共識證明鏈上狀態轉換是有效的。它不證明鏈下計算——現實世界計算的絕大多數——是正確執行的。AI 代理在鏈下做出決策可以在鏈上記錄雜湊，但雜湊只證明某物在某個時間點存在。它不證明計算是公平的、輸入未被操縱，或者熵是高品質的。區塊鏈提供時間錨定和不可變性——信任的有價值組件——但不是完整的信任生命週期。</p>
+      <p><strong>缺口：</strong>區塊鏈是錨定機制。計算信任使用區塊鏈作為一個組件（第三層錨定），但提供了區塊鏈單獨無法提供的完整生命週期——從來源生成到證據建構到協調到治理。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-2-8">
+    <h3>2.8 — The Gap Map</h3>
+    <h3 class="zh-section-title">2.8 — 缺口地圖</h3>
+
+    <div class="en">
+      <p>The following table summarizes the trust capabilities of each technology examined. Six properties define Computational Trust. No existing technology provides all six.</p>
+    </div>
+    <div class="zh">
+      <p>下表總結了所檢視的每種技術的信任能力。六個屬性定義計算信任。沒有現有技術提供全部六項。</p>
+    </div>
+
+    <table class="gap-map">
+      <thead>
+        <tr>
+          <th>Technology 技術</th>
+          <th>Provenance 出處</th>
+          <th>Integrity 完整性</th>
+          <th>Auditability 可稽核性</th>
+          <th>Quality Scoring 品質評分</th>
+          <th>Offline Verification 離線驗證</th>
+          <th>Standard Object 標準物件</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>TLS / mTLS</td><td>—</td><td>✓</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>OAuth / JWT / RBAC</td><td>Partial 部分</td><td>✓</td><td>Partial 部分</td><td>—</td><td>✓ (JWT)</td><td>✓ (JWT)</td></tr>
+        <tr><td>Audit Logs</td><td>Partial 部分</td><td>—</td><td>Circular 循環</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>VRF</td><td>—</td><td>✓</td><td>On-chain 鏈上</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>TEE</td><td>—</td><td>✓</td><td>Partial 部分</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>MPC</td><td>—</td><td>✓</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>Blockchain</td><td>—</td><td>✓</td><td>On-chain 鏈上</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr class="highlight-row"><td><strong>Computational Trust (VEO)</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td><td><strong>✓</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="en">
+      <p><strong>Conclusion:</strong> Each existing technology solves a real and important problem. None was designed to solve Computational Trust. They are complementary layers — TLS secures the transport, OAuth controls access, TEE protects the execution environment, blockchain provides anchoring. What is missing is the layer that ties them together into a verifiable trust lifecycle: the layer that generates trust material from multiple sources, measures its quality, packages it as a portable proof, propagates it across agents, enforces governance, and enables independent audit.</p>
+      <p>That missing layer is Computational Trust Infrastructure. OpenRNG is its first implementation.</p>
+    </div>
+    <div class="zh">
+      <p><strong>結論：</strong>每種現有技術都解決了一個真實而重要的問題。沒有一種是為解決計算信任而設計的。它們是互補的層——TLS 保護傳輸、OAuth 控制存取、TEE 保護執行環境、區塊鏈提供錨定。缺失的是將它們連結成可驗證信任生命週期的那一層：從多個來源生成信任材料、衡量其品質、將其封裝為可攜帶的證明、在代理之間傳播、執行治理，並實現獨立稽核的那一層。</p>
+      <p>那個缺失的層就是計算信任基礎設施。OpenRNG 是其第一個實作。</p>
+    </div>
+  </section>
+</section>

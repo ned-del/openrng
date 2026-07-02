@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Non-Provisional — Verifiable Entropy Objects</title>
+<style>
+  @page { size: letter; margin: 25mm 25mm 30mm 25mm; @bottom-center { content: counter(page); font-family: 'Times New Roman', serif; font-size: 10pt; color: #666; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Times New Roman', 'Noto Serif TC', serif; font-size: 12pt; line-height: 2.0; color: #000; background: #fff; max-width: 8.5in; margin: 0 auto; padding: 1in; }
+  .cover { page-break-after: always; text-align: center; padding-top: 1.5in; }
+  .cover h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-bottom: 0.4in; line-height: 1.5; }
+  .cover .doc-type { font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8in; }
+  .cover .meta { font-size: 11pt; line-height: 2.0; }
+  .cover .confidential { font-size: 10pt; font-weight: bold; text-transform: uppercase; letter-spacing: 3px; margin-top: 1in; padding: 8px 24px; border: 2px solid #000; display: inline-block; }
+  h2 { font-size: 12pt; font-weight: bold; text-transform: uppercase; margin-top: 24pt; margin-bottom: 12pt; text-align: center; }
+  h3 { font-size: 12pt; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; }
+  h4 { font-size: 12pt; font-weight: bold; font-style: italic; margin-top: 12pt; margin-bottom: 6pt; }
+  p { margin-bottom: 12pt; text-align: justify; text-indent: 0.5in; }
+  p.no-indent { text-indent: 0; }
+  p.claim { text-indent: 0; margin-left: 0.5in; margin-bottom: 8pt; }
+  p.sub-claim { text-indent: 0; margin-left: 1.0in; margin-bottom: 6pt; }
+  p.sub-sub-claim { text-indent: 0; margin-left: 1.5in; margin-bottom: 6pt; }
+  .para-num { font-weight: bold; margin-right: 8pt; }
+  ol, ul { margin: 6pt 0 12pt 0.75in; }
+  li { margin-bottom: 4pt; }
+  .figure { border: 1px solid #ccc; padding: 20px; margin: 20px 0; text-align: center; background: #f9f9f9; break-inside: avoid; }
+  .figure-label { font-weight: bold; font-size: 11pt; margin-bottom: 12px; }
+  .figure pre { font-family: 'Courier New', monospace; font-size: 8.5pt; line-height: 1.4; text-align: left; display: inline-block; white-space: pre; }
+  hr { border: none; border-top: 1px solid #999; margin: 24pt 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12pt 0; font-size: 11pt; }
+  th, td { border: 1px solid #999; padding: 6pt 8pt; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: bold; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="doc-type">Non-Provisional Patent Application</div>
+  <h1>Method and System for Generating, Scoring, Signing,<br>Anchoring, and Verifying Verifiable Trust Artifacts<br>for Non-Deterministic Computation</h1>
+  <h1 style="font-size:11pt; font-weight:normal; text-transform:none; margin-bottom:0.4in;">非確定性計算之可驗證信任成品的<br>生成、評分、簽名、錨定及驗證方法與系統</h1>
+  <div class="meta">
+    Inventor: [Inventor Name]<br>
+    Date of Filing: [Filing Date]<br>
+    Priority Date: [To be established upon filing]<br>
+    Provisional Application No.: [Not yet filed — see Cover Letter §7]<br>
+    <br>
+    Prepared for: Saint Island International Patent &amp; Law Offices<br>
+    聖島國際專利商標聯合事務所<br>
+  </div>
+  <div class="confidential">Attorney-Client Privileged &amp; Confidential</div>
+</div>
+
+<!-- ================================================================ -->
+<h2>Cross-Reference to Related Applications</h2>
+
+<p><span class="para-num">[0001]</span> [If provisional is filed first: This application claims the benefit of U.S. Provisional Application No. [Provisional Serial Number], filed [Provisional Filing Date], entitled "Method and System for Generating, Scoring, Signing, Anchoring, and Verifying Verifiable Entropy Objects," which is incorporated herein by reference in its entirety.]</p>
+<p class="no-indent" style="font-size:10pt; color:#888; font-style:italic; margin-left:0.5in;">Note to counsel: Provisional has NOT yet been filed. Please advise whether to file provisional first (using Attachment C) then convert, or file this non-provisional directly.</p>
+
+<p><span class="para-num">[0002]</span> This application is related to U.S. Patent Application Serial No. [Patent #1 Serial Number] (hereinafter "the First Application"), entitled "Method and System for Gaming Random Number Generation," which describes a Merkle-tree-based random number generation and verification system with blockchain anchoring.</p>
+
+<p><span class="para-num">[0003]</span> This application is also related to U.S. Patent Application Serial No. [Patent #2 Serial Number] (hereinafter "the Second Application"), entitled "Method and System for Verifiable Delay Function-Protected Batch Random Number Generation with Anti-Preview Guarantees," which describes a VDF-based anti-preview pipeline for batch entropy generation.</p>
+
+<p><span class="para-num">[0004]</span> The present invention extends the prior applications by introducing the Trust Artifact Layer (Layer 3) of the Computational Trust Infrastructure. Where the First Application generates verifiable entropy (Layer 1 — Trust Source) and the Second Application prevents entropy preview (Layer 2 — Trust Integrity), the present invention packages entropy into a structured, self-describing, quality-scored, cryptographically signed, optionally blockchain-anchored, and independently verifiable trust artifact — the Verifiable Entropy Object (VEO). The VEO constitutes a cryptographically verifiable trust assertion regarding a non-deterministic computation.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Field of the Invention</h2>
+
+<p><span class="para-num">[0005]</span> The present invention relates generally to systems and methods for establishing portable, verifiable trust over non-deterministic computation. More specifically, the invention relates to: (a) a structured digital object format for representing entropy as a trust artifact with embedded provenance, quality metrics, cryptographic attestation, and verification evidence; (b) a multi-dimensional scoring system for quantifying entropy quality and trust level; (c) a deterministic canonicalization and signing protocol enabling offline, independent signature verification; (d) a multi-level verification framework distinguishing progressively evaluated trust states; (e) a consumer policy system for specifying minimum trust requirements; and (f) an entropy provenance graph enabling full audit trail construction through directed acyclic graph lineage.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Background of the Invention</h2>
+
+<h3>1. The Problem with Disposable Randomness</h3>
+
+<p><span class="para-num">[0006]</span> Conventional random number generators — including hardware RNGs, pseudo-random number generators (PRNGs), cryptographically secure PRNGs (CSPRNGs), and randomness APIs — produce numerical values as their output. Once generated, these values carry no metadata about their origin, generation process, source quality, or integrity guarantees. The generation process is discarded. The consumer receives a number and must trust the generator implicitly.</p>
+
+<p><span class="para-num">[0007]</span> This disposable model is increasingly insufficient for modern applications where random or non-deterministic decisions have significant consequences:</p>
+
+<p><span class="para-num">[0008]</span> <strong>Autonomous AI Systems.</strong> AI agents make decisions involving non-determinism — tool selection, response sampling, task routing, resource allocation, model selection, and autonomous execution approval. These decisions cannot be audited for fairness because the non-deterministic inputs carry no provenance. As AI agents gain authority over financial, medical, legal, and operational domains, the inability to verify their non-deterministic inputs creates regulatory, liability, and trust gaps.</p>
+
+<p><span class="para-num">[0009]</span> <strong>Regulated Gaming.</strong> Casino, lottery, and online gambling systems are required by regulators (GLI-19, GLI-33, BMM, eCOGRA) to prove that random outcomes were generated fairly. Current certification processes test the RNG implementation but rely on audit logs produced by the same system being audited — creating a circular trust dependency that does not satisfy the principle of independent verification.</p>
+
+<p><span class="para-num">[0010]</span> <strong>Decentralized Systems.</strong> Blockchain protocols, DAO governance mechanisms, fair-launch token distributions, and multi-party computations require randomness that is verifiably uncontrollable by any single party, including the generator. Existing on-chain randomness solutions (e.g., Chainlink VRF) provide derivation proofs but not quality scoring, multi-source provenance, or offline verification.</p>
+
+<p><span class="para-num">[0011]</span> <strong>Scientific Computing.</strong> Monte Carlo simulations, stochastic modeling, and experimental protocols require reproducible, auditable entropy. Published simulation results should be verifiable by reviewers who can independently confirm the entropy provenance and quality used in the computation.</p>
+
+<p><span class="para-num">[0012]</span> <strong>Enterprise Compliance.</strong> Enterprises deploying AI systems face growing regulatory requirements (EU AI Act, NIST AI RMF, ISO 42001, SOX) that demand auditability and transparency for algorithmic decisions. There is no standardized mechanism for attesting to the quality and provenance of non-deterministic inputs to these decisions.</p>
+
+<h3>2. Limitations of Existing Approaches</h3>
+
+<p><span class="para-num">[0013]</span> <strong>Verifiable Random Functions (VRFs).</strong> VRFs (e.g., U.S. Patent No. 12,401,532 B2 — Chainlink) prove that a specific output was correctly derived from a specific input and secret key. However, VRFs: (a) prove derivation, not entropy quality; (b) use a single entropy source; (c) do not score confidence; (d) do not carry source provenance; (e) require on-chain callbacks for verification; (f) do not support offline or air-gapped verification; and (g) do not produce self-describing, portable objects.</p>
+
+<p><span class="para-num">[0014]</span> <strong>Quantum Random Number Generators (QRNGs).</strong> QRNGs produce high-quality entropy but return raw values without structured provenance, quality scoring, or independent verification capability. The consumer must trust the QRNG provider.</p>
+
+<p><span class="para-num">[0015]</span> <strong>Public Randomness Beacons (e.g., drand, NIST Beacon).</strong> Beacons produce publicly verifiable random values but are single-source systems that do not aggregate multiple independent sources, do not score entropy quality, and do not produce self-describing verifiable objects.</p>
+
+<p><span class="para-num">[0016]</span> <strong>Audit Logs.</strong> Audit logs record events but are written by the system being audited. A compromised or adversarial operator can modify, omit, or fabricate log entries. Logs prove assertion, not trust.</p>
+
+<p><span class="para-num">[0017]</span> <strong>JSON Web Tokens (JWTs).</strong> JWTs provide portable, signed identity claims. However, JWTs do not address entropy quality, source provenance, multi-dimensional scoring, or the specific requirements of non-deterministic computation attestation. JWTs serve as an architectural analogy — the present invention does for uncertainty what JWT does for identity.</p>
+
+<p><span class="para-num">[0018]</span> There exists a need for a system that transforms entropy from a disposable numerical output into a structured, self-describing, multi-source, quality-scored, cryptographically signed, optionally blockchain-anchored, independently verifiable trust artifact — an object that constitutes a verifiable trust assertion regarding the non-deterministic computation that produced it.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Summary of the Invention</h2>
+
+<p><span class="para-num">[0019]</span> The present invention provides a method and system for establishing portable, verifiable trust over non-deterministic computation through the generation, quality assessment, cryptographic attestation, optional immutable anchoring, and independent verification of structured trust artifacts called Verifiable Entropy Objects (VEOs).</p>
+
+<p><span class="para-num">[0020]</span> A VEO is not merely a random number with metadata. It is a <strong>cryptographically verifiable trust assertion</strong> — a statement that says: "This output was generated using these sources, at this quality level, with this cryptographic attestation, under this policy, at this trust level." The assertion is independently verifiable by any party, without trusting the generator, without network access, and at any future time.</p>
+
+<p><span class="para-num">[0021]</span> The invention provides:</p>
+
+<ol>
+  <li>A <strong>Verifiable Entropy Object (VEO) format</strong> — a structured digital object encapsulating entropy payload, source provenance records, aggregation metadata, quality scoring, cryptographic proof, optional immutable ledger anchoring, and lineage references. The VEO is analogous to: PDF for documents, JWT for identity, and VEO for uncertainty.</li>
+  <li>An <strong>Entropy Confidence Score (ECS) system</strong> — a multi-dimensional, weighted quantitative assessment of entropy quality and trust level, producing a score from 0 to 1000 across six or more independently computed dimensions with defined grade boundaries, configurable dimension weights, and fallback penalty rules.</li>
+  <li>A <strong>canonical signing protocol</strong> — a deterministic method for transforming a VEO into a signing payload through deep key sorting, field inclusion/exclusion rules, and stable serialization, enabling asymmetric cryptographic signatures verifiable by any party through public key verification or address recovery.</li>
+  <li>A <strong>multi-level verification framework</strong> — a trust state machine that assigns each VEO to one of a plurality of trust states based on progressively evaluated verification criteria, ranging from structural validity to full blockchain-anchored verification.</li>
+  <li>A <strong>consumer policy system</strong> — configurable policy presets and custom policies specifying minimum trust requirements, with honest failure when requirements cannot be met.</li>
+  <li>An <strong>entropy provenance graph</strong> — a lineage mechanism creating directed acyclic graphs of trust artifact derivation, enabling full audit trail construction and trust chain traversal.</li>
+  <li>A <strong>decision attestation mechanism</strong> — linking VEOs to specific decisions or actions, enabling independent verification that a particular decision was derived from specific, scored, attested entropy.</li>
+  <li><strong>Entropy-as-a-Service architecture</strong> — network-accessible services for VEO generation, issuance, verification, scoring, and anchoring.</li>
+</ol>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Brief Description of the Drawings</h2>
+
+<p class="no-indent"><strong>FIG. 1</strong> — Overall system architecture showing the VEO generation, signing, anchoring, and verification pipeline.</p>
+<p class="no-indent"><strong>FIG. 2</strong> — VEO object structure showing required and optional fields organized by layer (payload, provenance, confidence, proof, anchor, lineage).</p>
+<p class="no-indent"><strong>FIG. 3</strong> — Entropy Confidence Score (ECS) computation showing six-dimension weighted scoring with grade boundaries.</p>
+<p class="no-indent"><strong>FIG. 4</strong> — Canonical signing protocol showing transformation from VEO to deterministic signing payload.</p>
+<p class="no-indent"><strong>FIG. 5</strong> — Multi-level verification framework showing trust state transitions.</p>
+<p class="no-indent"><strong>FIG. 6</strong> — Entropy provenance graph (lineage DAG) showing parent-child trust artifact relationships.</p>
+<p class="no-indent"><strong>FIG. 7</strong> — Five-Layer Trust Stack architecture showing the position of VEO (Layer 3) within the Computational Trust Infrastructure.</p>
+<p class="no-indent"><strong>FIG. 8</strong> — Decision attestation architecture showing VEO-to-decision linkage.</p>
+<p class="no-indent"><strong>FIG. 9</strong> — Entropy-as-a-Service architecture showing network-accessible VEO services.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Detailed Description of Preferred Embodiments</h2>
+
+<p><span class="para-num">[0022]</span> The following description sets forth specific embodiments illustrative of the invention. These embodiments are not limiting; the invention encompasses all equivalents, variations, and modifications within the scope of the appended claims.</p>
+
+<h3>1. Verifiable Entropy Object (VEO) — Trust Artifact Format</h3>
+
+<h4>1.1 Definition and Conceptual Framework</h4>
+
+<p><span class="para-num">[0023]</span> A Verifiable Entropy Object (VEO) is defined as a cryptographically verifiable trust assertion regarding a non-deterministic computation. The VEO encapsulates the entropy payload, source provenance, quality metrics, cryptographic attestation, optional immutable anchoring, and lineage references — all in a single, self-describing, portable digital object.</p>
+
+<p><span class="para-num">[0024]</span> The conceptual progression is as follows: (a) <strong>entropy</strong> is the raw material — the non-deterministic value from one or more sources; (b) an <strong>uncertainty artifact</strong> is the structured container — entropy packaged with provenance and metadata; (c) a <strong>trust artifact</strong> is the signed, scored, verifiable container — the uncertainty artifact with cryptographic attestation and quality scoring; (d) a <strong>trust assertion</strong> is the statement the trust artifact makes — "this non-deterministic output was generated from these sources, at this quality, with this attestation, and can be independently verified." The VEO embodies all four levels.</p>
+
+<p><span class="para-num">[0025]</span> The analogy is structural: Adobe PDF made documents portable and trusted; JWT made identity claims portable and trusted; VEO makes uncertainty portable and trusted. A VEO can be generated in one system, transmitted to another, verified by a third, and audited by a fourth — without any of these parties trusting each other. They need only trust the mathematics.</p>
+
+<h4>1.2 Object Classification System</h4>
+
+<p><span class="para-num">[0026]</span> The invention defines a classification system for trust artifacts based on their provenance characteristics:</p>
+
+<table>
+  <thead><tr><th>Class</th><th>Name</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td>VEO-1A</td><td>Raw Source</td><td>Single-source entropy (one beacon round, one block hash, one QRNG output)</td></tr>
+    <tr><td>VEO-1B</td><td>Composite</td><td>Multi-source aggregated entropy from two or more independent sources</td></tr>
+    <tr><td>VEO-1C</td><td>Anchored</td><td>Composite entropy with immutable ledger anchor (blockchain, transparency log)</td></tr>
+    <tr><td>VEO-1D</td><td>Decision</td><td>Entropy linked to a specific decision, action, or computation outcome</td></tr>
+  </tbody>
+</table>
+
+<p><span class="para-num">[0027]</span> Class identifiers are protocol constants. VEO-1C is assigned only when a real immutable ledger anchor exists and has been confirmed. Policy requirements alone do not qualify an object for VEO-1C classification. VEO-1D is reserved for integration with decision attestation systems (see Section 10).</p>
+
+<h4>1.3 Required Fields</h4>
+
+<p><span class="para-num">[0028]</span> Each VEO contains the following required fields:</p>
+
+<table>
+  <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>standard</code></td><td>string</td><td>Protocol identifier (e.g., "VEO-1")</td></tr>
+    <tr><td><code>version</code></td><td>string</td><td>Protocol version (e.g., "1.0")</td></tr>
+    <tr><td><code>object_id</code></td><td>string</td><td>Unique identifier (format: "veo_" + 32 hex characters)</td></tr>
+    <tr><td><code>object_class</code></td><td>string</td><td>One of: VEO-1A, VEO-1B, VEO-1C, VEO-1D</td></tr>
+    <tr><td><code>entropy</code></td><td>string</td><td>Hex-encoded entropy payload ("0x...")</td></tr>
+    <tr><td><code>entropy_hash</code></td><td>string</td><td>Cryptographic hash of entropy ("0x...")</td></tr>
+    <tr><td><code>issued_at</code></td><td>string</td><td>ISO 8601 generation timestamp</td></tr>
+    <tr><td><code>provider</code></td><td>string</td><td>Provider identifier</td></tr>
+    <tr><td><code>sources</code></td><td>array</td><td>Array of entropy source records (minimum 1)</td></tr>
+    <tr><td><code>proof</code></td><td>object</td><td>Cryptographic proof/signature package</td></tr>
+    <tr><td><code>confidence</code></td><td>object</td><td>Entropy Confidence Score (ECS) object</td></tr>
+  </tbody>
+</table>
+
+<p><span class="para-num">[0029]</span> Optional fields include: expiration timestamp, aggregation metadata, immutable ledger anchor package, lineage references, and consumer policy applied. Required fields are immutable within a protocol version. New optional fields may be added in minor versions without breaking backward compatibility.</p>
+
+<h4>1.4 Entropy Source Records</h4>
+
+<p><span class="para-num">[0030]</span> Each entry in the sources array contains: a source identifier (e.g., "drand-mainnet"), a source type classification (e.g., "distributed_beacon", "blockchain", "hardware_rng", "qrng"), a source reference (e.g., "drand-round-29830144", "block-955153"), a fetch timestamp, an individual source entropy hash, and an optional source-provided signature. The source record provides complete provenance for each entropy contribution.</p>
+
+<h4>1.5 Multi-Source Aggregation</h4>
+
+<p><span class="para-num">[0031]</span> When multiple sources are used, the system aggregates entropy deterministically: source entropy values are normalized (lowercase), concatenated with a delimiter in a defined order, and processed through one or more cryptographic hash functions (SHA-256 in the preferred embodiment; SHA-3, BLAKE2, BLAKE3, or other cryptographic hash functions in alternative embodiments). The aggregation record preserves the method identifier, input ordering, and resulting hash, enabling any verifier to reproduce the aggregation from the individual source records.</p>
+
+<h3>2. Entropy Confidence Score (ECS) — Trust Quantification</h3>
+
+<h4>2.1 Purpose</h4>
+
+<p><span class="para-num">[0032]</span> The Entropy Confidence Score (ECS) quantifies entropy quality — and by extension, the trust level of the non-deterministic output — as a single integer score from 0 to 1000. The ECS enables consumers to programmatically evaluate whether a trust artifact meets their requirements without inspecting individual sources. The ECS functions both as an entropy quality metric and as a trust quantification for non-deterministic outputs, broadening its applicability beyond randomness to any computation involving uncertainty.</p>
+
+<h4>2.2 Dimensions</h4>
+
+<p><span class="para-num">[0033]</span> The ECS is computed from six independently calculated dimensions, each producing a sub-score from 0 to 1000:</p>
+
+<table>
+  <thead><tr><th>Dimension</th><th>Default Weight</th><th>Measurement</th></tr></thead>
+  <tbody>
+    <tr><td>Freshness</td><td>20%</td><td>Time since generation; decays linearly over a configurable window</td></tr>
+    <tr><td>Diversity</td><td>15%</td><td>Ratio of unique live source identifiers to target count</td></tr>
+    <tr><td>Independence</td><td>20%</td><td>Ratio of unique source type categories to target count</td></tr>
+    <tr><td>Manipulation Resistance</td><td>20%</td><td>Difficulty of controlling aggregated output; increases with source count</td></tr>
+    <tr><td>Verification Success</td><td>15%</td><td>Rate of successful source verification at generation time</td></tr>
+    <tr><td>Availability</td><td>10%</td><td>Source availability at generation time</td></tr>
+  </tbody>
+</table>
+
+<p><span class="para-num">[0034]</span> The composite score is: <code>score = clamp(Σ(dimension_i × weight_i))</code>, where <code>clamp(n) = max(0, min(1000, round(n)))</code>.</p>
+
+<p><span class="para-num">[0035]</span> In alternative embodiments, the dimensions and weighting coefficients may be modified based on application requirements. Embodiments include: dynamic weighting (adjusting weights based on real-time source conditions), policy-based weighting (consumer-specified weight profiles), industry-specific weighting (gaming regulators requiring higher manipulation resistance weight), machine-learned weighting (optimizing weights based on historical trust outcomes), and regulator-defined weighting (weights mandated by regulatory frameworks).</p>
+
+<h4>2.3 Grade Boundaries</h4>
+
+<p><span class="para-num">[0036]</span> Grade boundaries map the 0–1000 score to human-readable grades:</p>
+
+<table>
+  <thead><tr><th>Score Range</th><th>Grade</th><th>Recommended Use</th></tr></thead>
+  <tbody>
+    <tr><td>900–1000</td><td>AAA</td><td>Casino, regulatory, enterprise critical</td></tr>
+    <tr><td>800–899</td><td>AA</td><td>AI agents, gaming, finance</td></tr>
+    <tr><td>700–799</td><td>A</td><td>Simulation, general production</td></tr>
+    <tr><td>600–699</td><td>B</td><td>Degraded sources, non-critical</td></tr>
+    <tr><td>500–599</td><td>C</td><td>Development, testing</td></tr>
+    <tr><td>0–499</td><td>LOW</td><td>Development only</td></tr>
+  </tbody>
+</table>
+
+<h4>2.4 Fallback Penalty System</h4>
+
+<p><span class="para-num">[0037]</span> When a source adapter fails to retrieve live external entropy and falls back to local cryptographic randomness, defined penalties are applied to affected dimensions. For one fallback source: verification success is reduced by 100 points and manipulation resistance by 50. For two fallbacks: verification success reduced by 250, manipulation resistance by 150, diversity by 150. When all sources fall back: all penalties applied, total score capped at 650, grade cannot exceed B. The confidence metadata explicitly reports fallback count, live source count, and overall source status, ensuring the score never misrepresents entropy quality.</p>
+
+<h3>3. Canonical Signing Protocol</h3>
+
+<h4>3.1 Canonicalization</h4>
+
+<p><span class="para-num">[0038]</span> Before signing, a VEO is transformed into a deterministic canonical form: (a) all object keys at every nesting level are sorted alphabetically (deep sort); (b) undefined values are removed; (c) null values are preserved explicitly; (d) stable serialization is applied to produce a deterministic byte string. The same VEO must always produce the same canonical byte string, regardless of the order in which fields were originally set.</p>
+
+<h4>3.2 Field Inclusion and Exclusion</h4>
+
+<p><span class="para-num">[0039]</span> The canonical signing payload includes: standard, version, object_id, object_class, entropy, entropy_hash, issued_at, expires_at, provider, sources, aggregation, confidence, lineage, and policy. Excluded: all fields within the proof object (the signature cannot include itself) and all fields within the anchor object (transaction hash, block number, and timestamp are only known after anchoring). The anchor field is set to null in the canonical payload.</p>
+
+<h4>3.3 Signing Process</h4>
+
+<p><span class="para-num">[0040]</span> In the preferred embodiment, the canonical payload is hashed using SHA-256, and the hash is signed using EIP-191 personal message signing with the provider's secp256k1 private key. The provider's address is recoverable from the signature, enabling verification without access to the private key. In alternative embodiments, any asymmetric cryptographic signature scheme capable of proving authenticity and permitting verification may be used, including but not limited to: Ed25519, RSA, ECDSA with other curves, post-quantum signature schemes (e.g., CRYSTALS-Dilithium, FALCON, SPHINCS+), or future asymmetric signature systems.</p>
+
+<h3>4. Multi-Level Verification Framework — Trust State Machine</h3>
+
+<p><span class="para-num">[0041]</span> The verification framework assigns each VEO to one of a plurality of trust states based on progressively evaluated verification criteria. The framework functions as a trust state machine where a VEO transitions between states as verification checks succeed or fail:</p>
+
+<table>
+  <thead><tr><th>Trust State</th><th>Requirements</th></tr></thead>
+  <tbody>
+    <tr><td><code>structurally_valid_unsigned</code></td><td>Schema valid; entropy hash matches payload; no signature required</td></tr>
+    <tr><td><code>cryptographically_verified</code></td><td>All above + provider signature verified against public key / recovered address</td></tr>
+    <tr><td><code>anchored_verified</code></td><td>All above + immutable ledger anchor verified (Merkle proof or transaction hash)</td></tr>
+    <tr><td><code>policy_failed</code></td><td>Object is structurally and cryptographically valid but does not meet the consumer's policy requirements (e.g., ECS below threshold, insufficient sources)</td></tr>
+    <tr><td><code>invalid</code></td><td>Hash mismatch, signature invalid, schema violation, or structural error</td></tr>
+  </tbody>
+</table>
+
+<p><span class="para-num">[0042]</span> In alternative embodiments, additional trust states may include: <code>pending</code> (anchor submitted but not confirmed), <code>partially_verified</code> (some but not all verification checks passed), <code>expired</code> (VEO has passed its expiration timestamp), <code>revoked</code> (provider has issued a revocation), and <code>superseded</code> (a newer VEO has replaced this one). The state machine is extensible without protocol version changes.</p>
+
+<p><span class="para-num">[0043]</span> Verification requires no cooperation from the provider. Given only the VEO object and the provider's public key (or Ethereum address), any party — anywhere, at any time, with no network access — can verify integrity (recompute entropy hash), authenticity (verify signature), quality (reproduce ECS from source records), and temporal anchoring (validate Merkle proof against on-chain root). This independent verification property is what distinguishes a trust assertion from an audit log.</p>
+
+<h3>5. Consumer Policy System</h3>
+
+<p><span class="para-num">[0044]</span> The system supports consumer-specified policies defining minimum trust requirements. Policies may specify: minimum ECS score, minimum number of entropy sources, required source types, anchor required (boolean), maximum latency, maximum age, allowed source types (inclusion list), and excluded source types (exclusion list). When a generated VEO does not meet the consumer's policy, the system returns the VEO with a <code>policy_failed</code> verification state and a structured explanation of which requirements were not met. The system does not silently substitute a lower-quality VEO.</p>
+
+<h3>6. Entropy Provenance Graph (Lineage)</h3>
+
+<p><span class="para-num">[0045]</span> Each VEO may reference parent VEOs through a lineage field containing an array of parent object identifiers and a lineage hash. This creates a directed acyclic graph (DAG) of trust artifact derivation. Use cases include: multi-stage entropy derivation (a composite VEO references raw single-source VEOs), decision chains (a VEO used for an agent decision links to the parent VEO that allocated the task), and audit trails (an auditor traverses the lineage graph from any leaf VEO to the root entropy sources).</p>
+
+<p><span class="para-num">[0046]</span> The lineage mechanism enforces a trust non-amplification invariant: a child VEO's ECS cannot exceed its parent's ECS. Trust can degrade through the lineage graph (fewer sources, more processing) but cannot amplify.</p>
+
+<h3>7. Immutable Ledger Anchoring</h3>
+
+<p><span class="para-num">[0047]</span> A VEO may optionally be anchored to an immutable verification substrate. In the preferred embodiment, anchoring is performed via a Merkle batch system: multiple VEOs are organized as leaves of a Merkle tree, the root is recorded in a blockchain smart contract (Polygon, in the preferred embodiment), and each VEO carries a Merkle proof linking it to the on-chain root. In alternative embodiments, the immutable substrate may be any public blockchain, consortium chain, private chain, append-only distributed ledger, certificate transparency log, notarization network, or distributed timestamping system.</p>
+
+<p><span class="para-num">[0048]</span> Anchoring provides temporal proof (the VEO existed at or before the block timestamp) and immutability (the anchor cannot be retroactively altered). Anchoring is asynchronous and does not block VEO issuance — tokens may be signed and served before anchoring completes.</p>
+
+<h3>8. Interoperability and Vendor-Neutral Verification</h3>
+
+<p><span class="para-num">[0049]</span> A critical design property of the VEO format is vendor-neutral verification. A VEO generated by Provider A can be verified by Provider B, consumed by Consumer C, and audited by Auditor D — without any of these parties trusting each other or having a business relationship. The verification requires only the VEO object and the provider's public key material.</p>
+
+<p><span class="para-num">[0050]</span> This interoperability is achieved through: (a) the use of open, documented cryptographic standards (SHA-256, secp256k1, EIP-191 — or alternatives); (b) deterministic canonicalization ensuring that any implementation produces the same signing payload from the same VEO; (c) self-describing objects that carry all information needed for verification; and (d) public key infrastructure that enables independent signature verification.</p>
+
+<h3>9. Entropy-as-a-Service Architecture</h3>
+
+<p><span class="para-num">[0051]</span> In an embodiment for network-accessible deployment, the system provides the following services through RESTful APIs or equivalent network interfaces:</p>
+
+<ol type="a">
+  <li><strong>Entropy Generation Service:</strong> Generates raw entropy from configured sources.</li>
+  <li><strong>VEO Issuance Service:</strong> Constructs, scores, signs, and returns VEOs with configurable policies.</li>
+  <li><strong>VEO Verification Service:</strong> Accepts VEOs and returns structured verification results with trust state assignments.</li>
+  <li><strong>ECS Scoring Service:</strong> Accepts source records and returns computed ECS scores.</li>
+  <li><strong>Anchoring Service:</strong> Manages batch anchoring of VEOs to immutable ledgers.</li>
+</ol>
+
+<h3>10. Decision Attestation — Linking Trust Artifacts to Decisions</h3>
+
+<p><span class="para-num">[0052]</span> In an embodiment for AI agent systems and autonomous decision-making, the system links VEOs to specific decisions. An autonomous software agent generates or references a VEO prior to making a non-deterministic decision and records the VEO identifier alongside the decision outcome. This creates a verifiable linkage between the entropy used and the decision made.</p>
+
+<p><span class="para-num">[0053]</span> Decision attestation records may include: a decision identifier, a decision type (e.g., "tool_selection", "task_routing", "resource_allocation"), the selected option, a confidence measure, the VEO identifier, and an optional signature. A third party may reconstruct the decision context by verifying the associated VEO and related decision records.</p>
+
+<p><span class="para-num">[0054]</span> Domains for decision attestation include: AI agent tool selection and task routing, multi-agent arbitration and coordination, autonomous execution approval, model selection and hyperparameter sampling, governance votes (DAO, corporate), clinical trial randomization, financial algorithm execution, and automated compliance decisions.</p>
+
+<p><span class="para-num">[0055]</span> This embodiment reserves continuation opportunities for a future Verifiable Decision Object (VDO) patent, wherein the decision object references the VEO, the model, the inputs, and the policy, and the entire chain is independently verifiable.</p>
+
+<h3>11. Five-Layer Trust Stack Architecture</h3>
+
+<p><span class="para-num">[0056]</span> The VEO system constitutes Layer 3 (Trust Evidence) of a five-layer Computational Trust Infrastructure:</p>
+
+<table>
+  <thead><tr><th>Layer</th><th>Name</th><th>Function</th><th>Patent</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Trust Source</td><td>Generate verifiable entropy from multiple sources</td><td>Patent #1</td></tr>
+    <tr><td>2</td><td>Trust Integrity</td><td>Prevent manipulation and preview (VDF anti-preview)</td><td>Patent #2</td></tr>
+    <tr><td>3</td><td>Trust Evidence</td><td>Package into VEO with scoring, signing, anchoring</td><td>Patent #3 (this)</td></tr>
+    <tr><td>4</td><td>Trust Coordination</td><td>Propagate trust between agents and across boundaries</td><td>Future</td></tr>
+    <tr><td>5</td><td>Trust Runtime</td><td>Governance, compliance, continuous verification</td><td>Future</td></tr>
+  </tbody>
+</table>
+
+<p><span class="para-num">[0057]</span> This layered architecture ensures that the patent family is coherent and non-overlapping: each patent claims a distinct layer, and together they cover the complete Computational Trust Infrastructure.</p>
+
+<h3>12. Alternative Embodiments</h3>
+
+<h4>12.1 Alternative Cryptographic Schemes</h4>
+
+<p><span class="para-num">[0058]</span> While the preferred embodiment uses SHA-256 for hashing and secp256k1 with EIP-191 for signing, alternative embodiments may use any cryptographic hash function (SHA-3, BLAKE2, BLAKE3, Keccak, future hash functions) and any asymmetric signature scheme (Ed25519, RSA, ECDSA with other curves, post-quantum schemes including CRYSTALS-Dilithium, FALCON, SPHINCS+, or future signature systems).</p>
+
+<h4>12.2 Alternative Anchoring Targets</h4>
+
+<p><span class="para-num">[0059]</span> While the preferred embodiment uses Polygon blockchain, alternative embodiments may anchor to any immutable verification substrate including public blockchains, consortium chains, private chains, append-only ledgers, transparency logs, notarization networks, or distributed timestamping systems.</p>
+
+<h4>12.3 Dynamic ECS Weighting</h4>
+
+<p><span class="para-num">[0060]</span> In alternative embodiments, ECS dimension weights are configurable per-policy, per-industry, per-regulator, or dynamically adjusted based on source conditions, consumer requirements, or machine learning optimization.</p>
+
+<h4>12.4 Multi-Party Governance</h4>
+
+<p><span class="para-num">[0061]</span> In embodiments for governance applications, VEOs are referenced during outcome generation in DAO voting, lottery systems, regulated gaming, compliance approvals, and corporate governance. The VEO provides independently verifiable proof that the outcome was derived from fair, quality-scored entropy.</p>
+
+<h4>12.5 AI Audit Trail</h4>
+
+<p><span class="para-num">[0062]</span> In embodiments for AI auditability, VEOs provide decision provenance, replayability, regulatory review support, model governance evidence, and post-event investigation capability. A third party may reconstruct the decision context by verifying the associated VEO and tracing its lineage graph to the root entropy sources.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Claims</h2>
+
+<p class="no-indent" style="font-style:italic; margin-bottom:18pt;">What is claimed is:</p>
+
+<p class="claim"><strong>1.</strong> A computer-implemented method for establishing verifiable trust over a non-deterministic computation, comprising:</p>
+<p class="sub-claim">(a) obtaining entropy from one or more independent entropy sources;</p>
+<p class="sub-claim">(b) constructing a structured digital object encapsulating at least: the entropy payload, an array of source provenance records identifying each entropy source, and a cryptographic hash of the entropy payload;</p>
+<p class="sub-claim">(c) computing a multi-dimensional quality score for the entropy by independently evaluating a plurality of quality dimensions and combining the dimension scores using configurable weights to produce a composite score;</p>
+<p class="sub-claim">(d) transforming the structured digital object into a deterministic canonical form using key sorting and stable serialization;</p>
+<p class="sub-claim">(e) computing a cryptographic signature over the canonical form using an asymmetric signature scheme; and</p>
+<p class="sub-claim">(f) assigning the structured digital object to one of a plurality of trust states based on progressively evaluated verification criteria,</p>
+<p class="sub-claim">wherein the structured digital object constitutes a verifiable trust assertion regarding the non-deterministic computation, and wherein any party can independently verify the trust assertion using the object and the provider's public key material without trusting the provider or contacting any external service.</p>
+
+<p class="claim"><strong>2.</strong> The method of claim 1, wherein the plurality of quality dimensions comprises at least: freshness, source diversity, source independence, manipulation resistance, verification success rate, and source availability.</p>
+
+<p class="claim"><strong>3.</strong> The method of claim 1, wherein the composite score is expressed as an integer from 0 to 1000 with defined grade boundaries mapping score ranges to human-readable quality grades.</p>
+
+<p class="claim"><strong>4.</strong> The method of claim 1, further comprising applying a fallback penalty to the quality score when one or more entropy sources fail to provide live entropy and fall back to local cryptographic randomness, wherein the penalty reduces specific dimension scores and optionally caps the maximum achievable composite score and grade.</p>
+
+<p class="claim"><strong>5.</strong> The method of claim 1, wherein the configurable weights of the quality dimensions are adjustable per consumer policy, per industry requirement, per regulatory mandate, or dynamically based on source conditions.</p>
+
+<p class="claim"><strong>6.</strong> The method of claim 1, wherein the deterministic canonical form is produced by: (i) sorting all object keys at every nesting level alphabetically; (ii) removing undefined values; (iii) preserving null values explicitly; (iv) excluding fields within the proof and anchor objects; and (v) applying stable serialization, such that the same structured digital object always produces the same canonical byte string.</p>
+
+<p class="claim"><strong>7.</strong> The method of claim 1, wherein the asymmetric signature scheme is selected from the group consisting of: secp256k1 with EIP-191, Ed25519, RSA, ECDSA, and post-quantum signature schemes.</p>
+
+<p class="claim"><strong>8.</strong> The method of claim 1, wherein the plurality of trust states comprises at least: structurally valid unsigned, cryptographically verified, anchored verified, policy failed, and invalid.</p>
+
+<p class="claim"><strong>9.</strong> The method of claim 8, wherein the plurality of trust states further comprises one or more of: pending, partially verified, expired, revoked, and superseded.</p>
+
+<p class="claim"><strong>10.</strong> The method of claim 1, further comprising recording the cryptographic hash of the structured digital object on an immutable verification substrate, thereby providing temporal proof that the object existed at or before the recording timestamp.</p>
+
+<p class="claim"><strong>11.</strong> The method of claim 10, wherein the immutable verification substrate is selected from the group consisting of: public blockchains, consortium blockchains, private blockchains, append-only distributed ledgers, certificate transparency logs, notarization networks, and distributed timestamping systems.</p>
+
+<p class="claim"><strong>12.</strong> The method of claim 1, further comprising a lineage mechanism wherein the structured digital object references one or more parent objects by identifier, creating a directed acyclic graph of trust artifact derivation enabling full audit trail construction.</p>
+
+<p class="claim"><strong>13.</strong> The method of claim 12, wherein the lineage mechanism enforces a trust non-amplification invariant: a child object's quality score cannot exceed its parent's quality score.</p>
+
+<p class="claim"><strong>14.</strong> The method of claim 1, further comprising classifying the structured digital object into one of a plurality of object classes based on provenance characteristics, wherein the classes comprise at least: a raw single-source class, a composite multi-source class, an anchored class, and a decision class linked to a specific computation outcome.</p>
+
+<p class="claim"><strong>15.</strong> The method of claim 1, further comprising evaluating the structured digital object against a consumer policy specifying minimum quality score, minimum source count, required source types, and anchoring requirements, and returning a policy failure result with structured explanation when the object does not meet the policy requirements.</p>
+
+<p class="claim"><strong>16.</strong> A system for generating verifiable trust artifacts for non-deterministic computation, comprising:</p>
+<p class="sub-claim">one or more processors; and</p>
+<p class="sub-claim">memory storing instructions that, when executed, cause the system to:</p>
+<p class="sub-sub-claim">(a) obtain entropy from a plurality of independent sources;</p>
+<p class="sub-sub-claim">(b) aggregate the entropy deterministically using one or more cryptographic hash functions;</p>
+<p class="sub-sub-claim">(c) construct a self-describing digital object carrying the aggregated entropy, source provenance records, and aggregation metadata;</p>
+<p class="sub-sub-claim">(d) compute a multi-dimensional quality score across a plurality of independently evaluated dimensions;</p>
+<p class="sub-sub-claim">(e) produce a deterministic canonical form of the digital object;</p>
+<p class="sub-sub-claim">(f) compute a cryptographic signature over the canonical form;</p>
+<p class="sub-sub-claim">(g) assign the digital object to a trust state based on progressively evaluated verification criteria; and</p>
+<p class="sub-sub-claim">(h) enable any party to independently verify the digital object using only the object and the provider's public key material.</p>
+
+<p class="claim"><strong>17.</strong> The system of claim 16, further comprising a network-accessible service interface providing VEO issuance, verification, scoring, and anchoring services.</p>
+
+<p class="claim"><strong>18.</strong> The system of claim 16, wherein the system supports vendor-neutral verification: a digital object generated by a first provider is verifiable by a second provider, consumable by a third party, and auditable by a fourth party, without mutual trust between any parties.</p>
+
+<p class="claim"><strong>19.</strong> A computer-implemented method for linking verifiable trust artifacts to autonomous decisions, comprising:</p>
+<p class="sub-claim">(a) generating a verifiable trust artifact comprising entropy payload, source provenance, quality score, and cryptographic signature;</p>
+<p class="sub-claim">(b) providing the trust artifact to an autonomous software agent prior to the agent making a non-deterministic decision;</p>
+<p class="sub-claim">(c) recording a decision attestation record comprising at least: a decision identifier, a decision type, the selected outcome, and the trust artifact identifier; and</p>
+<p class="sub-claim">(d) enabling independent verification of the decision by verifying the trust artifact and confirming its linkage to the decision attestation record.</p>
+
+<p class="claim"><strong>20.</strong> The method of claim 19, wherein the decision type is selected from the group consisting of: AI agent tool selection, task routing, resource allocation, response sampling, model selection, autonomous execution approval, governance voting, clinical trial randomization, and financial algorithm execution.</p>
+
+<p class="claim"><strong>21.</strong> A non-transitory computer-readable medium storing instructions that, when executed by one or more processors, cause the one or more processors to perform a method comprising:</p>
+<p class="sub-claim">(a) obtaining entropy from one or more independent sources and recording source provenance;</p>
+<p class="sub-claim">(b) computing a multi-dimensional quality score for the entropy;</p>
+<p class="sub-claim">(c) constructing a self-describing digital object carrying the entropy, provenance, and quality score;</p>
+<p class="sub-claim">(d) producing a deterministic canonical form of the object and computing a cryptographic signature;</p>
+<p class="sub-claim">(e) assigning the object to a trust state based on verification criteria; and</p>
+<p class="sub-claim">(f) enabling independent, offline verification of the object by any party using only the object and the provider's public key material,</p>
+<p class="sub-claim">wherein the digital object constitutes a portable, verifiable trust assertion regarding a non-deterministic computation.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Abstract of the Disclosure</h2>
+
+<p class="no-indent">A method and system for establishing portable, verifiable trust over non-deterministic computation through the generation, quality assessment, cryptographic attestation, optional immutable anchoring, and independent verification of structured trust artifacts called Verifiable Entropy Objects (VEOs). A VEO encapsulates an entropy payload, source provenance records, a multi-dimensional quality score (Entropy Confidence Score, 0–1000 across six dimensions), a cryptographic signature computed over a deterministic canonical form, optional immutable ledger anchoring, and lineage references. The VEO constitutes a cryptographically verifiable trust assertion: "This non-deterministic output was generated from these sources, at this quality, with this attestation, and can be independently verified." Any party can verify a VEO using only the object and the provider's public key — offline, air-gapped, and at any future time — without trusting the provider. The system supports object classification (single-source, composite, anchored, decision), a multi-level trust state machine for progressive verification, consumer policy enforcement, entropy provenance graphs for audit trail construction, decision attestation for AI agent systems, vendor-neutral cross-provider verification, and Entropy-as-a-Service deployment. The invention provides the Trust Evidence layer (Layer 3) of a five-layer Computational Trust Infrastructure, doing for uncertainty what JWT does for identity and PDF does for documents: making it portable, auditable, and trustworthy.</p>
+
+</body>
+</html>

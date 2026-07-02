@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Non-Provisional Patent — VDF-Protected Batch Random Number Generation with Anti-Preview Guarantees</title>
+<style>
+  @page {
+    size: letter;
+    margin: 25mm 25mm 30mm 25mm;
+    @bottom-center {
+      content: counter(page);
+      font-family: 'Times New Roman', serif;
+      font-size: 10pt;
+      color: #666;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Times New Roman', 'Noto Serif TC', serif;
+    font-size: 12pt;
+    line-height: 2.0;
+    color: #000;
+    background: #fff;
+    max-width: 8.5in;
+    margin: 0 auto;
+    padding: 1in;
+  }
+  .cover {
+    page-break-after: always;
+    text-align: center;
+    padding-top: 1.5in;
+  }
+  .cover h1 {
+    font-size: 14pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 0.4in;
+    line-height: 1.5;
+  }
+  .cover .doc-type {
+    font-size: 14pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.8in;
+  }
+  .cover .meta {
+    font-size: 11pt;
+    line-height: 2.0;
+  }
+  .cover .confidential {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 1in;
+    padding: 8px 24px;
+    border: 2px solid #000;
+    display: inline-block;
+  }
+  h2 {
+    font-size: 12pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 24pt;
+    margin-bottom: 12pt;
+    text-align: center;
+  }
+  h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 18pt;
+    margin-bottom: 6pt;
+  }
+  h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+  }
+  p {
+    margin-bottom: 12pt;
+    text-align: justify;
+    text-indent: 0.5in;
+  }
+  p.no-indent { text-indent: 0; }
+  p.claim { text-indent: 0; margin-left: 0.5in; margin-bottom: 8pt; }
+  p.sub-claim { text-indent: 0; margin-left: 1.0in; margin-bottom: 6pt; }
+  p.sub-sub-claim { text-indent: 0; margin-left: 1.5in; margin-bottom: 6pt; }
+  .para-num { font-weight: bold; margin-right: 8pt; }
+  ol, ul { margin: 6pt 0 12pt 0.75in; }
+  li { margin-bottom: 4pt; }
+  .figure {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    background: #f9f9f9;
+    break-inside: avoid;
+  }
+  .figure-label {
+    font-weight: bold;
+    font-size: 11pt;
+    margin-bottom: 12px;
+  }
+  .figure pre {
+    font-family: 'Courier New', monospace;
+    font-size: 8.5pt;
+    line-height: 1.4;
+    text-align: left;
+    display: inline-block;
+    white-space: pre;
+  }
+  hr { border: none; border-top: 1px solid #999; margin: 24pt 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12pt 0;
+    font-size: 11pt;
+  }
+  th, td {
+    border: 1px solid #999;
+    padding: 6pt 8pt;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #f0f0f0; font-weight: bold; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="doc-type">Non-Provisional Patent Application</div>
+  <h1>Method and System for Verifiable Delay Function-Protected<br>Batch Random Number Generation<br>with Anti-Preview Guarantees</h1>
+  <h1 style="font-size:12pt; font-weight:normal; text-transform:none; margin-bottom:0.4in;">可驗證延遲函數保護之批次隨機數生成方法與系統<br>——具反預覽保證</h1>
+  <div class="meta">
+    Inventor: [Inventor Name]<br>
+    Date of Filing: [Filing Date]<br>
+    Priority Date: [Provisional Filing Date]<br>
+    Provisional Application No.: [Provisional Serial Number]<br>
+    <br>
+    Prepared for: Saint Island International Patent &amp; Law Offices<br>
+    聖島國際專利商標聯合事務所<br>
+  </div>
+  <div class="confidential">Attorney-Client Privileged &amp; Confidential</div>
+</div>
+
+<!-- ================================================================ -->
+<h2>Cross-Reference to Related Applications</h2>
+
+<p><span class="para-num">[0001]</span> This application claims the benefit of U.S. Provisional Application No. [Provisional Serial Number], filed [Provisional Filing Date], entitled "Method and System for Verifiable Delay Function-Protected Batch Random Number Generation with Anti-Preview Guarantees," which is incorporated herein by reference in its entirety.</p>
+
+<p><span class="para-num">[0002]</span> This application is related to U.S. Patent Application Serial No. [Patent #1 Serial Number] (hereinafter "the First Application"), entitled "Method and System for Gaming Random Number Generation," filed [date], which describes a Merkle-tree-based random number generation and verification system with blockchain anchoring.</p>
+
+<p><span class="para-num">[0003]</span> This application is also related to U.S. Patent Application Serial No. [Patent #3 Serial Number] (hereinafter "the Third Application"), entitled "Method and System for Generating, Scoring, Signing, Anchoring, and Verifying Verifiable Entropy Objects," filed [date], which describes a structured, self-describing, cryptographically verifiable entropy object format with multi-dimensional quality scoring.</p>
+
+<p><span class="para-num">[0004]</span> The present invention provides a complementary guarantee to the First Application. Where the First Application provides post-commitment integrity through Merkle tree verification (proving that random values were not changed after the root was committed), the present invention provides pre-commitment unpredictability through Verifiable Delay Function computation (proving that random values could not have been known before the commitment was made). Together, these two applications provide complete temporal integrity — values are neither knowable before generation nor alterable after generation.</p>
+
+<p><span class="para-num">[0005]</span> The present invention further provides the Trust Source layer (Layer 1) of the Computational Trust Infrastructure described in the related applications, generating the foundational entropy material that the Third Application's Verifiable Entropy Objects encapsulate and attest.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Field of the Invention</h2>
+
+<p><span class="para-num">[0006]</span> The present invention relates generally to systems and methods for generating cryptographically secured random numbers. More specifically, the invention relates to a pipeline integrating Verifiable Delay Functions, distributed randomness beacons, multi-source entropy aggregation, deterministic batch generation, Merkle tree construction, immutable ledger anchoring, and pool-based token serving — providing verifiable anti-preview guarantees that prevent any party, including the system operator, from previewing, predicting, pre-computing, or selectively filtering random values before the batch generation process is complete.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Background of the Invention</h2>
+
+<h3>1. The Insider Preview Vulnerability in Batch Random Number Generation</h3>
+
+<p><span class="para-num">[0007]</span> In many applications — online gaming, AI agent task allocation, clinical trial randomization, financial algorithm execution, lottery systems, and autonomous decision-making — random numbers must be generated in advance, stored in pools, and served on demand at very low latency (often sub-2 milliseconds). This batch-and-pool architecture is necessary because real-time random number generation cannot meet the latency requirements of high-throughput applications.</p>
+
+<p><span class="para-num">[0008]</span> Merkle-tree-based verification systems (such as those described in the First Application) provide an important integrity guarantee for batch random number systems: once the Merkle root hash is computed and anchored to an immutable ledger, any modification to any leaf value in the tree is cryptographically detectable. This provides <em>post-commitment integrity</em> — the guarantee that values were not tampered with after the batch was committed.</p>
+
+<p><span class="para-num">[0009]</span> However, Merkle-tree verification alone does not address a distinct and equally critical vulnerability: the <em>insider preview attack</em>. In this attack:</p>
+
+<ol type="a">
+  <li>The system operator generates one or more candidate batches of N random values and constructs Merkle trees for each.</li>
+  <li>Before anchoring any root hash to the immutable ledger, the operator previews all values in all candidate batches.</li>
+  <li>The operator selects which batch to anchor, choosing a batch whose values are favorable to the operator's interests (or unfavorable to specific consumers, competitors, or counterparties).</li>
+  <li>The selected batch passes all Merkle verification checks because the values were never modified after commitment — the attack does not alter values but rather selects among pre-computed alternatives.</li>
+</ol>
+
+<p><span class="para-num">[0010]</span> The insider preview attack is particularly dangerous because it is undetectable by post-commitment verification alone. The Merkle tree is cryptographically intact. The blockchain anchor is genuine. All verification checks pass. The manipulation occurred in the temporal gap between value generation and commitment — a gap that Merkle verification, by design, does not cover.</p>
+
+<h3>2. Limitations of Existing Approaches</h3>
+
+<p><span class="para-num">[0011]</span> <strong>Hardware Random Number Generators (HRNGs).</strong> HRNGs produce entropy from physical processes (thermal noise, radioactive decay, quantum phenomena). While the entropy quality may be excellent, HRNGs provide no mechanism to prove that the operator did not preview, buffer, filter, or selectively discard the output before incorporating it into a batch. The physical entropy generation is not time-locked; values are available instantly upon generation, enabling immediate preview.</p>
+
+<p><span class="para-num">[0012]</span> <strong>Pseudo-Random Number Generators (PRNGs) and Cryptographically Secure PRNGs (CSPRNGs).</strong> PRNGs and CSPRNGs are deterministic given a seed. If the seed is known — or can be determined — before batch generation, the entire batch is immediately computable and therefore previewable. Even CSPRNGs that use high-quality seeds (e.g., from <code>/dev/urandom</code>) do not prevent the operator from computing and previewing the full batch instantaneously, because the computation is fast and non-sequential.</p>
+
+<p><span class="para-num">[0013]</span> <strong>Verifiable Random Functions (VRFs).</strong> VRFs, such as those described in U.S. Patent No. 12,401,532 B2 (Chainlink, "Method and Apparatus for Producing Verifiable Randomness Within a Decentralized Computing Network"), prove that a specific output was correctly derived from a specific input using a specific secret key. However, VRFs have several limitations in the context of anti-preview batch generation:</p>
+
+<ol type="a">
+  <li>VRFs are typically designed for single-value generation, not batch generation of thousands of values for pool-based serving.</li>
+  <li>The holder of the VRF secret key can compute the VRF output for any input instantaneously, enabling preview of future outputs given anticipated future inputs.</li>
+  <li>VRFs do not inherently introduce a time-lock: the VRF computation is fast (typically sub-millisecond), allowing rapid generation and evaluation of multiple candidate outputs.</li>
+  <li>VRFs require an on-chain callback mechanism for verification, preventing offline or air-gapped verification.</li>
+  <li>VRFs typically use a single entropy source (the secret key holder's computation), not multi-source aggregation.</li>
+</ol>
+
+<p><span class="para-num">[0014]</span> <strong>Commit-Reveal Schemes.</strong> Traditional commit-reveal protocols require interactive participation from multiple parties: one party commits to a value (publishing a hash), and later reveals the value. While this prevents single-party manipulation, commit-reveal schemes require real-time coordination, introduce latency equal to the reveal delay, require all parties to be online simultaneously, and do not scale to batch generation of tens of thousands of values for pool-based sub-millisecond serving.</p>
+
+<p><span class="para-num">[0015]</span> <strong>Trusted Execution Environments (TEEs).</strong> TEEs (Intel SGX, ARM TrustZone, AWS Nitro Enclaves) provide hardware-isolated execution that prevents the host from inspecting computation. However, TEEs prove execution isolation, not temporal unpredictability. A TEE can faithfully execute a batch generation algorithm, but the TEE attestation does not prove that the values were unknowable before a specific time — only that the execution environment was not tampered with. TEE-based approaches also introduce hardware dependency and supply-chain trust assumptions.</p>
+
+<p><span class="para-num">[0016]</span> <strong>Public Randomness Beacons (e.g., drand, NIST Randomness Beacon).</strong> Public beacons produce verifiable random values at regular intervals. However, beacons produce single values per round (not batches), operate at fixed intervals (typically 3-30 seconds, too slow for per-request serving), and do not address the batch-to-pool pipeline required for sub-millisecond serving.</p>
+
+<h3>3. Verifiable Delay Functions — Prior Art and Distinction</h3>
+
+<p><span class="para-num">[0017]</span> Verifiable Delay Functions (VDFs) are a class of cryptographic primitive formally defined by Boneh, Bonneau, Bünz, and Fisch ("Verifiable Delay Functions," IACR ePrint 2018/601, 2018). A VDF takes a prescribed amount of sequential computation time T to evaluate, even on a parallel computer, and produces an output accompanied by a proof that can be efficiently verified (typically in O(log T) time).</p>
+
+<p><span class="para-num">[0018]</span> VDFs have been proposed and implemented in several contexts:</p>
+
+<ol type="a">
+  <li><strong>Boneh et al. (2018):</strong> Theoretical definition of VDFs, including Wesolowski and Pietrzak constructions based on repeated squaring in groups of unknown order.</li>
+  <li><strong>Tezos (Nomadic Labs, 2022):</strong> Integration of VDFs into the Kathmandu protocol upgrade for improving random seed generation for block proposer selection in proof-of-stake consensus.</li>
+  <li><strong>StarkWare VeeDo:</strong> A VDF computation service with STARK proof verification on Ethereum, demonstrating VDF + on-chain verification.</li>
+  <li><strong>Ethereum Research:</strong> Proposals for VDF-based randomness in Ethereum's consensus layer.</li>
+</ol>
+
+<p><span class="para-num">[0019]</span> While the VDF primitive itself is known, no prior art describes the specific combination of innovations in the present invention: (i) integration of VDFs into a batch random number generation pipeline producing tens of thousands of values from a single VDF output, (ii) combination of VDF anti-preview with Merkle anti-tamper to provide dual temporal integrity, (iii) asynchronous blockchain anchoring decoupled from token availability, (iv) multi-worker VDF computation with priority-based scheduling, (v) shared and dedicated pool architectures with automatic refill, (vi) hierarchical entropy source fallback with transparent provenance recording, and (vii) integration with distributed randomness beacons for publicly verifiable VDF input seeds.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Summary of the Invention</h2>
+
+<p><span class="para-num">[0020]</span> The present invention provides a method and system for generating batches of verifiably unpredictable random numbers with anti-preview guarantees. The invention addresses the insider preview vulnerability in batch random number generation systems by introducing a Verifiable Delay Function (VDF) computation step that creates a temporal barrier, ensuring that no party — including the system operator — can know, predict, preview, filter, or selectively commit random values before a minimum sequential computation time has elapsed.</p>
+
+<p><span class="para-num">[0021]</span> The invention provides:</p>
+
+<ol>
+  <li>A VDF-protected seed generation pipeline with configurable computation time T, providing a mathematically guaranteed anti-preview barrier.</li>
+  <li>Multi-source entropy aggregation combining distributed randomness beacons, blockchain entropy, and optionally hardware entropy sources, with automatic hierarchical fallback and transparent provenance recording.</li>
+  <li>Deterministic batch derivation producing N random values (where N may be 1,024 to 1,048,576 or more) from a single VDF output, organized in a Merkle tree for individual-value verification.</li>
+  <li>Dual temporal integrity guarantees: VDF-based anti-preview (values unknowable before T) combined with Merkle-based anti-tamper (values unalterable after commitment).</li>
+  <li>Asynchronous anchoring architecture decoupling token availability from immutable ledger confirmation, enabling sub-millisecond token serving while anchoring proceeds in the background.</li>
+  <li>Multi-worker VDF computation enabling parallel generation of multiple batches while maintaining sequential (anti-preview) integrity within each batch.</li>
+  <li>Shared and dedicated pool architectures for different deployment scenarios, with automatic threshold-based and emergency refill mechanisms.</li>
+  <li>Integration with Verifiable Entropy Object (VEO) standards for structured trust evidence packaging.</li>
+</ol>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Brief Description of the Drawings</h2>
+
+<p class="no-indent"><strong>FIG. 1</strong> illustrates the overall system architecture of the VDF-protected batch random number generation system.</p>
+<p class="no-indent"><strong>FIG. 2</strong> illustrates the VDF anti-preview timeline showing the temporal barriers provided by VDF computation, Merkle commitment, and blockchain anchoring.</p>
+<p class="no-indent"><strong>FIG. 3</strong> illustrates the batch derivation pipeline from entropy acquisition through VDF computation, batch generation, Merkle tree construction, and dual-path output.</p>
+<p class="no-indent"><strong>FIG. 4</strong> illustrates the multi-worker VDF architecture with priority-based scheduling.</p>
+<p class="no-indent"><strong>FIG. 5</strong> illustrates the shared pool architecture with pre-warming, threshold-based refill, and per-consumer rate limiting.</p>
+<p class="no-indent"><strong>FIG. 6</strong> illustrates the hierarchical entropy source architecture with automatic fallback and provenance recording.</p>
+<p class="no-indent"><strong>FIG. 7</strong> illustrates the complete token lifecycle from VDF-protected generation through pool serving, consumer delivery, and independent verification.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Detailed Description of Preferred Embodiments</h2>
+
+<p><span class="para-num">[0022]</span> The following description sets forth specific embodiments of the invention. These embodiments are illustrative and not limiting; the invention encompasses all equivalents, variations, and modifications within the scope of the appended claims.</p>
+
+<h3>1. System Architecture Overview</h3>
+
+<p><span class="para-num">[0023]</span> Referring to FIG. 1, the VDF-protected batch random number generation system comprises the following major components interconnected as described herein:</p>
+
+<div class="figure">
+  <div class="figure-label">FIG. 1 — System Architecture Overview</div>
+  <pre>
+┌─────────────────────────────────────────────────────────────────────┐
+│                      ENTROPY SOURCES (Layer 1a)                    │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐             │
+│  │ Distributed  │  │  Blockchain  │  │   Hardware   │  ... (ext.) │
+│  │  Randomness  │  │  Block Hash  │  │     RNG      │             │
+│  │   Beacon     │  │  (PoW/PoS)   │  │   (QRNG)     │             │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘             │
+│         └─────────────────┼─────────────────┘                     │
+│                           ▼                                       │
+│              ┌─────────────────────────┐                          │
+│              │   SEED CONSTRUCTOR      │                          │
+│              │  Hash(entropy₁ ‖ ... ‖   │                          │
+│              │        entropyₙ)        │                          │
+│              └────────────┬────────────┘                          │
+│                           ▼                                       │
+│  ┌─────────────────────────────────────────────────────────┐      │
+│  │              VDF ENGINE (Layer 1b)                      │      │
+│  │                                                         │      │
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐                │      │
+│  │  │Worker 0 │  │Worker 1 │  │Worker 2 │  ... (N)       │      │
+│  │  │ T sec   │  │ T sec   │  │ T sec   │                │      │
+│  │  └────┬────┘  └────┬────┘  └────┬────┘                │      │
+│  │       └─────────────┼─────────────┘                    │      │
+│  │              ANTI-PREVIEW BARRIER                       │      │
+│  └─────────────────────┬───────────────────────────────────┘      │
+│                        ▼                                          │
+│           ┌──────────────────────────────┐                        │
+│           │   BATCH DERIVATION (Layer 1c)│                        │
+│           │  rnGenParam → N Leaf Hashes  │                        │
+│           └──────────────┬───────────────┘                        │
+│                          ▼                                        │
+│           ┌──────────────────────────────┐                        │
+│           │   MERKLE TREE BUILDER        │                        │
+│           │   Leaves → Root Hash         │                        │
+│           └──────────────┬───────────────┘                        │
+│                          ▼                                        │
+│      ┌───────────────────────────────────────┐                    │
+│      │         DUAL-PATH OUTPUT              │                    │
+│      │  ┌───────────────┐  ┌──────────────┐  │                   │
+│      │  │  TOKEN POOL   │  │  IMMUTABLE   │  │                   │
+│      │  │  (Immediate)  │  │   LEDGER     │  │                   │
+│      │  │               │  │  ANCHOR      │  │                   │
+│      │  │  Shared or    │  │  (Async)     │  │                   │
+│      │  │  Dedicated    │  │              │  │                   │
+│      │  └───────┬───────┘  └──────────────┘  │                   │
+│      └──────────┼────────────────────────────┘                    │
+│                 ▼                                                 │
+│      ┌──────────────────────┐                                     │
+│      │   CONSUMER API       │                                     │
+│      │  Token + Proof +     │                                     │
+│      │  VDF Provenance      │                                     │
+│      └──────────────────────┘                                     │
+└─────────────────────────────────────────────────────────────────────┘
+  </pre>
+</div>
+
+<h3>2. VDF-Protected Seed Generation Pipeline</h3>
+
+<p><span class="para-num">[0024]</span> The core innovation of the present invention is the VDF-protected seed generation pipeline, which creates a temporal barrier ensuring that no party can preview the random values before a minimum sequential computation time T has elapsed. The pipeline comprises the following steps:</p>
+
+<h4>2.1 Entropy Acquisition</h4>
+
+<p><span class="para-num">[0025]</span> The system obtains entropy from one or more independent sources arranged in a hierarchical fallback architecture (FIG. 6). In the preferred embodiment, the hierarchy is:</p>
+
+<p><span class="para-num">[0026]</span> <strong>Tier 1 — Distributed Randomness Beacon.</strong> The preferred entropy source is a distributed randomness beacon, such as the drand network operated by the League of Entropy (comprising Cloudflare, Protocol Labs, academic institutions, and other independent operators). The drand beacon produces a new random value approximately every 3 seconds. Each beacon round provides: (a) a round number, (b) a randomness value (32 bytes, hexadecimal-encoded), and (c) a BLS threshold signature. The system verifies the beacon's integrity by confirming that SHA-256(signature) equals the published randomness value. In alternative embodiments, other distributed beacons may be used, including the NIST Randomness Beacon, Ethereum's RANDAO, or any future publicly verifiable randomness service.</p>
+
+<p><span class="para-num">[0027]</span> <strong>Tier 2 — Blockchain Block Entropy.</strong> If the distributed beacon is unavailable (network failure, timeout exceeding a configurable threshold, integrity check failure, or consecutive failures exceeding a configurable maximum), the system obtains entropy from one or more blockchain block hashes. Block hashes from proof-of-work chains (e.g., Bitcoin) provide entropy derived from the computational effort of the mining network. Block hashes from proof-of-stake chains (e.g., Ethereum, Polygon) provide entropy derived from validator consensus. Multiple block hashes from independent chains may be combined for increased source diversity.</p>
+
+<p><span class="para-num">[0028]</span> <strong>Tier 3 — Local Cryptographic Entropy.</strong> As a final fallback, the system uses operating system cryptographic randomness (e.g., <code>/dev/urandom</code>, <code>crypto.randomBytes()</code>, or equivalent) combined with system-specific entropy (timestamps, process identifiers, hardware counters). This tier provides the lowest source diversity but maintains the anti-preview guarantee because the VDF computation time is independent of the entropy source.</p>
+
+<p><span class="para-num">[0029]</span> <strong>Provenance Recording.</strong> The entropy source tier used for each batch is recorded in the batch metadata. This transparent provenance enables consumers and auditors to distinguish between batches sourced from publicly verifiable beacons (Tier 1), blockchain-derived entropy (Tier 2), and locally-sourced entropy (Tier 3). There are no silent fallbacks — every degradation in source quality is visible in the metadata.</p>
+
+<h4>2.2 Seed Construction</h4>
+
+<p><span class="para-num">[0030]</span> The system constructs a VDF input seed by combining entropy from the selected tier with additional entropy contributions using one or more cryptographic hash functions. In the preferred embodiment:</p>
+
+<p class="no-indent" style="margin-left: 0.5in; font-family: 'Courier New', monospace; font-size: 11pt;">
+vdfSeed = H(blockParam ‖ randomEntropy ‖ additionalEntropy)
+</p>
+
+<p><span class="para-num">[0031]</span> where H is a cryptographic hash function (SHA-256 in the preferred embodiment; SHA-3, BLAKE2, BLAKE3, or other cryptographic hash functions in alternative embodiments), blockParam is derived from a blockchain block hash, randomEntropy is the beacon or local entropy value, and additionalEntropy is optional additional randomness (e.g., from a hardware random number generator). The concatenation operator ‖ denotes bitstring concatenation.</p>
+
+<p><span class="para-num">[0032]</span> The use of multiple entropy contributions ensures that no single source controls the VDF input seed. Even if one entropy source is compromised or predictable, the remaining sources contribute unpredictability to the seed.</p>
+
+<h4>2.3 VDF Computation</h4>
+
+<p><span class="para-num">[0033]</span> The VDF input seed is processed through a Verifiable Delay Function (VDF) requiring a minimum sequential computation time of T seconds. The VDF computation is the anti-preview barrier: no party — including the system operator, the entropy source operators, and any external attacker — can determine the VDF output before T seconds of sequential computation have elapsed.</p>
+
+<p><span class="para-num">[0034]</span> In the preferred embodiment, the VDF is implemented as an iterative sequential hash chain:</p>
+
+<p class="no-indent" style="margin-left: 0.5in; font-family: 'Courier New', monospace; font-size: 11pt;">
+h[0] = H(seed ‖ "0")<br>
+h[1] = H(h[0] ‖ "1")<br>
+h[2] = H(h[1] ‖ "2")<br>
+...<br>
+h[K] = H(h[K-1] ‖ "K") = vdfOutput
+</p>
+
+<p><span class="para-num">[0035]</span> where K = T × C (T being the target computation time in seconds, C being the number of hash operations per second for the deployment hardware — default C = 10,000 in the preferred embodiment). Each iteration depends on the previous iteration's output, creating a strict sequential dependency that prevents parallelization. Even with unlimited parallel processors, the computation cannot complete in fewer than K sequential hash operations.</p>
+
+<p><span class="para-num">[0036]</span> The VDF produces two outputs: (a) the VDF output value (the final hash h[K]), and (b) a VDF proof enabling efficient verification. In the preferred embodiment, the proof is computed as H(vdfOutput ‖ seed). In alternative embodiments, the VDF may be implemented using:</p>
+
+<ol type="a">
+  <li><strong>Wesolowski VDF:</strong> Repeated squaring in a group of unknown order (e.g., RSA group), with a succinct proof verifiable in O(log T) time.</li>
+  <li><strong>Pietrzak VDF:</strong> An alternative construction with a larger proof size but potentially faster verification.</li>
+  <li><strong>Sloth function:</strong> Modular square root computation with inherent sequentiality.</li>
+  <li><strong>Any future VDF construction</strong> that provides the sequential computation property and efficient verifiability.</li>
+</ol>
+
+<p><span class="para-num">[0037]</span> The configurable parameter T allows the system to balance anti-preview security against batch generation throughput. Higher T values provide stronger anti-preview guarantees (longer windows during which values are unknowable) but reduce the rate at which new batches can be generated. In the preferred embodiment, T defaults to 4 seconds, which is sufficient to prevent real-time preview attacks while enabling multiple batches per minute via multi-worker parallelism.</p>
+
+<h4>2.4 The Anti-Preview Property</h4>
+
+<p><span class="para-num">[0038]</span> Referring to FIG. 2, the VDF computation time T creates a temporal barrier with the following property:</p>
+
+<div class="figure">
+  <div class="figure-label">FIG. 2 — Dual Temporal Integrity Timeline</div>
+  <pre>
+TIMELINE
+══════════════════════════════════════════════════════════════════
+
+t₀         Entropy seed acquired
+           (drand beacon round R / blockchain block B / local)
+           │
+           │
+           │  ┌──────────────────────────────────────────────┐
+           │  │       ANTI-PREVIEW BARRIER (T seconds)       │
+           │  │                                              │
+           │  │  During this interval:                       │
+           │  │  • VDF output is unknowable                  │
+           │  │  • rnGenParam is unknowable                  │
+           │  │  • All N batch values are unknowable         │
+           │  │  • No party can preview, filter, or select   │
+           │  │                                              │
+           │  │  Guarantee: mathematical (sequential         │
+           │  │  computation lower bound)                    │
+           │  └──────────────────────────────────────────────┘
+           │
+t₀+T       VDF computation completes
+           • VDF output now determined
+           • rnGenParam derivable
+           • Batch values are fixed and deterministic
+           │
+t₀+T+ε     Batch derived, Merkle tree constructed
+           • N random values exist
+           • Merkle root computed
+           • Tokens injected into pool
+           │
+           │  ┌──────────────────────────────────────────────┐
+           │  │       ANTI-TAMPER BARRIER (Merkle)           │
+           │  │                                              │
+           │  │  From this point forward:                    │
+           │  │  • No value can be changed without           │
+           │  │    invalidating the Merkle root              │
+           │  │  • Any modification is cryptographically     │
+           │  │    detectable                                │
+           │  │                                              │
+           │  │  Guarantee: cryptographic (hash collision    │
+           │  │  resistance)                                 │
+           │  └──────────────────────────────────────────────┘
+           │
+t₀+T+Δ     Merkle root anchored to immutable ledger
+           • Temporal proof: batch existed at block timestamp
+           • Immutability: anchor cannot be retroactively altered
+           • Public verifiability: any party can check on-chain
+           │
+           │  ┌──────────────────────────────────────────────┐
+           │  │       TEMPORAL PROOF (Blockchain)             │
+           │  │                                              │
+           │  │  The immutable ledger entry proves:          │
+           │  │  • The Merkle root existed at or before      │
+           │  │    the block timestamp                       │
+           │  │  • The commitment is permanent               │
+           │  └──────────────────────────────────────────────┘
+
+COMPLETE TEMPORAL INTEGRITY:
+  Before t₀+T:   Values UNKNOWABLE    (VDF guarantee)
+  After  t₀+T+ε: Values UNALTERABLE   (Merkle guarantee)
+  After  t₀+T+Δ: Values TIMESTAMPED   (Blockchain guarantee)
+  </pre>
+</div>
+
+<p><span class="para-num">[0039]</span> This dual temporal integrity — anti-preview before commitment plus anti-tamper after commitment — is a fundamental contribution of the present invention. No prior art provides both guarantees in a single batch generation system.</p>
+
+<h3>3. Deterministic Batch Derivation</h3>
+
+<p><span class="para-num">[0040]</span> From the VDF output, the system deterministically generates N random values through the following process:</p>
+
+<p><span class="para-num">[0041]</span> <strong>Step 1 — RN Generation Parameter.</strong> The VDF output is combined with the block parameter to produce the RN (Random Number) Generation Parameter:</p>
+
+<p class="no-indent" style="margin-left: 0.5in; font-family: 'Courier New', monospace; font-size: 11pt;">
+rnGenParam = H(vdfOutput ‖ blockParam)
+</p>
+
+<p><span class="para-num">[0042]</span> <strong>Step 2 — Leaf Hash Generation.</strong> For each leaf index i (0 ≤ i &lt; N), the system generates a unique node identifier and computes a leaf hash:</p>
+
+<p class="no-indent" style="margin-left: 0.5in; font-family: 'Courier New', monospace; font-size: 11pt;">
+nodeId[i] = formatIdentifier(i, batchId)<br>
+leafHash[i] = H(rnGenParam ‖ nodeId[i])
+</p>
+
+<p><span class="para-num">[0043]</span> <strong>Step 3 — Numeric Value Derivation.</strong> Each leaf hash is converted to a numeric random value by extracting a prefix of the hash and mapping it to the target range. In the preferred embodiment, the first 8 hexadecimal characters are extracted and divided by 0xFFFFFFFF, producing a uniformly distributed floating-point value in the range [0, 1). For integer ranges, the value is scaled and truncated: <code>intValue = floor(floatValue × (max - min + 1)) + min</code>.</p>
+
+<p><span class="para-num">[0044]</span> The batch size N is configurable. In the preferred embodiment, N = 65,536 (2^16). In alternative embodiments, N may range from 1,024 (2^10) for low-throughput applications to 1,048,576 (2^20) or more for high-throughput deployments. The derivation is fully deterministic: given the same rnGenParam and batch metadata, any party can independently regenerate the identical batch.</p>
+
+<h3>4. Merkle Tree Construction and Verification</h3>
+
+<p><span class="para-num">[0045]</span> The N leaf hashes are organized into a binary Merkle tree. Adjacent leaves are concatenated and hashed pairwise to produce parent nodes, recursively until a single root hash is obtained. When the number of leaves at any level is odd, the last leaf is duplicated to form a complete pair.</p>
+
+<p><span class="para-num">[0046]</span> Each individual token can be verified against the Merkle root using a proof path of O(log₂ N) hash comparisons. For N = 65,536, this requires 16 hash comparisons — computationally trivial. The verification algorithm traverses the proof path, combining the leaf hash with sibling hashes at each level, and confirms that the final computed value equals the published root hash.</p>
+
+<p><span class="para-num">[0047]</span> Verification requires no cooperation from the system operator. Any party with access to: (a) the leaf hash, (b) the proof path, (c) the on-chain root hash, and (d) optionally the VDF provenance metadata, can independently verify the token. This verification can be performed offline, air-gapped, and at any future time.</p>
+
+<h3>5. Asynchronous Anchoring Architecture</h3>
+
+<p><span class="para-num">[0048]</span> A key architectural innovation is the decoupling of token availability from immutable ledger confirmation. In conventional systems, tokens cannot be served until the blockchain transaction confirming the Merkle root is finalized — introducing latency of seconds to minutes. The present invention decouples these operations:</p>
+
+<ol type="a">
+  <li><strong>Immediate injection:</strong> Tokens are injected into the serving pool immediately upon batch derivation, before blockchain anchoring. The anti-preview guarantee has already been provided by the VDF computation; the Merkle tree provides anti-tamper; the blockchain anchor adds temporal proof and immutability but is not required for the anti-preview or anti-tamper properties.</li>
+  <li><strong>Asynchronous anchoring:</strong> The Merkle root is submitted to the immutable ledger (blockchain smart contract, in the preferred embodiment) in a background process with configurable retry logic (default: 3 attempts with exponential backoff).</li>
+  <li><strong>Status tracking:</strong> Each token carries an anchor status field that transitions through states: "pending" (submitted but not confirmed), "confirmed" (transaction confirmed at specific block), "failed" (all retry attempts exhausted). The status is queryable by consumers.</li>
+  <li><strong>Retroactive upgrade:</strong> Upon anchor confirmation, all tokens in the batch are retroactively upgradeable to the highest verification level (anchored verification) without regeneration.</li>
+</ol>
+
+<p><span class="para-num">[0049]</span> In the preferred embodiment, the immutable ledger is a smart contract on the Polygon blockchain (contract address: 0xA79E149C35Ad47Ed270Bf4b16B80170eBF7B88F8 on Polygon Amoy testnet). In alternative embodiments, the immutable ledger may be any blockchain (Ethereum, Bitcoin via OP_RETURN, Solana, etc.), any append-only ledger, any transparency log, or any distributed timestamping system that provides immutability and public verifiability.</p>
+
+<h3>6. Multi-Worker VDF Architecture</h3>
+
+<p><span class="para-num">[0050]</span> Referring to FIG. 4, the system employs multiple VDF worker threads to enable concurrent generation of multiple batches. Each worker is an independent computation unit capable of running one VDF computation at a time.</p>
+
+<div class="figure">
+  <div class="figure-label">FIG. 4 — Multi-Worker VDF Architecture</div>
+  <pre>
+┌──────────────────────────────────────────────────────────┐
+│                 PRIORITY REFILL QUEUE                    │
+│                                                          │
+│  Priority 10: Pool exhausted (emergency)                 │
+│  Priority  8: Below threshold (proactive)                │
+│  Priority  5: Scheduled refill (maintenance)             │
+│  Priority  1: Pre-warm (startup)                         │
+│                                                          │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐   │
+│  │  Job A  │  │  Job B  │  │  Job C  │  │  Job D  │   │
+│  │  P=10   │  │  P=8    │  │  P=8    │  │  P=1    │   │
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘   │
+│       └─────────────┼─────────────┘            │        │
+│                     ▼                          │        │
+│     ┌──────────────────────────────┐           │        │
+│     │      WORKER DISPATCHER       │           │        │
+│     │  Assigns jobs to idle workers│◀──────────┘        │
+│     └──────────────┬───────────────┘                    │
+│           ┌────────┼────────┐                           │
+│           ▼        ▼        ▼                           │
+│     ┌──────────┐┌──────────┐┌──────────┐               │
+│     │Worker 0  ││Worker 1  ││Worker 2  │               │
+│     │VDF T=4s  ││VDF T=4s  ││VDF T=4s  │               │
+│     │Batch A   ││Batch B   ││(idle)    │               │
+│     │          ││          ││          │               │
+│     │cycles: 47││cycles: 23││cycles: 31│               │
+│     └──────────┘└──────────┘└──────────┘               │
+│                                                          │
+│  NOTE: VDF is sequential WITHIN each batch.              │
+│  Multiple batches run in parallel across workers.        │
+│  Anti-preview property is per-batch, not per-system.     │
+└──────────────────────────────────────────────────────────┘
+  </pre>
+</div>
+
+<p><span class="para-num">[0051]</span> In the preferred embodiment, the system deploys 3 workers by default. Each worker maintains state: worker ID, busy/idle status, current batch ID, assigned client ID, and completed cycle count. The dispatcher assigns queued jobs to idle workers in priority order.</p>
+
+<p><span class="para-num">[0052]</span> The critical property maintained by this architecture: the VDF's sequential computation guarantee applies <em>within each batch</em>. A single batch's values cannot be determined faster by adding workers. Workers enable higher system-wide throughput (multiple batches per VDF period) without weakening the per-batch anti-preview guarantee.</p>
+
+<h3>7. Shared Pool and Dedicated Pool Architectures</h3>
+
+<p><span class="para-num">[0053]</span> Referring to FIG. 5, the system supports two complementary pool modes:</p>
+
+<div class="figure">
+  <div class="figure-label">FIG. 5 — Shared Pool Architecture</div>
+  <pre>
+┌──────────────────────────────────────────────────────────┐
+│                    SHARED POOL                           │
+│                                                          │
+│  Pre-warmed: 8 batches × 65,536 = 524,288 tokens        │
+│                                                          │
+│  ┌────────────────────────────────────────────────┐      │
+│  │  Token Pool                                    │      │
+│  │  ████████████████████░░░░░░░░  (78% full)      │      │
+│  │                                                │      │
+│  │  Refill triggers:                              │      │
+│  │  • 50% → threshold refill (1 batch)            │      │
+│  │  • 20% → CRITICAL refill (3 batches)           │      │
+│  └────────────────────┬───────────────────────────┘      │
+│                       │                                   │
+│           ┌───────────┼───────────┐                      │
+│           ▼           ▼           ▼                      │
+│     ┌──────────┐┌──────────┐┌──────────┐                │
+│     │ Agent A  ││ Agent B  ││ Agent C  │   ... (N)      │
+│     │ 100/min  ││ 100/min  ││ 100/min  │                │
+│     │ rate-lim ││ rate-lim ││ rate-lim │                │
+│     └──────────┘└──────────┘└──────────┘                │
+│                                                          │
+│  New agents → INSTANT access (no per-agent warmup)       │
+│  Per-agent rate limiting enforced                        │
+└──────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────┐
+│                   DEDICATED POOL                         │
+│                                                          │
+│  Per-consumer isolation                                  │
+│  ┌──────────────┐  ┌──────────────┐                     │
+│  │  Casino Op A │  │  Casino Op B │   ... (M)           │
+│  │  Own pool    │  │  Own pool    │                     │
+│  │  Own batches │  │  Own batches │                     │
+│  │  Own audit   │  │  Own audit   │                     │
+│  │  42% refill  │  │  42% refill  │                     │
+│  └──────────────┘  └──────────────┘                     │
+│                                                          │
+│  Regulatory isolation: each pool's history is            │
+│  independently auditable                                 │
+└──────────────────────────────────────────────────────────┘
+  </pre>
+</div>
+
+<p><span class="para-num">[0054]</span> <strong>Shared Pool.</strong> A system-wide pool serves all consumers in designated verticals (e.g., AI agents, general-purpose applications). The shared pool is pre-warmed at startup with a configurable number of VDF-protected batches (default: 8 batches = 524,288 tokens). Consumers access the shared pool with per-consumer rate limiting (configurable; default: 100 requests per minute). New consumers can begin consuming tokens immediately — no per-consumer batch generation delay. Refill is triggered at configurable thresholds: 50% for standard refill (one batch), 20% for critical multi-batch emergency refill (up to 3 concurrent batches).</p>
+
+<p><span class="para-num">[0055]</span> <strong>Dedicated Pool.</strong> Per-consumer pools provide isolation for verticals requiring independent audit trails (e.g., regulated gaming, clinical trials). Each consumer has an independent pool with independent refill triggers, batch history, and audit trail. Dedicated pools are pre-warmed with one batch upon consumer registration.</p>
+
+<h3>8. Token Serving and Proof Delivery</h3>
+
+<p><span class="para-num">[0056]</span> Referring to FIG. 7, when a consumer requests one or more random tokens, the system:</p>
+
+<ol type="a">
+  <li>Checks rate limits (for shared pool consumers).</li>
+  <li>Consumes the requested number of tokens from the appropriate pool (shared or dedicated) using a sequential pointer (O(1) retrieval).</li>
+  <li>For each consumed token, generates a Merkle proof path from the token's leaf hash to the batch's Merkle root.</li>
+  <li>Packages the response including: the random value, the leaf hash, the node identifier, the batch identifier, the complete Merkle proof path, the Merkle root, the VDF provenance metadata (entropy source, VDF computation time, VDF proof), and the blockchain anchor reference (transaction hash and block number, or "pending" if not yet confirmed).</li>
+  <li>Records the consumption event (consumer identifier, timestamp, token identifiers).</li>
+  <li>Checks pool depth and triggers refill if below threshold.</li>
+</ol>
+
+<p><span class="para-num">[0057]</span> The entire serving process operates at sub-2-millisecond latency because all data is served from in-memory structures. No VDF computation, no blockchain query, and no external service call occurs during serving — those operations happened during batch generation (VDF) and background anchoring (blockchain).</p>
+
+<h3>9. Independent Verification</h3>
+
+<p><span class="para-num">[0058]</span> Any party may independently verify a served token by performing the following checks, none of which requires cooperation from the system operator:</p>
+
+<ol type="a">
+  <li><strong>Integrity check:</strong> Recompute H(rnGenParam ‖ nodeId) and confirm it equals the claimed leaf hash.</li>
+  <li><strong>Merkle proof check:</strong> Traverse the proof path, combining the leaf hash with sibling hashes at each level, and confirm the computed root equals the published Merkle root.</li>
+  <li><strong>Blockchain anchor check:</strong> Query the on-chain smart contract to confirm the published Merkle root is recorded at the claimed transaction hash and block number.</li>
+  <li><strong>VDF provenance check:</strong> Verify the VDF proof against the VDF seed, confirming the VDF computation was performed correctly.</li>
+  <li><strong>Entropy source check:</strong> If the entropy source was a distributed beacon (Tier 1), independently fetch the beacon round and verify its BLS signature against the published chain public key.</li>
+</ol>
+
+<p><span class="para-num">[0059]</span> These checks can be performed offline (except the blockchain anchor check, which requires network access or a local chain node), at any future time, and without any interaction with the system operator.</p>
+
+<h3>10. Alternative Embodiments</h3>
+
+<h4>10.1 Alternative VDF Constructions</h4>
+
+<p><span class="para-num">[0060]</span> While the preferred embodiment uses an iterative sequential hash chain, alternative embodiments may employ any VDF construction that provides the sequential computation property, including but not limited to: Wesolowski VDF (repeated squaring in RSA groups), Pietrzak VDF (halving protocol), sloth functions (modular square roots), or any future VDF construction. The choice of VDF construction does not affect the system architecture or the anti-preview guarantee — it affects only the verification efficiency and proof size.</p>
+
+<h4>10.2 Alternative Hash Functions</h4>
+
+<p><span class="para-num">[0061]</span> While the preferred embodiment uses SHA-256, alternative embodiments may use any cryptographic hash function including SHA-3 (Keccak), BLAKE2, BLAKE3, or future hash functions. The system architecture is hash-function-agnostic; the hash function is a configurable parameter.</p>
+
+<h4>10.3 Alternative Immutable Ledgers</h4>
+
+<p><span class="para-num">[0062]</span> While the preferred embodiment uses a Polygon blockchain smart contract, alternative embodiments may anchor Merkle roots to any immutable verification substrate including: public blockchains (Ethereum, Bitcoin, Solana, etc.), consortium chains, private chains, append-only distributed ledgers, certificate transparency logs, notarization networks, or distributed timestamping systems. The system architecture requires only that the substrate provides immutability (the recorded root cannot be retroactively altered) and public verifiability (any party can confirm the root was recorded at a specific time).</p>
+
+<h4>10.4 Alternative Entropy Sources</h4>
+
+<p><span class="para-num">[0063]</span> While the preferred embodiment uses drand as the primary entropy source, alternative embodiments may use any publicly verifiable entropy source including: NIST Randomness Beacon, Ethereum RANDAO, quantum random number generators (QRNGs), multiple independent randomness beacons combined, satellite-based entropy, or federated entropy networks. The system architecture is entropy-source-agnostic; new sources are added by implementing a source adapter.</p>
+
+<h4>10.5 Integration with Verifiable Entropy Objects</h4>
+
+<p><span class="para-num">[0064]</span> In an embodiment integrated with the Third Application (VEO patent), the VDF-protected batch generation pipeline serves as the Trust Source layer (Layer 1) of the Computational Trust Infrastructure. Each batch's provenance metadata — entropy source, VDF computation parameters, VDF proof, Merkle root, and blockchain anchor — is encapsulated in a Verifiable Entropy Object (VEO-1), providing a standardized, self-describing, independently verifiable trust evidence package. The VEO's Entropy Confidence Score (ECS) reflects the VDF-protected batch's trust properties: source diversity (multiple entropy contributions to the VDF seed), manipulation resistance (VDF temporal barrier), and verification success (VDF proof validity and beacon signature verification).</p>
+
+<h4>10.6 AI Agent Decision Attestation</h4>
+
+<p><span class="para-num">[0065]</span> In an embodiment for AI agent systems, VDF-protected random tokens are used to back autonomous agent decisions — tool selection, task routing, resource allocation, response sampling. Each decision is linked to the specific token (and its VDF provenance) that influenced it, creating an auditable decision trail. The VDF anti-preview guarantee ensures that the agent (or its operator) could not have previewed the random input to a decision before the decision was made, preventing selective manipulation of agent behavior.</p>
+
+<h4>10.7 Regulated Gaming</h4>
+
+<p><span class="para-num">[0066]</span> In an embodiment for regulated gaming (casinos, lotteries, online gambling), VDF-protected batches serve as the random number source for game outcomes. The dual temporal integrity guarantee — VDF anti-preview plus Merkle anti-tamper — satisfies the requirements of gaming regulators (GLI-19, GLI-33, BMM, eCOGRA) for provably fair randomness. Dedicated pools per operator provide independent audit trails. The VDF computation time T is configurable per regulatory jurisdiction.</p>
+
+<h4>10.8 On-Demand Generation Fallback</h4>
+
+<p><span class="para-num">[0067]</span> In an embodiment handling pool exhaustion, the system generates random values on-demand when the pool is depleted. On-demand generation bypasses the full VDF pipeline (using direct cryptographic randomness) to avoid latency, but flags the tokens with reduced provenance metadata indicating on-demand generation. Simultaneously, the system triggers emergency pool refill via the VDF pipeline. This fallback ensures zero downtime while transparently indicating that on-demand tokens do not carry the full VDF anti-preview guarantee.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Claims</h2>
+
+<p class="no-indent" style="font-style:italic; margin-bottom:18pt;">What is claimed is:</p>
+
+<p class="claim"><strong>1.</strong> A computer-implemented method for generating a batch of random numbers with anti-preview guarantees, comprising:</p>
+<p class="sub-claim">(a) obtaining one or more entropy values from at least one independent entropy source;</p>
+<p class="sub-claim">(b) constructing a seed value by combining the one or more entropy values using one or more cryptographic hash functions;</p>
+<p class="sub-claim">(c) computing a delay function output by processing the seed value through a delay function requiring a minimum sequential computation time T, wherein the delay function output is not determinable by any party, including a system operator, until said sequential computation time T has elapsed;</p>
+<p class="sub-claim">(d) deriving a generation parameter from the delay function output using one or more cryptographic hash functions;</p>
+<p class="sub-claim">(e) deterministically generating a plurality of N random values from the generation parameter, wherein each random value is derived as a cryptographic hash of the generation parameter combined with a unique per-value identifier;</p>
+<p class="sub-claim">(f) organizing the plurality of N random values as leaf nodes of a hash tree and computing a root hash; and</p>
+<p class="sub-claim">(g) recording the root hash on an immutable verification substrate,</p>
+<p class="sub-claim">wherein the delay function computation time T provides an anti-preview guarantee that no party can determine any of the plurality of random values before the delay function computation completes, and the hash tree provides an anti-tamper guarantee that no random value can be altered after the root hash is computed.</p>
+
+<p class="claim"><strong>2.</strong> The method of claim 1, wherein the delay function comprises a Verifiable Delay Function (VDF) producing a proof that enables verification of the computation in time substantially less than T.</p>
+
+<p class="claim"><strong>3.</strong> The method of claim 1, wherein the delay function comprises an iterative sequential hash chain in which each iteration computes a cryptographic hash dependent on the previous iteration's output, thereby preventing parallel computation.</p>
+
+<p class="claim"><strong>4.</strong> The method of claim 1, wherein the at least one independent entropy source comprises a distributed randomness beacon producing publicly verifiable random values using threshold signatures, and wherein the entropy value obtained from the beacon is verified by confirming that a cryptographic hash of the beacon's signature equals the beacon's published randomness value.</p>
+
+<p class="claim"><strong>5.</strong> The method of claim 4, further comprising a hierarchical fallback mechanism wherein:</p>
+<p class="sub-claim">(i) if the distributed randomness beacon is unavailable, obtaining entropy from one or more blockchain block hashes; and</p>
+<p class="sub-claim">(ii) if blockchain entropy is also unavailable, obtaining entropy from local cryptographic randomness,</p>
+<p class="sub-claim">wherein the entropy source tier used for each batch is recorded in batch provenance metadata.</p>
+
+<p class="claim"><strong>6.</strong> The method of claim 1, wherein step (g) of recording the root hash on an immutable verification substrate is performed asynchronously after the plurality of random values are made available for consumption, and wherein:</p>
+<p class="sub-claim">(i) each random value is tagged with an anchor status that transitions from a pending state to a confirmed state upon confirmation of the recording transaction; and</p>
+<p class="sub-claim">(ii) the anti-preview guarantee provided by the delay function is independent of the immutable verification substrate recording.</p>
+
+<p class="claim"><strong>7.</strong> The method of claim 1, wherein N is at least 1,024, and wherein each individual random value is independently verifiable against the root hash using a proof path of O(log₂ N) hash comparisons without requiring cooperation from the system operator.</p>
+
+<p class="claim"><strong>8.</strong> The method of claim 1, further comprising injecting the plurality of random values into a pre-generated token pool and serving individual tokens from the pool at sub-2-millisecond latency, wherein each served token includes the random value, a hash tree proof path, a batch identifier, and delay function provenance metadata.</p>
+
+<p class="claim"><strong>9.</strong> The method of claim 8, further comprising monitoring pool depth and automatically triggering generation of a new batch when the pool depth falls below a configurable threshold.</p>
+
+<p class="claim"><strong>10.</strong> The method of claim 1, further comprising recording, for each batch, provenance metadata comprising at least: the entropy source identifier and tier, the delay function computation parameters, the delay function proof, the hash tree root, and the immutable verification substrate reference.</p>
+
+<p class="claim"><strong>11.</strong> A system for generating verifiably unpredictable batch random numbers, comprising:</p>
+<p class="sub-claim">one or more processors; and</p>
+<p class="sub-claim">memory storing instructions that, when executed by the one or more processors, cause the system to:</p>
+<p class="sub-sub-claim">(a) obtain entropy from at least one independent entropy source;</p>
+<p class="sub-sub-claim">(b) construct a seed from the obtained entropy;</p>
+<p class="sub-sub-claim">(c) compute a delay function output from the seed, the computation requiring a minimum sequential time T;</p>
+<p class="sub-sub-claim">(d) derive N random values deterministically from the delay function output;</p>
+<p class="sub-sub-claim">(e) organize the N random values in a hash tree and compute a root hash;</p>
+<p class="sub-sub-claim">(f) store the N random values in a token pool for serving at sub-millisecond latency; and</p>
+<p class="sub-sub-claim">(g) record the root hash on an immutable verification substrate,</p>
+<p class="sub-claim">wherein the delay function computation time T ensures that no party can determine any of the N random values before the delay function computation completes.</p>
+
+<p class="claim"><strong>12.</strong> The system of claim 11, further comprising a plurality of delay function worker threads, each capable of computing a delay function for a separate batch concurrently, and a priority-based queue that schedules batch generation based on pool depletion urgency.</p>
+
+<p class="claim"><strong>13.</strong> The system of claim 11, further comprising a shared token pool pre-warmed with a configurable number of delay-function-protected batches at system startup, wherein multiple consumers consume tokens from the shared pool with per-consumer rate limiting, and wherein new consumers access tokens immediately without per-consumer batch generation delay.</p>
+
+<p class="claim"><strong>14.</strong> The system of claim 11, further comprising dedicated per-consumer token pools providing per-consumer isolation, independent batch histories, and independent audit trails.</p>
+
+<p class="claim"><strong>15.</strong> The system of claim 11, wherein the instructions further cause the system to package the provenance metadata for each batch into a structured, self-describing, independently verifiable digital object comprising at least the entropy source records, delay function proof, hash tree root, and immutable verification substrate reference.</p>
+
+<p class="claim"><strong>16.</strong> A computer-implemented method for providing dual temporal integrity guarantees for batch random number generation, comprising:</p>
+<p class="sub-claim">(a) generating a batch of N random values using a delay function pipeline that requires a minimum sequential computation time T, thereby providing an anti-preview guarantee that the values could not have been known by any party before time T elapsed;</p>
+<p class="sub-claim">(b) organizing the N random values into a hash tree whose root hash provides an anti-tamper guarantee that no value can be altered after the root is computed without detection; and</p>
+<p class="sub-claim">(c) recording the root hash on an immutable verification substrate, thereby providing a temporal proof that the values existed at or before the recording timestamp,</p>
+<p class="sub-claim">whereby the combination of the anti-preview guarantee, the anti-tamper guarantee, and the temporal proof provides dual temporal integrity: the values were neither knowable before generation nor alterable after generation.</p>
+
+<p class="claim"><strong>17.</strong> The method of claim 16, wherein the batch of N random values is served to consumers from a pre-generated pool at sub-2-millisecond latency, and wherein each served token includes provenance metadata identifying at least the entropy source, delay function computation parameters, hash tree proof path, and immutable verification substrate reference.</p>
+
+<p class="claim"><strong>18.</strong> The method of claim 16, wherein the delay function pipeline incorporates entropy from a distributed randomness beacon whose output is independently verifiable by any third party using the beacon's published cryptographic key material.</p>
+
+<p class="claim"><strong>19.</strong> The method of claim 16, wherein the recording of the root hash on the immutable verification substrate is performed asynchronously after the random values are made available for consumption, and wherein the anti-preview guarantee and anti-tamper guarantee are independent of the recording completion.</p>
+
+<p class="claim"><strong>20.</strong> A non-transitory computer-readable medium storing instructions that, when executed by one or more processors, cause the one or more processors to perform a method comprising:</p>
+<p class="sub-claim">(a) obtaining entropy from one or more independent sources arranged in a hierarchical fallback architecture with transparent provenance recording;</p>
+<p class="sub-claim">(b) computing a delay function output from the obtained entropy, requiring a minimum sequential computation time T;</p>
+<p class="sub-claim">(c) deterministically deriving N random values from the delay function output;</p>
+<p class="sub-claim">(d) constructing a hash tree over the N random values;</p>
+<p class="sub-claim">(e) injecting the N random values into a token serving pool;</p>
+<p class="sub-claim">(f) asynchronously recording the hash tree root on an immutable verification substrate; and</p>
+<p class="sub-claim">(g) serving individual tokens from the pool with hash tree proofs and delay function provenance metadata at sub-millisecond latency.</p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Abstract of the Disclosure</h2>
+
+<p class="no-indent">A method and system for generating batches of random numbers with verifiable anti-preview guarantees using Verifiable Delay Functions (VDFs). The system obtains entropy from independent sources including distributed randomness beacons and blockchain block hashes through a hierarchical fallback architecture with transparent provenance recording. The entropy is processed through a VDF requiring a minimum sequential computation time T, and deterministically derives a batch of N random values from the VDF output. The batch is organized as a hash tree (Merkle tree) whose root hash is recorded on an immutable verification substrate (blockchain). The VDF computation time provides an anti-preview guarantee: no party, including the system operator, can determine the batch values before the VDF computation completes. The hash tree provides an anti-tamper guarantee: no value can be altered after the root is computed. Together, these guarantees provide dual temporal integrity — values are neither knowable before generation nor alterable after generation. The system supports sub-2-millisecond token serving from pre-generated pools, multi-worker VDF computation for parallel batch generation, shared and dedicated pool architectures with automatic threshold-based refill, asynchronous blockchain anchoring decoupled from token availability, and integration with structured verifiable entropy object standards.</p>
+
+</body>
+</html>

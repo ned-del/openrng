@@ -1,0 +1,564 @@
+<!-- Chapter 5: The Patent Family -->
+<section class="chapter" id="chapter-5">
+  <div class="chapter-number">Chapter 5</div>
+  <h2>The Patent Family</h2>
+  <h2 class="zh-title">專利家族</h2>
+  <p class="chapter-subtitle">Five patents, one architecture</p>
+  <p class="chapter-subtitle zh">五件專利，一套架構</p>
+
+  <section class="section" id="section-5-1">
+    <h3>5.1 — Family Overview</h3>
+    <h3 class="zh-section-title">5.1 — 家族概覽</h3>
+
+    <div class="en">
+      <p>The OpenRNG patent family is not a collection of independent inventions. It is a coordinated set of claims that, together, cover the complete Computational Trust Infrastructure — from entropy generation through governance. Each patent maps to exactly one layer of the Trust Stack. Each claims a distinct responsibility. Together, they form a defensible, non-overlapping intellectual property portfolio that mirrors the architecture it protects.</p>
+      <p>The analogy is Apple's chip family: the A-series, M-series, S-series, and U-series are not independent products — they are components of a unified computing platform, each optimized for its layer (mobile, desktop, wearable, spatial). Similarly, the OpenRNG patent family comprises five components of a unified trust platform.</p>
+    </div>
+    <div class="zh">
+      <p>OpenRNG 專利家族不是獨立發明的集合。它是一組協調的權利主張，共同涵蓋完整的計算信任基礎設施——從熵生成到治理。每件專利精確對應信任堆疊的一層。每件主張一個獨特的職責。它們共同形成一個可防禦的、不重疊的智慧財產權組合，與它所保護的架構相互映照。</p>
+      <p>類比是蘋果的晶片家族：A 系列、M 系列、S 系列和 U 系列不是獨立產品——它們是統一運算平台的組件，每個都為其層級（行動、桌面、穿戴、空間）最佳化。同樣，OpenRNG 專利家族包含統一信任平台的五個組件。</p>
+    </div>
+
+    <pre class="diagram">
+                   ┌─────────────────────────────┐
+                   │    Computational Trust       │
+                   │      Infrastructure          │
+                   │         (CTI)                │
+                   └──────────────┬──────────────┘
+          ┌──────────┬────────────┼────────────┬──────────┐
+          ▼          ▼            ▼            ▼          ▼
+    ┌──────────┐┌──────────┐┌──────────┐┌──────────┐┌──────────┐
+    │ Patent 1 ││ Patent 2 ││ Patent 3 ││ Patent 4 ││ Patent 5 │
+    │          ││          ││          ││          ││          │
+    │  Trust   ││  Trust   ││  Trust   ││  Trust   ││  Trust   │
+    │  Source  ││  Authz   ││ Evidence ││  Coord   ││ Runtime  │
+    │          ││          ││          ││          ││          │
+    │ (OpenRNG)││(Lockbox) ││  (VEO)   ││  (New)   ││  (New)   │
+    │          ││          ││          ││          ││          │
+    │ Layer 1  ││ Layer 2  ││ Layer 3  ││ Layer 4  ││ Layer 5  │
+    └──────────┘└──────────┘└──────────┘└──────────┘└──────────┘
+    </pre>
+  </section>
+
+  <section class="section" id="section-5-2">
+    <h3>5.2 — Patent #1: Trust Source Layer (OpenRNG Core)</h3>
+    <h3 class="zh-section-title">5.2 — 專利一號：信任來源層（OpenRNG 核心）</h3>
+
+    <div class="en">
+      <p><strong>Original Filing:</strong> "Method and System for Gaming Random Number Generation"</p>
+      <p><strong>New Positioning:</strong> The foundational Trust Source — the layer that produces high-quality, multi-source entropy as the raw material of Computational Trust.</p>
+      <p><strong>Key Claims:</strong></p>
+      <ul>
+        <li>Verifiable Delay Function (VDF) seed generation for deterministic, time-locked entropy production</li>
+        <li>Deterministic batch generation: VDF seed → N leaf hashes organized in a Merkle tree</li>
+        <li>On-chain Merkle root anchoring via a single blockchain transaction per batch (up to 65,536 values)</li>
+        <li>Pool-based serving with sub-2ms latency: pre-generated entropy served from memory with Merkle proof inclusion</li>
+        <li>Multi-source entropy aggregation from independent providers (distributed beacons, blockchain hashes, hardware RNG)</li>
+      </ul>
+      <p><strong>Layer Mapping:</strong> Layer 1 of the Trust Stack</p>
+      <p><strong>Technical Moat:</strong> The combination of VDF (time-locked, non-parallelizable computation), Merkle batch generation (one transaction proves thousands of values), and pool serving (sub-2ms latency) creates a unique architecture that is not covered by existing patents. Chainlink's VRF patent (US12401532B2) covers distributed oracle-based VRF; OpenRNG uses centralized VDF + Merkle batch — a structurally different architecture, different cryptographic primitive, and different trust model.</p>
+    </div>
+    <div class="zh">
+      <p><strong>原始申請：</strong>「遊戲隨機數生成方法與系統」</p>
+      <p><strong>新定位：</strong>基礎性的信任來源——產生高品質、多來源熵作為計算信任原始材料的層。</p>
+      <p><strong>關鍵權利主張：</strong></p>
+      <ul>
+        <li>可驗證延遲函數（VDF）種子生成，用於確定性、時間鎖定的熵生產</li>
+        <li>確定性批次生成：VDF 種子 → N 個葉子雜湊組織在 Merkle 樹中</li>
+        <li>透過每批次單一區塊鏈交易進行鏈上 Merkle 根錨定（最多 65,536 個值）</li>
+        <li>基於池的服務，低於 2ms 延遲：從記憶體中提供預生成的熵，附帶 Merkle 證明</li>
+        <li>來自獨立供應商的多來源熵聚合（分散式信標、區塊鏈雜湊、硬體 RNG）</li>
+      </ul>
+      <p><strong>層級對應：</strong>信任堆疊的第一層</p>
+      <p><strong>技術護城河：</strong>VDF（時間鎖定、不可並行化計算）、Merkle 批次生成（一筆交易證明數千個值）和池服務（低於 2ms 延遲）的組合建立了獨特的架構，不被現有專利涵蓋。Chainlink 的 VRF 專利（US12401532B2）涵蓋基於分散式預言機的 VRF；OpenRNG 使用集中式 VDF + Merkle 批次——結構上不同的架構、不同的密碼學原語和不同的信任模型。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-5-3">
+    <h3>5.3 — Patent #2: Trust Authorization Layer (Lockbox)</h3>
+    <h3 class="zh-section-title">5.3 — 專利二號：信任授權層（Lockbox）</h3>
+
+    <div class="en">
+      <p><strong>New Positioning:</strong> Policy-gated access to trust primitives with cryptographic usage attestation.</p>
+      <p><strong>Key Claims:</strong></p>
+      <ul>
+        <li>Policy engine for entropy consumption that evaluates requests against multi-dimensional constraints (quality floors, source requirements, rate limits, regulatory context)</li>
+        <li>Cryptographic usage attestation: every consumption event produces an immutable, signed record proving that a specific consumer used a specific trust primitive under specific policy constraints</li>
+        <li>Delegated authorization for multi-agent systems: a primary agent can delegate trust consumption rights to child agents within defined policy boundaries</li>
+        <li>Compliance-aware authorization: automatic mapping of consumer context to regulatory framework requirements (GLI-19, EU AI Act, HIPAA)</li>
+      </ul>
+      <p><strong>Layer Mapping:</strong> Layer 2 of the Trust Stack</p>
+      <p><strong>Differentiation from OAuth/RBAC:</strong> Traditional authorization controls access to resources. Trust Authorization controls access to trust primitives and produces attestation of correct usage. The attestation is the innovation — not just granting access, but cryptographically recording that access was exercised correctly.</p>
+    </div>
+    <div class="zh">
+      <p><strong>新定位：</strong>具有密碼學使用證明的策略閘門存取信任原語。</p>
+      <p><strong>關鍵權利主張：</strong></p>
+      <ul>
+        <li>用於熵消費的策略引擎，根據多維約束（品質下限、來源要求、速率限制、法規背景）評估請求</li>
+        <li>密碼學使用證明：每個消費事件產生不可變的、已簽名的記錄，證明特定消費者在特定策略約束下使用了特定信任原語</li>
+        <li>多代理系統的委託授權：主要代理可以在定義的策略邊界內將信任消費權利委託給子代理</li>
+        <li>合規感知授權：自動將消費者背景對應到法規框架要求（GLI-19、EU AI Act、HIPAA）</li>
+      </ul>
+      <p><strong>層級對應：</strong>信任堆疊的第二層</p>
+      <p><strong>與 OAuth/RBAC 的差異：</strong>傳統授權控制對資源的存取。信任授權控制對信任原語的存取，並產生正確使用的證明。證明是創新——不僅僅是授予存取權，而是密碼學地記錄存取權被正確行使。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-5-4">
+    <h3>5.4 — Patent #3: Trust Evidence Layer (VEO)</h3>
+    <h3 class="zh-section-title">5.4 — 專利三號：信任證據層（VEO）</h3>
+
+    <div class="en">
+      <p><strong>Original Filing:</strong> Verifiable Entropy Object provisional patent</p>
+      <p><strong>New Positioning:</strong> The standard format for trust evidence — a self-describing, quality-scored, cryptographically signed, optionally blockchain-anchored, independently verifiable digital object.</p>
+      <p><strong>Key Claims:</strong></p>
+      <ul>
+        <li>The VEO-1 object format: a structured digital object carrying entropy payload, source provenance array, aggregation metadata, confidence scoring, cryptographic proof, optional blockchain anchor, and lineage references</li>
+        <li>Entropy Confidence Score (ECS): a six-dimension weighted scoring system (freshness, diversity, independence, manipulation resistance, verification success, availability) producing a 0–1000 score with defined grade boundaries</li>
+        <li>Canonical signing protocol: deterministic transformation of a VEO into a signing payload through deep key sorting and stable serialization, enabling secp256k1 EIP-191 signatures verifiable by any party without network access</li>
+        <li>Five-level verification framework: from structural validity through cryptographic verification through blockchain-anchored verification, with distinct policy-failure and invalid states</li>
+        <li>Object classification system: VEO-1A (single-source), VEO-1B (composite), VEO-1C (anchored), VEO-1D (decision — reserved)</li>
+      </ul>
+      <p><strong>Layer Mapping:</strong> Layer 3 of the Trust Stack</p>
+      <p><strong>Status:</strong> Provisional patent filed. VEO-1 v1.0 specification frozen.</p>
+      <p><strong>Standards Path:</strong> VEO-1 is designed to become an open standard — analogous to JWT for identity claims. The object format, scoring system, signing protocol, and verification logic are fully documented and implementable by any party.</p>
+    </div>
+    <div class="zh">
+      <p><strong>原始申請：</strong>可驗證熵物件臨時專利</p>
+      <p><strong>新定位：</strong>信任證據的標準格式——自描述、品質評分、密碼學簽名、可選區塊鏈錨定、可獨立驗證的數位物件。</p>
+      <p><strong>關鍵權利主張：</strong></p>
+      <ul>
+        <li>VEO-1 物件格式：攜帶熵載荷、來源出處陣列、聚合元數據、信心評分、密碼學證明、可選區塊鏈錨定和血統參考的結構化數位物件</li>
+        <li>熵信心分數（ECS）：六維度加權評分系統（新鮮度、多樣性、獨立性、抗操縱性、驗證成功率、可用性），產生 0-1000 分數，有定義的等級邊界</li>
+        <li>規範簽名協議：透過深層鍵排序和穩定序列化將 VEO 確定性地轉換為簽名載荷，實現任何方無需網路存取即可驗證的 secp256k1 EIP-191 簽名</li>
+        <li>五級驗證框架：從結構有效性到密碼學驗證到區塊鏈錨定驗證，具有獨立的策略失敗和無效狀態</li>
+        <li>物件分類系統：VEO-1A（單來源）、VEO-1B（複合）、VEO-1C（錨定）、VEO-1D（決策——保留）</li>
+      </ul>
+      <p><strong>層級對應：</strong>信任堆疊的第三層</p>
+      <p><strong>狀態：</strong>臨時專利已申請。VEO-1 v1.0 規範已凍結。</p>
+      <p><strong>標準化路徑：</strong>VEO-1 設計為成為開放標準——類似於 JWT 之於身份聲明。物件格式、評分系統、簽名協議和驗證邏輯都已完整記錄，任何方都可實作。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-5-5">
+    <h3>5.5 — Patent #4: Trust Coordination Layer</h3>
+    <h3 class="zh-section-title">5.5 — 專利四號：信任協調層</h3>
+
+    <div class="en">
+      <p><strong>Filing Status:</strong> New — to be filed</p>
+      <p><strong>Positioning:</strong> How trust propagates between autonomous agents and across organizational boundaries.</p>
+      <p><strong>Key Claims:</strong></p>
+      <ul>
+        <li>Trust chain construction: a protocol for linking child VEOs to parent VEOs via lineage references, creating directed acyclic graphs (DAGs) of trust that enable full decision-tree reconstruction</li>
+        <li>Multi-agent trust consensus: a method for combining individual VEOs from multiple autonomous agents into a jointly verifiable consensus VEO, where each participant's contribution is recorded and independently verifiable</li>
+        <li>Cross-system trust handoff: a protocol for packaging, transmitting, and verifying trust assertions across organizational trust boundaries without requiring mutual trust between organizations</li>
+        <li>Trust propagation invariants: enforcement of non-amplification (child trust ≤ parent trust), transparent degradation (reduced sources are recorded, not hidden), and traceability (every VEO in a chain is independently verifiable)</li>
+      </ul>
+      <p><strong>Layer Mapping:</strong> Layer 4 of the Trust Stack</p>
+      <p><strong>Critical Distinction:</strong> Trust Coordination is a <em>protocol</em>, not an orchestrator. It does not control what agents do. It ensures that trust propagates correctly between them — analogous to TCP for data transmission. This distinction is critical for the patent claims: the invention is the trust propagation protocol, not agent orchestration.</p>
+      <p><strong>Direction:</strong> Horizontal — peer-to-peer trust propagation between autonomous agents and systems.</p>
+    </div>
+    <div class="zh">
+      <p><strong>申請狀態：</strong>新——待申請</p>
+      <p><strong>定位：</strong>信任如何在自主代理之間和跨組織邊界傳播。</p>
+      <p><strong>關鍵權利主張：</strong></p>
+      <ul>
+        <li>信任鏈建構：透過血統參考將子 VEO 連結到父 VEO 的協議，建立信任的有向無環圖（DAG），實現完整決策樹重建</li>
+        <li>多代理信任共識：將來自多個自主代理的個別 VEO 組合為可聯合驗證的共識 VEO 的方法，每個參與者的貢獻都被記錄且可獨立驗證</li>
+        <li>跨系統信任交接：跨組織信任邊界封裝、傳輸和驗證信任斷言的協議，無需組織間相互信任</li>
+        <li>信任傳播不變量：執行非放大（子信任 ≤ 父信任）、透明降級（減少的來源被記錄而非隱藏）和可追溯性（鏈中每個 VEO 都可獨立驗證）</li>
+      </ul>
+      <p><strong>層級對應：</strong>信任堆疊的第四層</p>
+      <p><strong>關鍵區別：</strong>信任協調是<em>協議</em>，不是編排器。它不控制代理做什麼。它確保信任在它們之間正確傳播——類似於 TCP 之於資料傳輸。這個區別對專利權利主張至關重要：發明是信任傳播協議，不是代理編排。</p>
+      <p><strong>方向：</strong>水平——自主代理和系統之間的點對點信任傳播。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-5-6">
+    <h3>5.6 — Patent #5: Trust Runtime</h3>
+    <h3 class="zh-section-title">5.6 — 專利五號：信任運行時</h3>
+
+    <div class="en">
+      <p><strong>Filing Status:</strong> New — to be filed</p>
+      <p><strong>Positioning:</strong> Governance, compliance, and continuous verification for trust infrastructure.</p>
+      <p><strong>Key Claims:</strong></p>
+      <ul>
+        <li>Runtime trust policy enforcement: continuous monitoring and enforcement of system-wide trust policies that cannot be evaluated at the per-request level (chain depth limits, source rotation, anchoring frequency, temporal consistency)</li>
+        <li>Compliance attestation generation: structured, machine-readable compliance attestations mapping trust infrastructure operations to regulatory framework requirements (EU AI Act, NIST AI RMF, GLI-19, ISO 42001)</li>
+        <li>Trust health monitoring: continuous computation of system-wide trust metrics (average ECS trends, source availability, verification rates, consumption patterns) with anomaly detection and alerting</li>
+        <li>Regulatory framework adapters: pluggable modules that map trust lifecycle operations to specific regulatory requirements, enabling automatic compliance reporting for multiple jurisdictions</li>
+      </ul>
+      <p><strong>Layer Mapping:</strong> Layer 5 of the Trust Stack</p>
+      <p><strong>Boundary with Patent #4:</strong> The boundary is precise and intentional. <strong>Coordination (Patent #4) is horizontal</strong> — it governs trust flow between peers. <strong>Runtime (Patent #5) is vertical</strong> — it governs trust enforcement from top to bottom. Coordination is a protocol for trust transmission. Runtime is a governance engine for trust assurance. There is no overlap.</p>
+      <p><strong>Direction:</strong> Vertical — policy enforcement and audit from top to bottom of the Trust Stack.</p>
+    </div>
+    <div class="zh">
+      <p><strong>申請狀態：</strong>新——待申請</p>
+      <p><strong>定位：</strong>信任基礎設施的治理、合規和持續驗證。</p>
+      <p><strong>關鍵權利主張：</strong></p>
+      <ul>
+        <li>運行時信任策略執行：持續監控和執行無法在逐請求層級評估的系統範圍信任策略（鏈深度限制、來源輪換、錨定頻率、時間一致性）</li>
+        <li>合規證明生成：結構化、機器可讀的合規證明，將信任基礎設施操作對應到法規框架要求（EU AI Act、NIST AI RMF、GLI-19、ISO 42001）</li>
+        <li>信任健康監控：持續計算系統範圍的信任指標（平均 ECS 趨勢、來源可用性、驗證率、消費模式），具有異常偵測和警報</li>
+        <li>法規框架適配器：可插拔模組，將信任生命週期操作對應到特定法規要求，實現多個司法管轄區的自動合規報告</li>
+      </ul>
+      <p><strong>層級對應：</strong>信任堆疊的第五層</p>
+      <p><strong>與專利四號的邊界：</strong>邊界是精確且有意的。<strong>協調（專利四號）是水平的</strong>——治理對等方之間的信任流動。<strong>運行時（專利五號）是垂直的</strong>——從上到下治理信任執行。協調是信任傳輸的協議。運行時是信任保證的治理引擎。沒有重疊。</p>
+      <p><strong>方向：</strong>垂直——信任堆疊從上到下的策略執行和稽核。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-5-7">
+    <h3>5.7 — Future Patent Opportunities</h3>
+    <h3 class="zh-section-title">5.7 — 未來專利機會</h3>
+
+    <div class="en">
+      <p>Beyond the core five patents, the Computational Trust architecture creates opportunities for additional filings as the platform matures:</p>
+      <ul>
+        <li><strong>Trust Routing:</strong> Intelligent routing of trust requirements to optimal entropy sources based on latency, cost, quality, and regulatory constraints</li>
+        <li><strong>Trust Federation:</strong> Cross-organizational trust interoperability — enabling multiple independent trust providers to form a federated trust network with mutual verification</li>
+        <li><strong>Domain-Specific Trust Objects:</strong> Healthcare Trust Objects (HIPAA-compliant, patient-linked), Financial Trust Objects (SOX-compliant, transaction-linked), Robotics Trust Objects (safety-critical, real-time)</li>
+        <li><strong>Trust Analytics:</strong> Machine learning-based analysis of trust patterns for predictive quality scoring, anomaly detection, and capacity planning</li>
+      </ul>
+    </div>
+    <div class="zh">
+      <p>除了核心五件專利之外，計算信任架構隨著平台成熟創造了額外申請的機會：</p>
+      <ul>
+        <li><strong>信任路由：</strong>根據延遲、成本、品質和法規約束，將信任需求智慧路由到最佳熵源</li>
+        <li><strong>信任聯邦：</strong>跨組織信任互操作性——使多個獨立信任供應商能夠形成具有相互驗證的聯邦信任網路</li>
+        <li><strong>領域特定信任物件：</strong>醫療信任物件（HIPAA 合規、患者連結）、金融信任物件（SOX 合規、交易連結）、機器人信任物件（安全關鍵、即時）</li>
+        <li><strong>信任分析：</strong>基於機器學習的信任模式分析，用於預測性品質評分、異常偵測和容量規劃</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="section-5-8">
+    <h3>5.8 — Family Coherence</h3>
+    <h3 class="zh-section-title">5.8 — 家族一致性</h3>
+
+    <div class="en">
+      <p>The patent family is designed for coherence, not just coverage:</p>
+      <ul>
+        <li><strong>No overlap:</strong> Each patent claims a distinct layer. The boundaries between layers are architecturally defined and technically enforced. An IP challenge to one patent does not weaken the others.</li>
+        <li><strong>Cross-references:</strong> Each patent references the others as related applications, establishing the family relationship and demonstrating the unified architecture.</li>
+        <li><strong>Layered licensing:</strong> The non-overlapping structure enables flexible licensing — individual layer licensing (e.g., a gaming company licensing only Trust Source + Trust Evidence) or full-stack licensing for enterprise deployments.</li>
+        <li><strong>Defensive depth:</strong> Even if one layer's claims are narrowed during prosecution, the remaining four layers maintain independent protection. The architecture is defensible at every level.</li>
+      </ul>
+    </div>
+    <div class="zh">
+      <p>專利家族設計追求的是一致性，不僅僅是覆蓋範圍：</p>
+      <ul>
+        <li><strong>無重疊：</strong>每件專利主張一個獨特的層。層之間的邊界在架構上定義且技術上強制執行。對一件專利的 IP 挑戰不會削弱其他專利。</li>
+        <li><strong>交叉引用：</strong>每件專利將其他專利引用為相關申請，建立家族關係並展示統一架構。</li>
+        <li><strong>分層授權：</strong>不重疊的結構實現靈活授權——個別層授權（如遊戲公司僅授權信任來源 + 信任證據）或企業部署的全堆疊授權。</li>
+        <li><strong>縱深防禦：</strong>即使一層的權利主張在審查過程中被縮窄，其餘四層維持獨立保護。架構在每個層級都是可防禦的。</li>
+      </ul>
+    </div>
+  </section>
+</section>
+
+<!-- Chapter 6: Markets -->
+<section class="chapter" id="chapter-6">
+  <div class="chapter-number">Chapter 6</div>
+  <h2>Markets</h2>
+  <h2 class="zh-title">市場</h2>
+  <p class="chapter-subtitle">Where Computational Trust Infrastructure creates value</p>
+  <p class="chapter-subtitle zh">計算信任基礎設施在哪裡創造價值</p>
+
+  <section class="section" id="section-6-1">
+    <h3>6.1 — AI Agents (Primary Market)</h3>
+    <h3 class="zh-section-title">6.1 — AI 代理（主要市場）</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Autonomous AI agents make non-deterministic decisions — tool selection, response sampling, task routing, resource allocation — with no audit trail for the randomness involved. As agents gain authority over financial, medical, legal, and operational decisions, this becomes a liability for every organization deploying them.</p>
+      <p><strong>Solution:</strong> Every agent decision backed by a VEO. Trust chains across multi-agent systems via the Coordination layer. Compliance attestations via the Runtime layer. SDK integration with major agent frameworks for one-line adoption.</p>
+      <p><strong>Key Players:</strong> OpenAI, Anthropic, Google DeepMind, Microsoft, Cohere, LangChain, CrewAI, AutoGPT, Fixie</p>
+      <p><strong>Entry Strategy:</strong> Open-source SDK + free tier → framework integration PRs → developer adoption → enterprise conversion. The trust lifecycle is invisible to the developer: <code>openrng.getEntropy({ policy: 'ai-grade' })</code> — one line, full lifecycle.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>自主 AI 代理做出非確定性決策——工具選擇、回應抽樣、任務路由、資源分配——涉及的隨機性沒有稽核軌跡。隨著代理對金融、醫療、法律和營運決策獲得權限，這對每個部署它們的組織都成為一種責任。</p>
+      <p><strong>解決方案：</strong>每個代理決策都由 VEO 支持。透過協調層實現多代理系統間的信任鏈。透過運行時層提供合規證明。與主要代理框架整合的 SDK，實現一行程式碼採用。</p>
+      <p><strong>關鍵參與者：</strong>OpenAI、Anthropic、Google DeepMind、Microsoft、Cohere、LangChain、CrewAI、AutoGPT、Fixie</p>
+      <p><strong>進入策略：</strong>開源 SDK + 免費層 → 框架整合 PR → 開發者採用 → 企業轉換。信任生命週期對開發者是透明的：<code>openrng.getEntropy({ policy: 'ai-grade' })</code>——一行程式碼，完整生命週期。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-6-2">
+    <h3>6.2 — Enterprise AI</h3>
+    <h3 class="zh-section-title">6.2 — 企業 AI</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Enterprise AI deployments face growing compliance requirements — SOX for financial decisions, GDPR for data processing, EU AI Act for high-risk systems. Current compliance relies on audit logs with circular trust dependencies. Enterprises need infrastructure-level trust assurance, not just documentation.</p>
+      <p><strong>Solution:</strong> Trust Runtime provides automated compliance attestations. Trust Evidence (VEO) creates independently verifiable decision records. The full Trust Stack integrates with enterprise security infrastructure (IAM, SIEM, GRC platforms).</p>
+      <p><strong>Key Players:</strong> AWS, Microsoft Azure, Google Cloud, Databricks, Snowflake, SAP, Oracle, Salesforce</p>
+      <p><strong>Entry Strategy:</strong> Cloud marketplace listings → managed service → enterprise licensing with dedicated support. Target: Chief AI Officers and Chief Compliance Officers.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>企業 AI 部署面臨日益增長的合規要求——SOX 用於金融決策、GDPR 用於資料處理、EU AI Act 用於高風險系統。當前合規依賴具有循環信任依賴的稽核日誌。企業需要基礎設施層級的信任保證，而不僅僅是文件。</p>
+      <p><strong>解決方案：</strong>信任運行時提供自動化合規證明。信任證據（VEO）建立可獨立驗證的決策記錄。完整信任堆疊與企業安全基礎設施（IAM、SIEM、GRC 平台）整合。</p>
+      <p><strong>關鍵參與者：</strong>AWS、Microsoft Azure、Google Cloud、Databricks、Snowflake、SAP、Oracle、Salesforce</p>
+      <p><strong>進入策略：</strong>雲端市場上架 → 託管服務 → 具專屬支援的企業授權。目標：首席 AI 長和首席合規長。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-6-3">
+    <h3>6.3 — Gaming &amp; Gambling</h3>
+    <h3 class="zh-section-title">6.3 — 遊戲與博弈</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Gaming regulators (GLI, BMM, eCOGRA) require provably fair RNG. Current certification processes test the RNG implementation but rely on the operator's system to log and attest to correct operation — creating the same circular trust dependency found in audit logs.</p>
+      <p><strong>Solution:</strong> VEO provides third-party verifiable proof of fair randomness for every game outcome. ECS scoring provides quantitative quality assurance. Blockchain anchoring provides temporal immutability. Any regulator can verify any outcome independently without trusting the operator.</p>
+      <p><strong>Key Players:</strong> GLI (Gaming Laboratories International), BMM Testlabs, eCOGRA, major igaming operators, casino management system vendors</p>
+      <p><strong>Entry Strategy:</strong> GLI-19 / GLI-33 certification → pilot with progressive operators → industry standard adoption.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>遊戲監管機構（GLI、BMM、eCOGRA）要求可證明公平的 RNG。當前認證流程測試 RNG 實作，但依賴操作者的系統來記錄和證明正確操作——造成與稽核日誌相同的循環信任依賴。</p>
+      <p><strong>解決方案：</strong>VEO 為每個遊戲結果提供第三方可驗證的公平隨機性證明。ECS 評分提供量化品質保證。區塊鏈錨定提供時間不可變性。任何監管機構都可以獨立驗證任何結果，無需信任操作者。</p>
+      <p><strong>關鍵參與者：</strong>GLI（遊戲實驗室國際）、BMM Testlabs、eCOGRA、主要 igaming 營運商、賭場管理系統供應商</p>
+      <p><strong>進入策略：</strong>GLI-19 / GLI-33 認證 → 與進步營運商試點 → 行業標準採用。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-6-4">
+    <h3>6.4 — Robotics &amp; Autonomous Systems</h3>
+    <h3 class="zh-section-title">6.4 — 機器人與自主系統</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Autonomous robots making physical-world decisions — warehouse allocation, delivery routing, surgical assistance, agricultural optimization — need verifiable decision trails for safety certification, liability, and regulatory compliance.</p>
+      <p><strong>Solution:</strong> Trust Evidence + Trust Coordination for robot swarms. Real-time VEO generation with sub-2ms latency for safety-critical timing. Trust chain construction across multi-robot coordination scenarios.</p>
+      <p><strong>Entry Strategy:</strong> ROS2 plugin → autonomous vehicle/drone frameworks → industrial robotics platforms.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>做出實體世界決策的自主機器人——倉庫分配、配送路由、手術輔助、農業優化——需要可驗證的決策軌跡用於安全認證、責任歸屬和法規合規。</p>
+      <p><strong>解決方案：</strong>用於機器人群體的信任證據 + 信任協調。具有低於 2ms 延遲的即時 VEO 生成，滿足安全關鍵時序。跨多機器人協調場景的信任鏈建構。</p>
+      <p><strong>進入策略：</strong>ROS2 插件 → 自主車輛/無人機框架 → 工業機器人平台。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-6-5">
+    <h3>6.5 — Government &amp; Defense</h3>
+    <h3 class="zh-section-title">6.5 — 政府與國防</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Government AI systems require the highest-assurance audit trails. Military decision-support systems, intelligence analysis tools, and civilian AI services must comply with frameworks like FedRAMP, NIST 800-53, and DoD-specific requirements.</p>
+      <p><strong>Solution:</strong> Full Trust Stack with compliance adapters for government frameworks. Hardware-backed trust sources (QRNG integration). Air-gapped verification capability (VEO is self-verifying without network access).</p>
+      <p><strong>Entry Strategy:</strong> Government procurement processes → FedRAMP certification → DoD / IC pilot programs.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>政府 AI 系統需要最高保證的稽核軌跡。軍事決策支援系統、情報分析工具和民用 AI 服務必須符合 FedRAMP、NIST 800-53 和 DoD 特定要求等框架。</p>
+      <p><strong>解決方案：</strong>具有政府框架合規適配器的完整信任堆疊。硬體支持的信任來源（QRNG 整合）。氣隙隔離驗證能力（VEO 無需網路存取即可自驗證）。</p>
+      <p><strong>進入策略：</strong>政府採購流程 → FedRAMP 認證 → DoD / IC 試點計畫。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-6-6">
+    <h3>6.6 — Finance</h3>
+    <h3 class="zh-section-title">6.6 — 金融</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Financial algorithms involving randomness — portfolio rebalancing, Monte Carlo risk models, order routing, A/B testing of trading strategies — face growing regulatory scrutiny. Regulators want proof that algorithmic decisions are fair and unmanipulated.</p>
+      <p><strong>Solution:</strong> VEO for verifiable randomness in financial computations. Trust Runtime for continuous compliance monitoring. Blockchain anchoring for immutable decision records.</p>
+      <p><strong>Entry Strategy:</strong> Protocol integration for DeFi (on-chain VEO verification). API integration for TradFi (enterprise SDK). Regulatory partnership for compliance framework mapping.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>涉及隨機性的金融演算法——投資組合再平衡、蒙地卡羅風險模型、訂單路由、交易策略的 A/B 測試——面臨日益增長的監管審查。監管機構希望得到演算法決策公平且未被操縱的證明。</p>
+      <p><strong>解決方案：</strong>用於金融計算中可驗證隨機性的 VEO。用於持續合規監控的信任運行時。用於不可變決策記錄的區塊鏈錨定。</p>
+      <p><strong>進入策略：</strong>DeFi 的協議整合（鏈上 VEO 驗證）。TradFi 的 API 整合（企業 SDK）。合規框架對應的監管合作。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-6-7">
+    <h3>6.7 — Healthcare</h3>
+    <h3 class="zh-section-title">6.7 — 醫療保健</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Clinical trial randomization, AI-driven triage, treatment allocation, and diagnostic sampling require auditable entropy with strict regulatory compliance (HIPAA, FDA 21 CFR Part 11, ICH E9 guidelines).</p>
+      <p><strong>Solution:</strong> Healthcare-grade VEOs with HIPAA-compliant anchoring. Trust Runtime with FDA/ICH regulatory adapters. Patient-linkable but privacy-preserving trust chains.</p>
+      <p><strong>Entry Strategy:</strong> Clinical trial platform integration → EHR system partnerships → FDA regulatory pathway.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>臨床試驗隨機化、AI 驅動的分診、治療分配和診斷抽樣需要具有嚴格法規合規的可稽核熵（HIPAA、FDA 21 CFR Part 11、ICH E9 指引）。</p>
+      <p><strong>解決方案：</strong>具有 HIPAA 合規錨定的醫療級 VEO。具有 FDA/ICH 法規適配器的信任運行時。可連結患者但保護隱私的信任鏈。</p>
+      <p><strong>進入策略：</strong>臨床試驗平台整合 → EHR 系統夥伴關係 → FDA 法規路徑。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-6-8">
+    <h3>6.8 — Scientific Computing</h3>
+    <h3 class="zh-section-title">6.8 — 科學計算</h3>
+    <div class="en">
+      <p><strong>Problem:</strong> Monte Carlo simulations, stochastic modeling, and computational experiments require reproducible, auditable entropy for research integrity and peer review.</p>
+      <p><strong>Solution:</strong> VEO provides verifiable entropy with full provenance for research reproducibility. Any reviewer can verify the exact entropy used in a published simulation by checking the VEO independently.</p>
+      <p><strong>Entry Strategy:</strong> Research library integrations (Python/R packages) → journal partnership for reproducibility standards → academic adoption.</p>
+    </div>
+    <div class="zh">
+      <p><strong>問題：</strong>蒙地卡羅模擬、隨機建模和計算實驗需要可重現、可稽核的熵以維護研究誠信和同儕審查。</p>
+      <p><strong>解決方案：</strong>VEO 提供具有完整出處的可驗證熵，用於研究可重現性。任何審查者都可以透過獨立檢查 VEO 來驗證已發表模擬中使用的確切熵。</p>
+      <p><strong>進入策略：</strong>研究函式庫整合（Python/R 套件）→ 與期刊合作建立可重現性標準 → 學術採用。</p>
+    </div>
+  </section>
+</section>
+
+<!-- Chapter 7: Why This Matters -->
+<section class="chapter" id="chapter-7">
+  <div class="chapter-number">Chapter 7</div>
+  <h2>Why This Matters</h2>
+  <h2 class="zh-title">為什麼這很重要</h2>
+  <p class="chapter-subtitle">The case for a new infrastructure category</p>
+  <p class="chapter-subtitle zh">新基礎設施類別的論證</p>
+
+  <section class="section" id="section-7-1">
+    <h3>7.1 — The Historical Pattern</h3>
+    <h3 class="zh-section-title">7.1 — 歷史模式</h3>
+
+    <div class="en">
+      <p>Infrastructure categories are not invented. They are named. They emerge when a problem becomes so pervasive that ad-hoc solutions can no longer contain it, and someone defines the problem precisely enough that a standard solution becomes possible.</p>
+      <p><strong>TCP/IP</strong> did not invent networking. Networks existed. But TCP/IP named the problem — "how do heterogeneous networks interoperate?" — and defined a standard protocol stack that every network could implement. Today, TCP/IP is invisible infrastructure that everything depends on.</p>
+      <p><strong>TLS</strong> did not invent encryption. Encryption existed. But TLS named the problem — "how do two parties establish a secure channel over an untrusted network?" — and defined a standard handshake protocol. Today, HTTPS is so ubiquitous that browsers warn users when it is absent.</p>
+      <p><strong>OAuth</strong> did not invent authorization. Authorization existed. But OAuth named the problem — "how does a user grant an application limited access to their resources without sharing credentials?" — and defined a standard delegation flow. Today, "Sign in with Google" is the default.</p>
+      <p><strong>JWT</strong> did not invent identity claims. Identity claims existed. But JWT named the format — "how do we represent identity as a portable, self-verifying, signed token?" — and defined a standard that every API now speaks.</p>
+      <p>In each case, the pattern is the same: a pervasive problem exists, individual teams build custom solutions, someone names the problem and defines a standard, and the standard becomes invisible infrastructure. The naming is the breakthrough. Before the name exists, the problem is fragmented. After the name exists, the category crystallizes.</p>
+    </div>
+    <div class="zh">
+      <p>基礎設施類別不是被發明的。它們是被命名的。它們在一個問題變得如此普遍以至於臨時解決方案無法再應對時出現，而某人足夠精確地定義了問題，使標準解決方案成為可能。</p>
+      <p><strong>TCP/IP</strong> 沒有發明網路。網路已經存在。但 TCP/IP 命名了問題——「異構網路如何互操作？」——並定義了每個網路都可以實作的標準協議堆疊。今天，TCP/IP 是一切都依賴的隱形基礎設施。</p>
+      <p><strong>TLS</strong> 沒有發明加密。加密已經存在。但 TLS 命名了問題——「兩方如何在不受信任的網路上建立安全通道？」——並定義了標準握手協議。今天，HTTPS 如此普遍，以至於瀏覽器在缺少它時會警告用戶。</p>
+      <p><strong>OAuth</strong> 沒有發明授權。授權已經存在。但 OAuth 命名了問題——「用戶如何在不分享憑證的情況下授予應用程式有限的資源存取權？」——並定義了標準委託流程。今天，「使用 Google 登入」是預設選項。</p>
+      <p><strong>JWT</strong> 沒有發明身份聲明。身份聲明已經存在。但 JWT 命名了格式——「如何將身份表示為可攜帶、自驗證、已簽名的令牌？」——並定義了每個 API 現在都使用的標準。</p>
+      <p>在每種情況下，模式是相同的：普遍的問題存在、個別團隊建構自定解決方案、某人命名問題並定義標準、標準成為隱形基礎設施。命名就是突破。在名稱存在之前，問題是碎片化的。在名稱存在之後，類別結晶。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-7-2">
+    <h3>7.2 — Computational Trust Is the Next Category</h3>
+    <h3 class="zh-section-title">7.2 — 計算信任是下一個類別</h3>
+
+    <div class="en">
+      <p>The problem is here. Autonomous systems are proliferating faster than the trust infrastructure to support them. Every major organization deploying AI agents is building custom solutions for decision auditability — custom logging, custom attestation, custom compliance mapping. These solutions are fragmented, incompatible, and insufficient.</p>
+      <p>The regulatory demand is here. Every major regulatory body — EU, US, UK, Singapore, Japan — is independently converging on the same requirement: AI decisions must be auditable and verifiable. But no regulatory framework specifies how, because the infrastructure to do so does not exist.</p>
+      <p>The name is here. <strong>Computational Trust</strong> — the ability to independently verify that a computational process occurred correctly, fairly, and without manipulation. This is not security (protecting the perimeter), not privacy (protecting data), not compliance (following rules). It is a distinct infrastructure layer that sits alongside all three.</p>
+      <p>OpenRNG is naming this category and building its first implementation. The Trust Stack defines the architecture. The Trust Lifecycle defines the operations. The VEO-1 specification defines the object format. The patent family protects the intellectual property. The SDK and open standard enable adoption.</p>
+    </div>
+    <div class="zh">
+      <p>問題已經在這裡。自主系統的擴散速度超過了支撐它們的信任基礎設施。每個部署 AI 代理的主要組織都在為決策可稽核性建構自定解決方案——自定日誌、自定證明、自定合規對應。這些解決方案是碎片化的、不相容的、不充分的。</p>
+      <p>監管需求已經在這裡。每個主要監管機構——歐盟、美國、英國、新加坡、日本——都獨立地趨同於相同的要求：AI 決策必須是可稽核和可驗證的。但沒有任何監管框架指定如何做到，因為做到這一點的基礎設施不存在。</p>
+      <p>名稱已經在這裡。<strong>計算信任</strong>——獨立驗證計算過程正確、公平且未被操縱地發生的能力。這不是安全（保護邊界）、不是隱私（保護資料）、不是合規（遵循規則）。它是一個獨特的基礎設施層，與這三者並列存在。</p>
+      <p>OpenRNG 正在命名這個類別並建構其第一個實作。信任堆疊定義架構。信任生命週期定義操作。VEO-1 規範定義物件格式。專利家族保護智慧財產權。SDK 和開放標準實現採用。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-7-3">
+    <h3>7.3 — The Infrastructure Test</h3>
+    <h3 class="zh-section-title">7.3 — 基礎設施測試</h3>
+
+    <div class="en">
+      <p>Four questions determine whether something is a product or infrastructure:</p>
+    </div>
+    <div class="zh">
+      <p>四個問題決定某物是產品還是基礎設施：</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Question 問題</th>
+          <th>Answer 回答</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Does it solve a problem that will only get bigger?<br>它解決的問題是否只會越來越大？</td>
+          <td><strong>Yes.</strong> Autonomous systems are accelerating. Every new agent deployed increases the trust gap.<br><strong>是。</strong>自主系統正在加速。每個新部署的代理都增加了信任缺口。</td>
+        </tr>
+        <tr>
+          <td>Does it require a new primitive, not a better version of an existing one?<br>它是否需要新的原語，而非現有原語的更好版本？</td>
+          <td><strong>Yes.</strong> Trust objects (VEO) do not exist. This is not a better RNG — it is a new category of object.<br><strong>是。</strong>信任物件（VEO）不存在。這不是更好的 RNG——這是一個新類別的物件。</td>
+        </tr>
+        <tr>
+          <td>Can it become invisible — infrastructure that everything depends on but nobody sees?<br>它能否變得隱形——一切都依賴但沒人看見的基礎設施？</td>
+          <td><strong>Yes.</strong> Like TLS today: developers call an API and trust happens. The lifecycle is invisible.<br><strong>是。</strong>像今天的 TLS：開發者呼叫 API，信任就發生了。生命週期是隱形的。</td>
+        </tr>
+        <tr>
+          <td>Does it have a natural standards path?<br>它是否有自然的標準化路徑？</td>
+          <td><strong>Yes.</strong> VEO → open specification → IETF/W3C submission. The path mirrors JWT, OAuth, and TLS.<br><strong>是。</strong>VEO → 開放規範 → IETF/W3C 提交。路徑與 JWT、OAuth 和 TLS 相似。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="en">
+      <p>Computational Trust passes all four tests. It is infrastructure, not a product.</p>
+    </div>
+    <div class="zh">
+      <p>計算信任通過所有四項測試。它是基礎設施，不是產品。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-7-4">
+    <h3>7.4 — The Five-Year Vision</h3>
+    <h3 class="zh-section-title">7.4 — 五年願景</h3>
+
+    <div class="en">
+      <p>In five years, the OpenRNG ecosystem should look like this:</p>
+    </div>
+    <div class="zh">
+      <p>五年後，OpenRNG 生態系統應該是這樣的：</p>
+    </div>
+
+    <pre class="diagram">
+  OpenRNG — Computational Trust Infrastructure
+
+  ══════════════════════════════════════════════
+
+  Bible (this document)
+    │
+    ▼
+  Whitepaper
+    │
+    ▼
+  OTS — OpenRNG Trust Specification
+    │
+    ▼
+  Reference Implementation
+    │
+    ▼
+  SDK (@openrng/sdk)
+    │
+    ▼
+  Open Standard (VEO → industry standard)
+    │
+    ▼
+  Patent Family (5 patents × 5 layers)
+    │
+    ▼
+  Enterprise Products &amp; Licensing
+    </pre>
+
+    <div class="en">
+      <p>Each layer derives from the one above it. The Bible defines the world. The Whitepaper explains the science. The OTS specifies the protocol. The Reference Implementation proves it works. The SDK makes it adoptable. The Open Standard makes it universal. The Patent Family protects it. Enterprise Products monetize it.</p>
+      <p>This is not a product roadmap. It is a category creation sequence — the same sequence followed by TLS, OAuth, Docker, and Kubernetes. The order matters: you cannot standardize what you have not specified, you cannot specify what you have not explained, and you cannot explain what you have not defined.</p>
+    </div>
+    <div class="zh">
+      <p>每一層都源自其上方的一層。聖經定義世界。白皮書解釋科學。OTS 規定協議。參考實作證明它有效。SDK 使其可採用。開放標準使其普遍。專利家族保護它。企業產品將其貨幣化。</p>
+      <p>這不是產品路線圖。這是類別創建序列——TLS、OAuth、Docker 和 Kubernetes 遵循的相同序列。順序很重要：你無法標準化你未規定的東西，你無法規定你未解釋的東西，你無法解釋你未定義的東西。</p>
+    </div>
+  </section>
+
+  <section class="section" id="section-7-5">
+    <h3>7.5 — What Success Looks Like</h3>
+    <h3 class="zh-section-title">7.5 — 成功的樣貌</h3>
+
+    <div class="en">
+      <ul>
+        <li><strong>"VEO"</strong> becomes a term like "JWT" — every developer building AI agent systems knows what it is and expects to use it.</li>
+        <li><strong>Major cloud providers</strong> offer VEO verification as a managed service — "AWS Trust Verify," "Azure Computational Trust" — the same way they offer KMS, HSM, and certificate management today.</li>
+        <li><strong>Regulatory frameworks</strong> reference Computational Trust as a compliance mechanism — "AI decisions shall be accompanied by Verifiable Trust Evidence" appears in regulatory guidance, the way "data shall be encrypted in transit" appears today.</li>
+        <li><strong>Agent frameworks</strong> include trust lifecycle integration as a core feature — LangChain, CrewAI, and future frameworks ship with built-in VEO support, the way web frameworks ship with HTTPS support.</li>
+        <li><strong>OpenRNG</strong> is to computational trust what Cloudflare is to the edge, what Stripe is to payments, what Let's Encrypt is to TLS: the default infrastructure that makes the category accessible.</li>
+      </ul>
+      <p>This is not a prediction. It is a design target. Every decision — architectural, legal, commercial — is made with this end state in mind. The Bible you are reading defines the forest. The patents, specifications, SDKs, and products are the trees that grow within it.</p>
+    </div>
+    <div class="zh">
+      <ul>
+        <li><strong>「VEO」</strong>成為像「JWT」一樣的術語——每個建構 AI 代理系統的開發者都知道它是什麼，並期望使用它。</li>
+        <li><strong>主要雲端供應商</strong>提供 VEO 驗證作為託管服務——「AWS Trust Verify」、「Azure Computational Trust」——與今天他們提供 KMS、HSM 和憑證管理的方式相同。</li>
+        <li><strong>監管框架</strong>將計算信任引用為合規機制——「AI 決策應附帶可驗證信任證據」出現在監管指引中，如同今天「資料在傳輸中應加密」的出現方式。</li>
+        <li><strong>代理框架</strong>將信任生命週期整合作為核心功能——LangChain、CrewAI 和未來的框架出廠即內建 VEO 支援，如同 Web 框架出廠即支援 HTTPS。</li>
+        <li><strong>OpenRNG</strong> 之於計算信任，如同 Cloudflare 之於邊緣、Stripe 之於支付、Let's Encrypt 之於 TLS：使類別可及的預設基礎設施。</li>
+      </ul>
+      <p>這不是預測。這是設計目標。每個決策——架構的、法律的、商業的——都以此最終狀態為依歸。你正在閱讀的聖經定義了森林。專利、規範、SDK 和產品是在其中生長的樹木。</p>
+    </div>
+  </section>
+</section>

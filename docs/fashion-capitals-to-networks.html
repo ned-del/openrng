@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>從時尚之都，到時尚網路</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap');
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Serif TC', 'Cormorant Garamond', serif;
+    color: #1a1a1a;
+    background: #faf9f7;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 60px 80px;
+    background: linear-gradient(165deg, #faf9f7 0%, #f0ece6 40%, #e8e2d8 100%);
+    page-break-after: always;
+    position: relative;
+  }
+
+  .cover::before,
+  .cover::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 1px;
+    background: #1a1a1a;
+  }
+  .cover::before { top: 60px; }
+  .cover::after { bottom: 60px; }
+
+  .cover .title-zh {
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 8px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .cover .title-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #777;
+    margin-bottom: 60px;
+  }
+
+  .cover .byline {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+
+  /* ── Pages ── */
+  .page {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 72px 80px;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+
+  .page:last-of-type {
+    page-break-after: avoid;
+  }
+
+  /* ── Section Labels ── */
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 40px;
+  }
+
+  /* ── Headings ── */
+  h2 {
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    line-height: 1.5;
+    margin-bottom: 28px;
+    color: #1a1a1a;
+  }
+
+  h2.en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+  }
+
+  /* ── Body Text ── */
+  p {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 2;
+    margin-bottom: 18px;
+    color: #333;
+    letter-spacing: 0.5px;
+  }
+
+  p.en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.9;
+    letter-spacing: 0;
+  }
+
+  p.lead {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.9;
+    color: #1a1a1a;
+  }
+
+  p.lead.en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    line-height: 1.8;
+  }
+
+  em { font-style: italic; font-weight: 400; }
+  strong { font-weight: 500; }
+
+  /* ── Flow Diagrams ── */
+  .flow {
+    margin: 32px 0;
+    padding: 32px 36px;
+    background: #f5f3ef;
+    border-left: 2px solid #d4cec4;
+  }
+
+  .flow + .flow {
+    margin-top: 28px;
+  }
+
+  .flow-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 18px;
+  }
+
+  .flow-item {
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-align: center;
+    padding: 5px 0;
+    color: #444;
+  }
+
+  .flow-arrow {
+    text-align: center;
+    font-size: 13px;
+    color: #bbb;
+    padding: 1px 0;
+    line-height: 1;
+  }
+
+  .flow-note {
+    font-size: 14px;
+    font-weight: 300;
+    color: #777;
+    margin-top: 14px;
+    line-height: 1.8;
+  }
+
+  /* ── Pull Quotes ── */
+  .pullquote {
+    margin: 40px 0;
+    padding: 0 0 0 24px;
+    border-left: 2px solid #1a1a1a;
+  }
+
+  .pullquote p {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.8;
+    color: #1a1a1a;
+  }
+
+  .pullquote p.en {
+    font-style: italic;
+  }
+
+  /* ── Values ── */
+  .values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin: 24px 0;
+  }
+
+  .values span {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #777;
+    padding: 5px 0;
+  }
+
+  /* ── Dividers ── */
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: #ccc;
+    margin: 40px auto;
+  }
+
+  .divider-wide {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ccc 20%, #ccc 80%, transparent);
+    margin: 44px 0;
+  }
+
+  /* ── Cities ── */
+  .cities p {
+    font-size: 16px;
+    line-height: 1.9;
+    margin-bottom: 4px;
+  }
+
+  /* ── Closing ── */
+  .closing {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 60px;
+    background: linear-gradient(165deg, #f0ece6 0%, #e8e2d8 50%, #ddd6ca 100%);
+  }
+
+  .closing p {
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.9;
+    color: #333;
+    max-width: 520px;
+  }
+
+  .closing p.en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+  }
+
+  .closing .aeom-mark {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-top: 48px;
+  }
+
+  @media print {
+    body { background: white; }
+    .cover, .closing { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ COVER ═══════════ -->
+<div class="cover">
+  <div class="title-zh">從時尚之都<br>到時尚網路</div>
+  <div class="title-en">From Fashion Capitals<br>to Fashion Networks</div>
+  <div class="byline">A E O M</div>
+</div>
+
+<!-- ═══════════ PAGE 1: 開場 ═══════════ -->
+<div class="page">
+
+  <p class="lead">二十年前，我的時尚老師曾經告訴我一件幾乎被視為理所當然的事情：</p>
+
+  <p class="lead"><strong>時尚，總是從少數幾個城市開始。</strong></p>
+
+  <p>倫敦、米蘭、紐約、東京。</p>
+
+  <p>這些城市像太陽一樣，不斷向世界輻射新的設計、新的美學、新的生活方式。設計師發表作品，編輯挑選趨勢，雜誌定義潮流，百貨公司與買手店將它們帶進市場，最後，全世界的消費者慢慢跟隨。</p>
+
+  <p>時尚就像湖面上的漣漪，一圈一圈向外擴散。</p>
+
+  <p>優雅、有秩序，也相對緩慢。<br>
+  一個流行趨勢，可能需要一年，甚至兩年，才會真正來到另一個國家。</p>
+
+  <div class="divider-wide"></div>
+
+  <p class="lead">但今天，這個世界已經改變了。</p>
+
+  <p>改變的不只是地理。<br>
+  更是<strong>時尚運作的物理定律</strong>。</p>
+
+  <p>時尚，不再從城市流向世界。<br>
+  而是透過<strong>網路（Networks）</strong>流動。</p>
+
+  <p>不是 Fashion Capitals。<br>
+  而是 Attention Capitals。<br>
+  社群。演算法。創作者。每一位使用者。</p>
+
+</div>
+
+<!-- ═══════════ PAGE 2: 新舊模式 ═══════════ -->
+<div class="page">
+
+  <div class="flow">
+    <div class="flow-title">過去的模式</div>
+    <div class="flow-item">倫敦</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item">米蘭</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item">紐約</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item">東京</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item">雜誌</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item">零售商</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item">消費者</div>
+    <div class="flow-note">影響力是單向的。<br>少數人定義潮流。多數人跟隨潮流。</div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">今天的模式</div>
+    <div class="flow-item">創作者</div>
+    <div class="flow-arrow">↕</div>
+    <div class="flow-item">社群</div>
+    <div class="flow-arrow">↕</div>
+    <div class="flow-item">演算法</div>
+    <div class="flow-arrow">↕</div>
+    <div class="flow-item">消費者</div>
+    <div class="flow-note">每一個人都可以創造。每一個人都能影響。每一個人也都是媒體。<br>時尚不再從一個地方開始。而是在無數地方，同時誕生。</div>
+  </div>
+
+</div>
+
+<!-- ═══════════ PAGE 3: 城市 + 身份認同 ═══════════ -->
+<div class="page">
+  <div class="section-label">城市依然重要</div>
+
+  <div class="cities">
+    <p>倫敦依然孕育最前衛的創意。</p>
+    <p>米蘭依然代表精湛工藝。</p>
+    <p>東京依然勇於突破。</p>
+    <p>紐約依然是商業與文化交會的重要舞台。</p>
+  </div>
+
+  <p>只是，它們已經不再壟斷時尚。<br>
+  它們只是全球對話中的重要節點。</p>
+
+  <div class="divider-wide"></div>
+
+  <h2>時尚，正在變成「身份認同」</h2>
+
+  <p>真正最大的改變，也許不是科技。<br>
+  而是人心。</p>
+
+  <p>過去，人們問的是：<br>
+  <em>「現在流行什麼？」</em></p>
+
+  <p>今天，人們更常問的是：<br>
+  <strong>「什麼最像我？」</strong></p>
+
+  <p>服裝，不再只是展現地位。而是表達價值觀。<br>
+  不是炫耀，而是認同。<br>
+  不是 Luxury。而是 Belonging。</p>
+
+  <p>人們買的不只是衣服。<br>
+  而是一種生活方式、一群志同道合的人，以及一個自己想成為的樣子。</p>
+
+</div>
+
+<!-- ═══════════ PAGE 4: AEOM + 未來 ═══════════ -->
+<div class="page">
+  <div class="section-label">AEOM 可以學到什麼？</div>
+
+  <p>對 AEOM 而言，最大的問題已經不是：<br>
+  <em>「米蘭今年穿什麼？」</em></p>
+
+  <p>真正值得思考的是：<br>
+  <strong>「我們希望陪伴顧客過著什麼樣的人生？」</strong></p>
+
+  <p>服裝，不只是商品。<br>
+  而是一種生活語言。</p>
+
+  <div class="values">
+    <span>旅行</span>
+    <span>咖啡</span>
+    <span>運動</span>
+    <span>家庭</span>
+    <span>自然</span>
+    <span>極簡</span>
+    <span>永續</span>
+    <span>自在</span>
+  </div>
+
+  <p>這些都不是產品分類。<br>
+  而是共同相信的價值。</p>
+
+  <p>當足夠多的人相信同一件事情，社群就會形成。<br>
+  而社群，終將孕育出屬於自己的時尚。</p>
+
+  <div class="divider-wide"></div>
+
+  <div class="section-label">未來</div>
+
+  <p>下一個世代最成功的品牌，<br>
+  未必是最會預測流行的人。</p>
+
+  <p>而是最會<strong>創造文化</strong>的人。</p>
+
+  <p>因為真正偉大的品牌，從來不只是販售衣服。</p>
+
+  <div class="pullquote">
+    <p>它們幫助人們回答一個永遠不會過時的問題：<br>
+    「我想成為什麼樣的人？」</p>
+  </div>
+
+</div>
+
+<!-- ═══════════ PAGE 5: English ═══════════ -->
+<div class="page">
+  <div class="section-label">English</div>
+
+  <p class="lead en">Twenty years ago, my fashion teacher explained something that was considered almost unquestionable:</p>
+
+  <p class="lead en"><em>Fashion begins in a handful of cities.</em></p>
+
+  <p class="en">London. Milan. New York. Tokyo.</p>
+
+  <p class="en">These cities acted like the sun, radiating ideas outward. Designers presented collections, editors selected what mattered, magazines published trends, retailers interpreted them, and eventually the rest of the world adopted them.</p>
+
+  <p class="en">Fashion moved like ripples across a lake.</p>
+
+  <p class="en">It was beautiful, predictable, and relatively slow. A trend might take one or even two years before becoming mainstream somewhere else.</p>
+
+  <div class="divider-wide"></div>
+
+  <p class="lead en">Today, that world no longer exists.</p>
+
+  <p class="en">The geography of fashion has changed.<br>
+  More importantly, <strong>the physics of fashion has changed.</strong></p>
+
+  <p class="en">Instead of flowing from cities, fashion increasingly flows through <em>networks</em>.</p>
+
+  <p class="en">Not fashion capitals.<br>
+  <strong>Attention capitals.</strong><br>
+  Communities. Algorithms. Creators.</p>
+
+</div>
+
+<!-- ═══════════ PAGE 6: English Diagrams ═══════════ -->
+<div class="page">
+
+  <div class="flow">
+    <div class="flow-title">The Old Model</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">London</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Milan</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">New York</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Tokyo</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Magazines</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Retailers</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Consumers</div>
+    <div class="flow-note" style="font-family:'Cormorant Garamond',serif;">Influence flowed in one direction.<br>A small group decided. Everyone else followed.</div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">The New Model</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Creator</div>
+    <div class="flow-arrow">↕</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Community</div>
+    <div class="flow-arrow">↕</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Algorithm</div>
+    <div class="flow-arrow">↕</div>
+    <div class="flow-item" style="font-family:'Cormorant Garamond',serif; text-transform:uppercase;">Consumer</div>
+    <div class="flow-note" style="font-family:'Cormorant Garamond',serif;">Everyone participates. Everyone influences. Everyone broadcasts.<br>Fashion no longer spreads from one place. It emerges simultaneously from thousands of places.</div>
+  </div>
+
+</div>
+
+<!-- ═══════════ PAGE 7: English Cities + Identity + AEOM + Future ═══════════ -->
+<div class="page">
+  <div class="section-label">Cities Still Matter</div>
+
+  <div class="cities">
+    <p class="en">London still produces extraordinary creativity.</p>
+    <p class="en">Milan still represents craftsmanship.</p>
+    <p class="en">Tokyo still experiments fearlessly.</p>
+    <p class="en">New York still connects commerce with culture.</p>
+  </div>
+
+  <p class="en">But these cities no longer own the conversation.<br>
+  They participate in it.</p>
+
+  <div class="divider-wide"></div>
+
+  <h2 class="en">Fashion is becoming Identity</h2>
+
+  <p class="en">Perhaps the biggest shift isn't technological. It's psychological.</p>
+
+  <p class="en">People no longer ask, <em>"What is fashionable?"</em><br>
+  Instead they ask, <strong><em>"What represents me?"</em></strong></p>
+
+  <p class="en">Clothing has become less about status and more about identity. Less about luxury. More about belonging. People aren't simply buying garments — they're choosing communities.</p>
+
+</div>
+
+<!-- ═══════════ PAGE 8: English AEOM + Future ═══════════ -->
+<div class="page">
+  <div class="section-label">What AEOM Can Learn</div>
+
+  <p class="en">For brands like AEOM, this changes everything. The question is no longer, <em>"What is Milan wearing this season?"</em></p>
+
+  <p class="en">The better question is, <strong><em>"What kind of life do our customers want to live?"</em></strong></p>
+
+  <p class="en">Fashion becomes a language. A uniform for a way of living.</p>
+
+  <div class="values">
+    <span>Travel</span>
+    <span>Movement</span>
+    <span>Coffee</span>
+    <span>Family</span>
+    <span>Nature</span>
+    <span>Minimalism</span>
+    <span>Mindfulness</span>
+    <span>Sustainability</span>
+  </div>
+
+  <p class="en">These aren't product categories. They're shared values. When enough people share those values, a community forms. And when a community forms, fashion follows.</p>
+
+  <div class="divider-wide"></div>
+
+  <div class="section-label">The Future</div>
+
+  <p class="en">The next generation of successful brands may not become famous because they predict trends. They may become influential because they <strong>create cultures</strong>.</p>
+
+  <p class="en">The strongest brands will not simply sell clothing.</p>
+
+  <div class="pullquote">
+    <p class="en">They will help people answer one timeless question:<br>
+    Who do I want to become?</p>
+  </div>
+
+</div>
+
+<!-- ═══════════ CLOSING ═══════════ -->
+<div class="closing">
+  <p>時尚，不再屬於城市；<br>它屬於每一個有共同信念的社群。</p>
+  <div class="divider"></div>
+  <p class="en">Fashion no longer belongs to cities.<br>It belongs to communities.</p>
+  <div class="aeom-mark">A E O M</div>
+</div>
+
+</body>
+</html>

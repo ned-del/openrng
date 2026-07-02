@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenRNG — Computational Trust Infrastructure v1.0</title>
+<style>
+  @page {
+    size: A4;
+    margin: 25mm 20mm 25mm 20mm;
+    @bottom-center {
+      content: counter(page);
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      font-size: 9pt;
+      color: #999;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #fff;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 20mm;
+  }
+
+  /* Cover Page */
+  .cover {
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    text-align: center;
+  }
+  .cover-logo {
+    font-size: 48pt;
+    font-weight: 800;
+    letter-spacing: -2px;
+    color: #0a0a0a;
+    margin-bottom: 8px;
+  }
+  .cover-subtitle {
+    font-size: 18pt;
+    font-weight: 300;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .cover-version {
+    font-size: 12pt;
+    color: #999;
+    margin-top: 40px;
+  }
+  .cover-line {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #7c6aef, #3ecf8e);
+    margin: 30px auto;
+    border-radius: 2px;
+  }
+  .cover-meta {
+    font-size: 10pt;
+    color: #888;
+    margin-top: 12px;
+    line-height: 1.8;
+  }
+  .cover-classification {
+    font-size: 10pt;
+    font-weight: 600;
+    color: #d44;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 40px;
+    padding: 8px 20px;
+    border: 2px solid #d44;
+    border-radius: 4px;
+  }
+
+  /* Table of Contents */
+  .toc {
+    page-break-after: always;
+    padding-top: 40px;
+  }
+  .toc h2 {
+    font-size: 22pt;
+    margin-bottom: 30px;
+    color: #0a0a0a;
+  }
+  .toc-part {
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #7c6aef;
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+  .toc-chapter {
+    font-size: 12pt;
+    font-weight: 600;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    color: #1a1a1a;
+  }
+  .toc-section {
+    font-size: 10pt;
+    padding: 3px 0 3px 24px;
+    color: #555;
+  }
+
+  /* Chapter Styling */
+  .chapter {
+    page-break-before: always;
+    padding-top: 20px;
+  }
+  .chapter-number {
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #7c6aef;
+    margin-bottom: 4px;
+  }
+  .chapter > h2 {
+    font-size: 26pt;
+    font-weight: 800;
+    color: #0a0a0a;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .zh-title {
+    font-size: 16pt;
+    font-weight: 400;
+    color: #666;
+    margin-bottom: 8px;
+  }
+  .chapter-subtitle {
+    font-size: 12pt;
+    font-weight: 300;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+  .chapter-subtitle.zh {
+    margin-bottom: 30px;
+  }
+
+  /* Section Styling */
+  .section {
+    margin-top: 32px;
+  }
+  .section h3 {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+  .zh-section-title {
+    font-size: 11pt;
+    font-weight: 400;
+    color: #888;
+    margin-bottom: 16px;
+  }
+
+  /* Language blocks */
+  .en {
+    margin-bottom: 20px;
+  }
+  .en p, .zh p {
+    margin-bottom: 12px;
+    text-align: justify;
+  }
+  .zh {
+    background: #f8f8fa;
+    border-left: 3px solid #d8d8e8;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-radius: 0 6px 6px 0;
+  }
+  .zh p {
+    color: #333;
+  }
+
+  /* Stage details */
+  .stage-detail {
+    margin: 20px 0;
+    padding: 16px 20px;
+    border: 1px solid #e8e8f0;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .stage-detail h4 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #7c6aef;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e8e8f0;
+  }
+  .stage-detail .zh {
+    background: #f0f0f5;
+    border-left-color: #c8c8d8;
+    margin-top: 12px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 10pt;
+  }
+  thead {
+    background: #f0f0f5;
+  }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 700;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    font-size: 9.5pt;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  .highlight-row {
+    background: #f0faf5;
+  }
+  .highlight-row td {
+    color: #0a6a3a;
+    font-weight: 600;
+  }
+  .gap-map th {
+    font-size: 8.5pt;
+  }
+  .gap-map td {
+    text-align: center;
+    font-size: 9.5pt;
+  }
+  .gap-map td:first-child {
+    text-align: left;
+    font-weight: 600;
+  }
+
+  /* Diagrams */
+  pre.diagram {
+    background: #0a0a1a;
+    color: #e0e0e8;
+    padding: 24px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin: 20px 0;
+    white-space: pre;
+  }
+
+  /* Definition box */
+  .definition-box {
+    background: linear-gradient(135deg, #f8f7ff, #f0f8ff);
+    border: 2px solid #7c6aef;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .definition-box p {
+    font-size: 12pt;
+    font-style: italic;
+    color: #333;
+    line-height: 1.8;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 8px 0 12px 20px;
+  }
+  li {
+    margin-bottom: 6px;
+  }
+
+  /* Code */
+  code {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 9.5pt;
+    background: #f0f0f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #7c6aef;
+  }
+
+  /* Strong */
+  strong {
+    font-weight: 700;
+  }
+
+  /* Emphasis */
+  em {
+    font-style: italic;
+  }
+
+  /* Print optimizations */
+  @media print {
+    body {
+      padding: 0;
+    }
+    .cover {
+      min-height: 100vh;
+    }
+    .zh {
+      break-inside: avoid;
+    }
+    .stage-detail {
+      break-inside: avoid;
+    }
+    table {
+      break-inside: avoid;
+    }
+    pre.diagram {
+      break-inside: avoid;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-logo">OpenRNG</div>
+  <div class="cover-subtitle">Computational Trust Infrastructure</div>
+  <div class="cover-line"></div>
+  <div class="cover-subtitle" style="font-size:14pt;">計算信任基礎設施</div>
+  <div class="cover-version">Version 1.0</div>
+  <div class="cover-meta">
+    June 2026<br>
+    Bilingual Edition — English / 繁體中文
+  </div>
+  <div class="cover-classification">CONFIDENTIAL — FOR IP COUNSEL REVIEW</div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Contents 目錄</h2>
+
+  <div class="toc-part">Part I — The Problem 問題</div>
+  <div class="toc-chapter">Chapter 1 — The Computational Trust Problem 計算信任問題</div>
+  <div class="toc-section">1.1 The Trust Gap in Autonomous Systems 自主系統中的信任缺口</div>
+  <div class="toc-section">1.2 Why This Is Not a Security Problem 為什麼這不是安全問題</div>
+  <div class="toc-section">1.3 Why This Is Not a Randomness Problem 為什麼這不是隨機性問題</div>
+  <div class="toc-section">1.4 Defining Computational Trust 定義計算信任</div>
+  <div class="toc-section">1.5 The Inevitability Argument 必然性論證</div>
+  <div class="toc-chapter">Chapter 2 — Why Existing Infrastructure Falls Short 為什麼現有基礎設施不足</div>
+  <div class="toc-section">2.1 Transport Security (TLS / mTLS)</div>
+  <div class="toc-section">2.2 Authentication & Authorization (OAuth, JWT, RBAC)</div>
+  <div class="toc-section">2.3 Audit Logs 稽核日誌</div>
+  <div class="toc-section">2.4 Verifiable Random Functions (VRF)</div>
+  <div class="toc-section">2.5 Trusted Execution Environments (TEE)</div>
+  <div class="toc-section">2.6 Multi-Party Computation (MPC)</div>
+  <div class="toc-section">2.7 Blockchain Consensus 區塊鏈共識</div>
+  <div class="toc-section">2.8 The Gap Map 缺口地圖</div>
+
+  <div class="toc-part">Part II — The Solution 解決方案</div>
+  <div class="toc-chapter">Chapter 3 — The OpenRNG Trust Stack 信任堆疊架構</div>
+  <div class="toc-section">3.1 Design Principles 設計原則</div>
+  <div class="toc-section">3.2 The Five-Layer Stack 五層堆疊架構</div>
+  <div class="toc-section">3.3 Layer 1: Trust Source (OpenRNG Core) 信任來源</div>
+  <div class="toc-section">3.4 Layer 2: Trust Authorization (Lockbox) 信任授權</div>
+  <div class="toc-section">3.5 Layer 3: Trust Evidence (VEO) 信任證據</div>
+  <div class="toc-section">3.6 Layer 4: Trust Coordination 信任協調</div>
+  <div class="toc-section">3.7 Layer 5: Trust Runtime 信任運行時</div>
+  <div class="toc-section">3.8 Cross-Cutting Concerns 跨層關注事項</div>
+  <div class="toc-chapter">Chapter 4 — The Trust Lifecycle 信任生命週期</div>
+  <div class="toc-section">4.1 Why a Lifecycle? 為什麼需要生命週期？</div>
+  <div class="toc-section">4.2 The Eight Stages 八個階段</div>
+  <div class="toc-section">4.3 Lifecycle Profiles 生命週期配置</div>
+  <div class="toc-section">4.4 Lifecycle Invariants 生命週期不變量</div>
+  <div class="toc-section">4.5 The Lifecycle as Category-Defining Primitive 作為類別定義原語</div>
+
+  <div class="toc-part">Part III — The Market 市場</div>
+  <div class="toc-chapter">Chapter 5 — The Patent Family 專利家族</div>
+  <div class="toc-section">5.1 Family Overview 家族概覽</div>
+  <div class="toc-section">5.2 Patent #1: Trust Source Layer 信任來源層</div>
+  <div class="toc-section">5.3 Patent #2: Trust Authorization Layer 信任授權層</div>
+  <div class="toc-section">5.4 Patent #3: Trust Evidence Layer 信任證據層</div>
+  <div class="toc-section">5.5 Patent #4: Trust Coordination Layer 信任協調層</div>
+  <div class="toc-section">5.6 Patent #5: Trust Runtime 信任運行時</div>
+  <div class="toc-section">5.7 Future Patent Opportunities 未來專利機會</div>
+  <div class="toc-section">5.8 Family Coherence 家族一致性</div>
+  <div class="toc-chapter">Chapter 6 — Markets 市場</div>
+  <div class="toc-section">6.1 AI Agents (Primary) · 6.2 Enterprise AI</div>
+  <div class="toc-section">6.3 Gaming · 6.4 Robotics · 6.5 Government</div>
+  <div class="toc-section">6.6 Finance · 6.7 Healthcare · 6.8 Scientific Computing</div>
+  <div class="toc-chapter">Chapter 7 — Why This Matters 為什麼這很重要</div>
+  <div class="toc-section">7.1 The Historical Pattern 歷史模式</div>
+  <div class="toc-section">7.2 Computational Trust Is the Next Category 下一個類別</div>
+  <div class="toc-section">7.3 The Infrastructure Test 基礎設施測試</div>
+  <div class="toc-section">7.4 The Five-Year Vision 五年願景</div>
+  <div class="toc-section">7.5 What Success Looks Like 成功的樣貌</div>
+</div>
+
+<!-- PART I DIVIDER -->
+<section class="chapter" style="display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:60vh; text-align:center;">
+  <div class="toc-part" style="font-size:14pt; margin-bottom:16px;">Part I</div>
+  <h2 style="font-size:30pt; margin-bottom:8px;">The Problem</h2>
+  <h2 class="zh-title" style="font-size:18pt;">問題</h2>
+</section>
+
+<!-- INSERT CHAPTERS 1-2 -->
+</body>
+</html>

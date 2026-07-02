@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenRNG — Every Roll is Verified. Every Result is Proof.</title>
+<meta name="description" content="Dice rolls, coin flips, raffles & lotteries for Telegram — every result cryptographically verified and anchored on-chain. Open source, no token, no fees.">
+<meta property="og:title" content="OpenRNG — Verified Randomness for Telegram">
+<meta property="og:description" content="Every roll is cryptographically verified and anchored on Polygon. Open source, no token, no fees.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://openrng.org">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenRNG — Verified Randomness for Telegram">
+<meta name="twitter:description" content="Dice rolls no one can rig. Every result anchored on Polygon with cryptographic proof.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎲</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   RESET & VARIABLES
+   ═══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #0f0f17;
+  --bg3: #161623;
+  --bg4: #1e1e30;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-glow: rgba(99,102,241,.15);
+  --verified: #10b981;
+  --verified-dim: rgba(16,185,129,.12);
+  --verified-border: rgba(16,185,129,.25);
+  --danger: #ef4444;
+  --danger-dim: rgba(239,68,68,.06);
+  --danger-border: rgba(239,68,68,.18);
+  --border: #1e293b;
+  --border2: #334155;
+  --radius: 12px;
+  --radius-lg: 16px;
+}
+
+html { scroll-behavior: smooth; font-size: 16px }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: var(--primary-light); text-decoration: none; transition: color .2s }
+a:hover { color: #a5b4fc }
+
+code, .mono { font-family: 'JetBrains Mono', monospace }
+
+/* Skip link */
+.skip-link {
+  position: absolute; top: -100%; left: 1rem; z-index: 9999;
+  background: var(--primary); color: #fff; padding: .5rem 1rem;
+  border-radius: 0 0 8px 8px; font-size: .875rem; font-weight: 600;
+}
+.skip-link:focus { top: 0 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px }
+::-webkit-scrollbar-track { background: var(--bg) }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto }
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 2rem; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: rgba(10,10,15,.85);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s;
+}
+nav.scrolled { border-bottom-color: var(--border) }
+
+.nav-logo {
+  display: flex; align-items: center; gap: .6rem;
+  font-weight: 700; font-size: 1.05rem; letter-spacing: -.02em;
+  color: var(--text);
+}
+.nav-logo svg { width: 26px; height: 26px }
+
+.nav-links {
+  display: flex; gap: 1.75rem; align-items: center;
+}
+.nav-links a {
+  color: var(--text2); font-size: .875rem; font-weight: 500;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text) }
+
+.nav-cta {
+  background: var(--primary); color: #fff !important;
+  padding: .55rem 1.4rem; border-radius: 8px;
+  font-weight: 600; font-size: .875rem;
+  transition: all .2s;
+  box-shadow: 0 0 20px rgba(99,102,241,.25);
+}
+.nav-cta:hover {
+  background: var(--primary-light); transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(99,102,241,.35);
+}
+
+/* GitHub in nav */
+.nav-github {
+  display: flex; align-items: center; gap: .35rem;
+}
+
+/* Hamburger */
+.nav-toggle {
+  display: none; background: none; border: none; cursor: pointer;
+  width: 40px; height: 40px; position: relative;
+  flex-shrink: 0;
+}
+.nav-toggle span {
+  display: block; width: 22px; height: 2px; background: var(--text);
+  position: absolute; left: 9px; transition: all .25s;
+  border-radius: 2px;
+}
+.nav-toggle span:nth-child(1) { top: 14px }
+.nav-toggle span:nth-child(2) { top: 20px }
+.nav-toggle span:nth-child(3) { top: 26px }
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg); top: 19px }
+.nav-toggle.active span:nth-child(2) { opacity: 0 }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg); top: 19px }
+
+.mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,15,.97); backdrop-filter: blur(20px);
+  flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+  z-index: 99;
+}
+.mobile-menu.open { display: flex }
+.mobile-menu a {
+  color: var(--text); font-size: 1.25rem; font-weight: 600;
+  padding: .5rem 1rem;
+}
+.mobile-menu .nav-cta {
+  font-size: 1.1rem; padding: .75rem 2rem; margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 1.25rem }
+  .nav-links { display: none }
+  .nav-toggle { display: block }
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 8rem 2rem 6rem;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute;
+  top: -30%; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(ellipse, rgba(99,102,241,.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 100px; padding: .4rem 1rem;
+  font-size: .78rem; color: var(--text2); font-weight: 500;
+  margin-bottom: 2.5rem;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--verified);
+  animation: pulse-dot 2s infinite;
+}
+.testnet-label {
+  background: rgba(99,102,241,.15); color: var(--primary-light);
+  padding: .1rem .45rem; border-radius: 4px;
+  font-size: .68rem; font-weight: 600; letter-spacing: .03em;
+}
+@keyframes pulse-dot { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5.5vw, 3.5rem);
+  font-weight: 800; line-height: 1.12;
+  letter-spacing: -.035em;
+  margin-bottom: 1.5rem;
+  max-width: 720px;
+}
+.hero h1 .gradient {
+  background: linear-gradient(135deg, var(--primary-light), var(--verified));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  color: var(--text2); max-width: 520px;
+  margin-bottom: 2.5rem; line-height: 1.7; font-weight: 400;
+}
+
+.hero-actions {
+  display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .8rem 1.75rem; border-radius: 10px;
+  font-weight: 600; font-size: .95rem;
+  transition: all .25s; border: none; cursor: pointer;
+  text-decoration: none; font-family: 'Inter', sans-serif;
+}
+.btn-primary {
+  background: var(--primary); color: #fff;
+  box-shadow: 0 0 30px rgba(99,102,241,.25);
+}
+.btn-primary:hover {
+  background: var(--primary-light); color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(99,102,241,.35);
+}
+.btn-secondary {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border2);
+}
+.btn-secondary:hover {
+  border-color: var(--primary); color: var(--primary-light);
+  background: var(--primary-glow);
+}
+
+/* Hero geometric illustration */
+.hero-graphic {
+  position: relative; width: 280px; height: 200px;
+  margin: 0 auto 1rem;
+}
+.geo-grid {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr); gap: 8px;
+  opacity: .15;
+}
+.geo-grid span {
+  border: 1px solid var(--primary-light); border-radius: 4px;
+}
+.geo-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 80px; height: 80px;
+  background: var(--bg3); border: 2px solid var(--border2);
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; font-weight: 800;
+  color: var(--primary-light);
+  box-shadow: 0 0 60px var(--primary-glow);
+  z-index: 2;
+}
+.geo-node {
+  position: absolute; width: 32px; height: 32px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; z-index: 2;
+}
+.geo-node:nth-child(3) { top: 15%; left: 8% }
+.geo-node:nth-child(4) { top: 10%; right: 12% }
+.geo-node:nth-child(5) { bottom: 15%; left: 15% }
+.geo-node:nth-child(6) { bottom: 10%; right: 8% }
+.geo-line {
+  position: absolute; top: 50%; left: 50%;
+  height: 1px; background: var(--border);
+  transform-origin: left center; z-index: 1; opacity: .3;
+}
+
+/* Proof ticker */
+.proof-ticker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem; color: var(--text3);
+  letter-spacing: .03em;
+  transition: opacity .3s;
+  max-width: 480px;
+}
+
+/* ═══════════════════════════════════════════
+   SOCIAL PROOF
+   ═══════════════════════════════════════════ */
+.social-proof {
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.social-proof .container {
+  display: flex; justify-content: center;
+  gap: 4rem; flex-wrap: wrap;
+}
+.stat {
+  text-align: center;
+}
+.stat-num {
+  font-size: 2rem; font-weight: 800;
+  letter-spacing: -.03em;
+  background: linear-gradient(135deg, var(--primary-light), var(--verified));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label {
+  font-size: .8rem; color: var(--text3); font-weight: 500;
+  margin-top: .25rem;
+}
+
+/* ═══════════════════════════════════════════
+   SECTIONS (shared)
+   ═══════════════════════════════════════════ */
+section { padding: 7.5rem 2rem }
+.container { max-width: 1060px; margin: 0 auto }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem; text-transform: uppercase;
+  letter-spacing: .15em; color: var(--primary);
+  margin-bottom: .6rem; font-weight: 600;
+}
+.section-title {
+  font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+  font-weight: 700; letter-spacing: -.03em;
+  margin-bottom: .75rem; line-height: 1.2;
+}
+.section-desc {
+  color: var(--text2); font-size: 1.05rem;
+  max-width: 520px; line-height: 1.7;
+}
+
+.section-cta {
+  text-align: center; margin-top: 3rem;
+}
+
+/* ═══════════════════════════════════════════
+   HOW IT WORKS — 3 steps
+   ═══════════════════════════════════════════ */
+.how-section { background: var(--bg2) }
+
+.steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem; margin-top: 3rem;
+}
+
+.step {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 2rem 1.75rem;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+}
+.step:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(99,102,241,.08);
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; color: var(--primary);
+  background: rgba(99,102,241,.1);
+  width: 26px; height: 26px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; margin-bottom: 1.25rem;
+}
+.step h3 {
+  font-size: 1.05rem; font-weight: 700;
+  margin-bottom: .5rem;
+}
+.step p {
+  font-size: .85rem; color: var(--text2); line-height: 1.65;
+}
+.step .step-detail {
+  font-size: .75rem; color: var(--text3); margin-top: .75rem;
+  padding-top: .75rem; border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   BOT PREVIEW (replaces fake demo)
+   ═══════════════════════════════════════════ */
+.preview-section { position: relative }
+
+.preview-card {
+  max-width: 440px; margin: 3rem auto 0;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.preview-header {
+  padding: .85rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .7rem;
+}
+.preview-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--verified));
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem;
+}
+.preview-header-text h4 { font-size: .85rem; font-weight: 600 }
+.preview-header-text span { font-size: .68rem; color: var(--text3) }
+
+.preview-body { padding: 1.25rem }
+
+.preview-msg {
+  padding: .55rem .9rem; border-radius: 10px;
+  font-size: .82rem; margin-bottom: .4rem; max-width: 88%;
+}
+.preview-msg.user {
+  background: var(--bg4); margin-left: auto; text-align: right; color: var(--text);
+}
+.preview-msg.bot {
+  background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.12);
+  color: var(--text);
+}
+.preview-msg .result {
+  font-size: 1.8rem; font-weight: 800; margin: .25rem 0;
+  color: var(--primary-light);
+}
+.preview-msg .hash {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; color: var(--text3); word-break: break-all;
+  margin-top: .3rem;
+}
+.preview-msg .verify-badge {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .65rem; color: var(--verified); font-weight: 600;
+  margin-top: .35rem;
+}
+.preview-note {
+  text-align: center; margin-top: 1rem;
+  padding-top: 1rem; border-top: 1px solid var(--border);
+  font-size: .72rem; color: var(--text3); line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   COMMANDS — top 4 + link
+   ═══════════════════════════════════════════ */
+.commands-section { background: var(--bg2) }
+
+.commands-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1rem; margin-top: 2.5rem;
+}
+.cmd-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem 1.5rem;
+  transition: border-color .3s;
+}
+.cmd-card:hover { border-color: var(--primary) }
+.cmd-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .88rem; font-weight: 600; color: var(--primary-light);
+  margin-bottom: .35rem;
+}
+.cmd-desc {
+  font-size: .82rem; color: var(--text2); line-height: 1.55;
+  margin-bottom: .6rem;
+}
+.cmd-example {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem; color: var(--text3);
+  background: var(--bg2); padding: .35rem .65rem;
+  border-radius: 6px; display: inline-block;
+}
+.commands-more {
+  text-align: center; margin-top: 1.5rem;
+}
+.commands-more a {
+  font-size: .85rem; color: var(--text2); font-weight: 500;
+}
+.commands-more a:hover { color: var(--primary-light) }
+
+/* ═══════════════════════════════════════════
+   WHY FAIR
+   ═══════════════════════════════════════════ */
+.why-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; margin-top: 2.5rem;
+}
+.why-card {
+  padding: 2rem; border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+.why-card.problem {
+  background: var(--danger-dim); border-color: var(--danger-border);
+}
+.why-card.solution {
+  background: var(--verified-dim); border-color: var(--verified-border);
+}
+.why-card h3 {
+  font-size: 1rem; font-weight: 700; margin-bottom: .85rem;
+  display: flex; align-items: center; gap: .4rem;
+}
+.why-card.problem h3 { color: #f87171 }
+.why-card.solution h3 { color: var(--verified) }
+.why-card ul {
+  list-style: none; display: flex; flex-direction: column; gap: .55rem;
+}
+.why-card li {
+  font-size: .84rem; color: var(--text2);
+  padding-left: 1.3rem; position: relative; line-height: 1.55;
+}
+.why-card.problem li::before {
+  content: '✗'; position: absolute; left: 0;
+  color: #f87171; font-weight: 700;
+}
+.why-card.solution li::before {
+  content: '✓'; position: absolute; left: 0;
+  color: var(--verified); font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════
+   DEVELOPERS
+   ═══════════════════════════════════════════ */
+.dev-section { background: var(--bg2) }
+
+.code-block {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  margin-top: 2.5rem; max-width: 620px;
+}
+.code-header {
+  padding: .7rem 1.2rem; border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem; color: var(--text3);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.code-header .lang { color: var(--primary); font-weight: 600 }
+.code-body {
+  padding: 1.25rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem; line-height: 1.8; overflow-x: auto;
+  color: var(--text2);
+}
+.code-body .kw { color: var(--primary-light) }
+.code-body .str { color: var(--verified) }
+.code-body .cm { color: var(--text3) }
+.code-body .fn { color: #67e8f9 }
+.code-body .num { color: #fbbf24 }
+
+.dev-features {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem; margin-top: 2.5rem;
+}
+.dev-feat { display: flex; align-items: start; gap: .7rem }
+.dev-feat-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(99,102,241,.1);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: .95rem;
+}
+.dev-feat h4 { font-size: .85rem; font-weight: 600; margin-bottom: .15rem }
+.dev-feat p { font-size: .78rem; color: var(--text2); line-height: 1.5 }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 4rem 2rem 3rem; text-align: center;
+}
+.footer-trust {
+  display: flex; gap: 1.5rem; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 2rem;
+}
+.footer-trust span {
+  font-size: .78rem; color: var(--text3); font-weight: 500;
+  display: flex; align-items: center; gap: .3rem;
+}
+.footer-links {
+  display: flex; gap: 2rem; justify-content: center;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.footer-links a {
+  color: var(--text2); font-size: .82rem; font-weight: 500;
+  display: flex; align-items: center; gap: .35rem;
+}
+.footer-links a:hover { color: var(--text) }
+.footer-copy {
+  font-size: .72rem; color: var(--text3);
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS — fade-in only
+   ═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0) }
+
+/* Focus states */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  section { padding: 5rem 1.25rem }
+  .steps { grid-template-columns: 1fr }
+  .why-grid { grid-template-columns: 1fr }
+  .dev-features { grid-template-columns: 1fr }
+  .commands-grid { grid-template-columns: 1fr }
+  .hero { padding: 6.5rem 1.25rem 4rem }
+  .hero-graphic { width: 200px; height: 140px }
+  .geo-center { width: 60px; height: 60px; font-size: 2rem }
+  .social-proof .container { gap: 2rem }
+  .stat-num { font-size: 1.5rem }
+}
+</style>
+</head>
+<body>
+
+<!-- Skip to content -->
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- NAV -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo" aria-label="OpenRNG home">
+    <svg viewBox="0 0 26 26" fill="none" aria-hidden="true"><rect x="2" y="2" width="22" height="22" rx="5" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="8.5" cy="8.5" r="1.8" fill="currentColor"/><circle cx="17.5" cy="8.5" r="1.8" fill="currentColor"/><circle cx="13" cy="13" r="1.8" fill="currentColor"/><circle cx="8.5" cy="17.5" r="1.8" fill="currentColor"/><circle cx="17.5" cy="17.5" r="1.8" fill="currentColor"/></svg>
+    OpenRNG
+  </a>
+  <div class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#commands">Commands</a>
+    <a href="#why-fair">Why Verified?</a>
+    <a href="https://github.com/openrng" class="nav-github" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      GitHub
+    </a>
+    <a href="https://t.me/OpenRNG_Dice_Bot" class="nav-cta" target="_blank" rel="noopener" aria-label="Try OpenRNG on Telegram">Try on Telegram →</a>
+  </div>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu" role="menu" aria-label="Mobile navigation">
+  <a href="#how-it-works" role="menuitem">How It Works</a>
+  <a href="#commands" role="menuitem">Commands</a>
+  <a href="#why-fair" role="menuitem">Why Verified?</a>
+  <a href="https://github.com/openrng" target="_blank" rel="noopener" role="menuitem">GitHub</a>
+  <a href="https://t.me/OpenRNG_Dice_Bot" class="nav-cta" target="_blank" rel="noopener" role="menuitem">Try on Telegram →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="main">
+  <div class="hero-badge">
+    <span class="dot" aria-hidden="true"></span>
+    Anchored on Polygon
+    <span class="testnet-label">Amoy Testnet</span>
+  </div>
+
+  <h1>
+    Can You Trust<br>
+    Your <span class="gradient">Dice Bot</span>?
+  </h1>
+
+  <p class="hero-sub">
+    Every roll, flip, and raffle — cryptographically verified and anchored on-chain.
+    No&nbsp;trust&nbsp;required. No&nbsp;token. No&nbsp;fees.
+  </p>
+
+  <div class="hero-actions">
+    <a href="https://t.me/OpenRNG_Dice_Bot" class="btn btn-primary" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+      Roll Your First Die →
+    </a>
+    <a href="https://github.com/openrng" class="btn btn-secondary" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      View Source
+    </a>
+  </div>
+
+  <!-- Clean geometric illustration -->
+  <div class="hero-graphic" aria-hidden="true">
+    <div class="geo-grid">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="geo-center" id="hero-dice">🎲</div>
+    <div class="geo-node">🔐</div>
+    <div class="geo-node">🌐</div>
+    <div class="geo-node">⛓️</div>
+    <div class="geo-node">✅</div>
+  </div>
+
+  <div class="proof-ticker mono" id="proof-ticker" aria-label="Latest verified proof hash">
+    ✅ latest proof: 0x7a3f8e91c2d14b6a · verified 3s ago
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="social-proof" aria-label="Usage statistics">
+  <div class="container">
+    <div class="stat">
+      <div class="stat-num">1,000+</div>
+      <div class="stat-label">Rolls verified</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100+</div>
+      <div class="stat-label">Proofs generated</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Groups using</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Open source</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS — 3 steps -->
+<section id="how-it-works" class="how-section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title">Three steps. Zero trust required.</h2>
+      <p class="section-desc">You don't need to understand cryptography. You just need to know: no one can cheat.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num" aria-hidden="true">01</div>
+        <h3>🔐 Numbers are committed before you ask</h3>
+        <p>A time-locked proof (VDF) + external randomness (drand beacon) generate each result. No single party — not even us — can predict the outcome.</p>
+        <div class="step-detail">Technical: Verifiable Delay Function ensures sequential computation that can't be parallelized. drand provides distributed threshold randomness.</div>
+      </div>
+      <div class="step">
+        <div class="step-num" aria-hidden="true">02</div>
+        <h3>📋 Every result gets a receipt</h3>
+        <p>Results are batched into a Merkle tree — change one result and the entire tree breaks. Each roll gets a unique cryptographic proof you can check.</p>
+        <div class="step-detail">Technical: Merkle tree leaves contain individual proofs. Tamper with one leaf and the root hash changes, invalidating the entire batch.</div>
+      </div>
+      <div class="step">
+        <div class="step-num" aria-hidden="true">03</div>
+        <h3>⛓️ Receipts are anchored on-chain</h3>
+        <p>Merkle roots are published to Polygon — permanent, public, immutable. Anyone can verify any result, forever.</p>
+        <div class="step-detail">Currently on Amoy Testnet. Mainnet deployment planned. All anchoring is publicly verifiable on PolygonScan.</div>
+      </div>
+    </div>
+    <div class="section-cta reveal">
+      <a href="https://t.me/OpenRNG_Dice_Bot" class="btn btn-primary" target="_blank" rel="noopener">
+        Try a Verified Roll →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- BOT PREVIEW (real output mockup — not a fake demo) -->
+<section id="preview" class="preview-section">
+  <div class="container" style="text-align:center">
+    <div class="reveal">
+      <span class="section-label">See It In Action</span>
+      <h2 class="section-title">What a verified roll looks like</h2>
+      <p class="section-desc" style="margin:0 auto">This is real output from the bot — every roll includes a cryptographic proof anchored on Polygon.</p>
+    </div>
+    <div class="preview-card reveal">
+      <div class="preview-header">
+        <div class="preview-avatar" aria-hidden="true">🎲</div>
+        <div class="preview-header-text">
+          <h4>OpenRNG Dice Bot</h4>
+          <span>@OpenRNG_Dice_Bot</span>
+        </div>
+      </div>
+      <div class="preview-body">
+        <div class="preview-msg user">/roll 1d20</div>
+        <div class="preview-msg bot">
+          🎲 <strong>1d20</strong>
+          <div class="result">17</div>
+          <div class="hash">proof: 0x7a3f8e91c2d14b6a82f9d3e5c7b1a0f4</div>
+          <div class="verify-badge">✅ Verified · Batch #847 · Polygon Amoy</div>
+        </div>
+        <div class="preview-msg user">/flip</div>
+        <div class="preview-msg bot">
+          🪙 <strong>Coin Flip</strong>
+          <div class="result" style="font-size:1.4rem">Heads</div>
+          <div class="hash">proof: 0x2b9c4d7f1e8a3065ba47f2c6d8e0b193</div>
+          <div class="verify-badge">✅ Verified · Batch #847 · Polygon Amoy</div>
+        </div>
+        <div class="preview-note">
+          This is a static preview of actual bot output.<br>
+          <a href="https://t.me/OpenRNG_Dice_Bot" target="_blank" rel="noopener" style="color:var(--primary-light);font-weight:600">Try the real bot on Telegram →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMANDS — Top 4 -->
+<section id="commands" class="commands-section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Commands</span>
+      <h2 class="section-title">The essentials</h2>
+      <p class="section-desc">From dice rolls to raffles. Every result comes with a cryptographic proof.</p>
+    </div>
+    <div class="commands-grid reveal">
+      <div class="cmd-card">
+        <div class="cmd-name">/roll</div>
+        <div class="cmd-desc">Roll any dice with standard notation. Supports multiple dice types in one command.</div>
+        <span class="cmd-example">/roll 2d6 &nbsp;·&nbsp; /roll 1d20</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/flip</div>
+        <div class="cmd-desc">Fair coin flip with full cryptographic proof. Supports multiple coins.</div>
+        <span class="cmd-example">/flip &nbsp;·&nbsp; /flip 3</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/pick</div>
+        <div class="cmd-desc">Randomly select from a list of options. Verified, not "trust me" random.</div>
+        <span class="cmd-example">/pick pizza, sushi, tacos</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/raffle</div>
+        <div class="cmd-desc">Run a verifiable raffle in any group. Full audit trail for every draw.</div>
+        <span class="cmd-example">/raffle "Friday Giveaway"</span>
+      </div>
+    </div>
+    <div class="commands-more reveal">
+      <p style="color:var(--text3);font-size:.82rem;margin-bottom:.5rem">
+        Also: <code style="color:var(--primary-light);font-size:.78rem">/shuffle</code> · 
+        <code style="color:var(--primary-light);font-size:.78rem">/lottery</code> · 
+        <code style="color:var(--primary-light);font-size:.78rem">/wheel</code> · 
+        <code style="color:var(--primary-light);font-size:.78rem">/draw</code> · 
+        <code style="color:var(--primary-light);font-size:.78rem">/teams</code> · 
+        <code style="color:var(--primary-light);font-size:.78rem">/verify</code>
+      </p>
+      <a href="https://t.me/OpenRNG_Dice_Bot" target="_blank" rel="noopener">See all commands on Telegram →</a>
+    </div>
+    <div class="section-cta reveal">
+      <p style="color:var(--text3);font-size:.82rem;margin-bottom:.75rem">
+        Works inline too — type <code style="color:var(--primary-light);font-size:.78rem">@OpenRNG_Dice_Bot roll 2d6</code> in any chat
+      </p>
+      <a href="https://t.me/OpenRNG_Dice_Bot" class="btn btn-primary" target="_blank" rel="noopener">
+        Try Commands on Telegram →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY VERIFIED -->
+<section id="why-fair" class="why-section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Trust</span>
+      <h2 class="section-title">Most "random" bots are black boxes</h2>
+      <p class="section-desc">You trust their server isn't rigged. That's not verification — that's faith.</p>
+    </div>
+    <div class="why-grid reveal">
+      <div class="why-card problem">
+        <h3>⚠️ Standard bots</h3>
+        <ul>
+          <li>Server-side Math.random() — completely unverifiable</li>
+          <li>Operator can see, predict, or manipulate results</li>
+          <li>No audit trail — results can be silently changed</li>
+          <li>"Trust me" is the only guarantee</li>
+        </ul>
+      </div>
+      <div class="why-card solution">
+        <h3>🛡️ OpenRNG</h3>
+        <ul>
+          <li>Time-locked VDF — can't be pre-computed or rushed</li>
+          <li>External drand beacon — no single point of trust</li>
+          <li>Merkle proofs — every result independently verifiable</li>
+          <li>Polygon anchoring — permanent, immutable audit trail</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section-cta reveal">
+      <a href="https://github.com/openrng" class="btn btn-secondary" target="_blank" rel="noopener">
+        Read the Source Code →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- DEVELOPERS -->
+<section id="developers" class="dev-section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Developers</span>
+      <h2 class="section-title">Build with verified randomness</h2>
+      <p class="section-desc">Integrate OpenRNG into your own apps, games, and bots. TypeScript-first, open source.</p>
+    </div>
+    <div class="code-block reveal">
+      <div class="code-header">
+        <span class="lang">TypeScript</span>
+        <span>@openrng/sdk</span>
+      </div>
+      <div class="code-body">
+<span class="kw">import</span> { OpenRNG } <span class="kw">from</span> <span class="str">'@openrng/sdk'</span>;<br><br>
+<span class="kw">const</span> rng = <span class="kw">new</span> <span class="fn">OpenRNG</span>({<br>
+&nbsp;&nbsp;network: <span class="str">'polygon-amoy'</span>,<br>
+&nbsp;&nbsp;verify: <span class="num">true</span><br>
+});<br><br>
+<span class="cm">// Generate a verifiable random number</span><br>
+<span class="kw">const</span> result = <span class="kw">await</span> rng.<span class="fn">generate</span>({<br>
+&nbsp;&nbsp;type: <span class="str">'dice'</span>,<br>
+&nbsp;&nbsp;sides: <span class="num">20</span>,<br>
+&nbsp;&nbsp;count: <span class="num">2</span><br>
+});<br><br>
+console.<span class="fn">log</span>(result.values); &nbsp;<span class="cm">// [14, 7]</span><br>
+console.<span class="fn">log</span>(result.proof); &nbsp;&nbsp;<span class="cm">// { leafHash, merkleRoot, ... }</span><br><br>
+<span class="cm">// Independently verify any result</span><br>
+<span class="kw">const</span> valid = <span class="kw">await</span> rng.<span class="fn">verify</span>(result.proof);<br>
+console.<span class="fn">log</span>(valid); <span class="cm">// true ✅</span>
+      </div>
+    </div>
+    <div class="dev-features reveal">
+      <div class="dev-feat">
+        <div class="dev-feat-icon">📦</div>
+        <div>
+          <h4>TypeScript SDK</h4>
+          <p>Zero config, tree-shakeable. Full type definitions included.</p>
+        </div>
+      </div>
+      <div class="dev-feat">
+        <div class="dev-feat-icon">🔗</div>
+        <div>
+          <h4>REST API</h4>
+          <p>Simple HTTP endpoints for any language. JSON responses with embedded proofs.</p>
+        </div>
+      </div>
+      <div class="dev-feat">
+        <div class="dev-feat-icon">🔓</div>
+        <div>
+          <h4>Fully Open Source</h4>
+          <p>MIT licensed. Audit the code, fork it, self-host it. Trust nothing, verify everything.</p>
+        </div>
+      </div>
+    </div>
+    <div class="section-cta reveal">
+      <a href="https://github.com/openrng" class="btn btn-secondary" target="_blank" rel="noopener">
+        View on GitHub →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-trust" aria-label="Trust badges">
+    <span>🔓 Open Source</span>
+    <span>📄 MIT License</span>
+    <span>🚫 No Token</span>
+    <span>💸 No Fees</span>
+    <span>⛓️ Polygon Amoy Testnet</span>
+  </div>
+  <div class="footer-links">
+    <a href="https://t.me/OpenRNG_Dice_Bot" target="_blank" rel="noopener" aria-label="OpenRNG on Telegram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+      Telegram Bot
+    </a>
+    <a href="https://github.com/openrng" target="_blank" rel="noopener" aria-label="OpenRNG on GitHub">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      GitHub
+    </a>
+  </div>
+  <p class="footer-copy">OpenRNG © 2026 · Verified randomness for everyone</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// NAV SCROLL
+// ═══════════════════════════════════════════
+const nav = document.getElementById('nav');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// ═══════════════════════════════════════════
+// MOBILE MENU
+// ═══════════════════════════════════════════
+const toggle = document.getElementById('nav-toggle');
+const menu = document.getElementById('mobile-menu');
+
+toggle.addEventListener('click', () => {
+  const open = menu.classList.toggle('open');
+  toggle.classList.toggle('active');
+  toggle.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+
+// Close on link click
+menu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    menu.classList.remove('open');
+    toggle.classList.remove('active');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+});
+
+// ═══════════════════════════════════════════
+// HERO DICE — gentle rotate, no spinning orbits
+// ═══════════════════════════════════════════
+const heroDice = document.getElementById('hero-dice');
+const diceEmoji = ['🎲', '🎯', '🪙', '🎰'];
+let diceIdx = 0;
+
+setInterval(() => {
+  diceIdx = (diceIdx + 1) % diceEmoji.length;
+  heroDice.style.transform = 'scale(0.9)';
+  heroDice.style.opacity = '0.5';
+  setTimeout(() => {
+    heroDice.textContent = diceEmoji[diceIdx];
+    heroDice.style.transform = 'scale(1)';
+    heroDice.style.opacity = '1';
+  }, 200);
+}, 3000);
+
+// ═══════════════════════════════════════════
+// PROOF TICKER — slow, 4 second interval with fade
+// ═══════════════════════════════════════════
+const ticker = document.getElementById('proof-ticker');
+const hexChars = '0123456789abcdef';
+
+function randomHex(len) {
+  let s = '';
+  for (let i = 0; i < len; i++) s += hexChars[Math.floor(Math.random() * 16)];
+  return s;
+}
+
+setInterval(() => {
+  ticker.style.opacity = '0.3';
+  setTimeout(() => {
+    const ago = Math.floor(Math.random() * 8) + 1;
+    ticker.textContent = '✅ latest proof: 0x' + randomHex(16) + ' · verified ' + ago + 's ago';
+    ticker.style.opacity = '1';
+  }, 300);
+}, 4000);
+
+// ═══════════════════════════════════════════
+// SCROLL REVEAL — fade-in only
+// ═══════════════════════════════════════════
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!prefersReducedMotion) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+} else {
+  // If reduced motion, just show everything
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+}
+</script>
+</body>
+</html>

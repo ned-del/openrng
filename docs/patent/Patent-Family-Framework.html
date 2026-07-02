@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OpenRNG Patent Family Framework</title>
+<style>
+  @page { size: A4; margin: 28mm 24mm 28mm 24mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', 'Noto Sans TC', 'Helvetica Neue', sans-serif; font-size: 11pt; line-height: 1.8; color: #1a1a1a; background: #fff; max-width: 210mm; margin: 0 auto; padding: 24mm; }
+
+  .cover { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 85vh; text-align: center; page-break-after: always; }
+  .cover h1 { font-size: 32pt; font-weight: 800; letter-spacing: -1px; margin-bottom: 6px; }
+  .cover .sub { font-size: 13pt; font-weight: 300; color: #888; margin-bottom: 30px; }
+  .cover .line { width: 50px; height: 3px; background: linear-gradient(90deg, #7c6aef, #3ecf8e); border-radius: 2px; margin: 0 auto 30px; }
+  .cover .meta { font-size: 10pt; color: #aaa; line-height: 1.8; }
+  .cover .tag { font-size: 9pt; font-weight: 600; color: #d44; text-transform: uppercase; letter-spacing: 2px; margin-top: 40px; padding: 6px 16px; border: 1.5px solid #d44; border-radius: 3px; }
+
+  h2 { font-size: 15pt; font-weight: 800; color: #0a0a0a; margin-top: 30px; margin-bottom: 12px; }
+  h3 { font-size: 12pt; font-weight: 700; color: #333; margin-top: 20px; margin-bottom: 8px; }
+  p { margin-bottom: 10px; }
+  .note { font-size: 9.5pt; color: #888; font-style: italic; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 10pt; }
+  th, td { border: 1px solid #ddd; padding: 9px 11px; text-align: left; vertical-align: top; }
+  th { background: #f5f5f8; font-weight: 700; font-size: 9.5pt; text-transform: uppercase; letter-spacing: 0.5px; }
+  .status-approved { color: #0a8a4a; font-weight: 700; }
+  .status-ready { color: #2060cc; font-weight: 600; }
+  .status-research { color: #aa6600; font-weight: 600; }
+
+  pre.diagram { background: #0a0a1a; color: #e0e0e8; padding: 20px; border-radius: 6px; font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace; font-size: 9pt; line-height: 1.5; margin: 14px 0; white-space: pre; break-inside: avoid; }
+
+  .principle { background: #f8f7ff; border-left: 3px solid #7c6aef; padding: 12px 16px; margin: 14px 0; border-radius: 0 6px 6px 0; }
+  .principle p { margin-bottom: 4px; }
+
+  .warn { background: #fff8f0; border-left: 3px solid #e8a040; padding: 12px 16px; margin: 14px 0; border-radius: 0 6px 6px 0; }
+
+  ul { margin: 6px 0 12px 20px; }
+  li { margin-bottom: 5px; }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+  hr { border: none; border-top: 1px solid #e0e0e0; margin: 24px 0; }
+  @media print { body { padding: 0; } .cover { min-height: 100vh; } }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>Patent Family<br>Framework</h1>
+  <div class="sub">OpenRNG — Computational Trust Infrastructure</div>
+  <div class="line"></div>
+  <div class="meta">
+    Problem → Property → Protocol → Patent<br>
+    Five Patents · Five Properties · One Architecture<br><br>
+    June 2026 · Internal Document
+  </div>
+  <div class="tag">Internal — Do Not Distribute</div>
+</div>
+
+<!-- ================================================================ -->
+<h2>The Dual Naming Convention</h2>
+
+<p>Every patent in the family has two names. One for the patent system. One for the world.</p>
+
+<table>
+  <thead><tr><th>Layer</th><th>Name</th><th>Audience</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Technical Problem</strong></td><td>What can't be done today</td><td>Examiners, attorneys, engineers</td><td>"Randomness can be previewed before commitment"</td></tr>
+    <tr><td><strong>System Property</strong></td><td>What solving it creates</td><td>Papers, talks, standards, industry</td><td>"Dual Temporal Integrity"</td></tr>
+    <tr><td><strong>Movement Language</strong></td><td>Why it matters to the world</td><td>Manifestos, keynotes, community</td><td>"The Second Law of Computational Trust"</td></tr>
+  </tbody>
+</table>
+
+<div class="warn">
+  <p><strong>Never mix these layers.</strong> Patent examiners need problems, not movements. Conferences need properties, not claims. Manifestos need beliefs, not specifications.</p>
+</div>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>The Five Patents</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Technical Problem<br><span style="font-weight:400;text-transform:none;letter-spacing:0">(for patent)</span></th>
+      <th>System Property<br><span style="font-weight:400;text-transform:none;letter-spacing:0">(for industry)</span></th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1</strong></td>
+      <td>Random values cannot be individually verified</td>
+      <td><strong>Verifiable Randomness</strong></td>
+      <td class="status-approved">✅ Approved</td>
+    </tr>
+    <tr>
+      <td><strong>2</strong></td>
+      <td>Random values can be previewed before commitment</td>
+      <td><strong>Dual Temporal Integrity</strong></td>
+      <td class="status-ready">📋 Ready to file</td>
+    </tr>
+    <tr>
+      <td><strong>3</strong></td>
+      <td>Trust disappears after randomness is consumed</td>
+      <td><strong>Portable Trust Assertion</strong></td>
+      <td class="status-ready">📋 Ready to file</td>
+    </tr>
+    <tr>
+      <td><strong>4</strong></td>
+      <td>Computational trust cannot survive delegation</td>
+      <td><strong>End-to-End Verifiable Trust</strong></td>
+      <td class="status-research">🔬 Problem defined</td>
+    </tr>
+    <tr>
+      <td><strong>5</strong></td>
+      <td>Trust quality silently degrades during operation</td>
+      <td><strong>Continuous Trust Health</strong></td>
+      <td class="status-research">🔬 Problem defined</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>The Logical Curve</h2>
+
+<p>The five patents form a progression — each building on the previous, each asking a deeper question about trust:</p>
+
+<pre class="diagram">
+  #1   Can randomness be verified?
+        │
+        ▼
+  #2   Can randomness be hidden until it should exist?
+        │
+        ▼
+  #3   Can trust survive after randomness is consumed?
+        │
+        ▼
+  #4   Can trust survive delegation?
+        │
+        ▼
+  #5   Can trust survive time?
+</pre>
+
+<p>Patents #1–#3 answer: <strong>How to build trust.</strong><br>
+Patents #4–#5 answer: <strong>How trust behaves across space and time.</strong></p>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>The Meta-Framework</h2>
+
+<p>When is an idea ready to become a patent? When it has completed all four stages:</p>
+
+<pre class="diagram">
+  Technical Problem       What can't be done today?
+         │                "Trust cannot survive delegation."
+         ▼
+  System Property         What property does solving it create?
+         │                "End-to-End Verifiable Trust"
+         ▼
+  Protocol / RFC          How does the protocol work?
+         │                RFC-0002: Trust Continuity Protocol
+         ▼
+  Patent Claims           What specific inventions are claimed?
+                          Method for E2E trust verification across
+                          computational delegation chains
+</pre>
+
+<div class="principle">
+  <p><strong>The readiness test:</strong> If you have the Problem but not the Property, it's a bug report. If you have the Property but not the Problem, it's marketing. When you have both, it's a patent.</p>
+</div>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Analogies That Anchor the Properties</h2>
+
+<table>
+  <thead><tr><th>Property</th><th>Analogous To</th><th>Why It Resonates</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Verifiable Randomness</strong></td><td>HTTPS verified connection</td><td>Verifying what was previously taken on faith</td></tr>
+    <tr><td><strong>Dual Temporal Integrity</strong></td><td>Tamper-evident seal (before + after)</td><td>Two-sided guarantee, one mechanism</td></tr>
+    <tr><td><strong>Portable Trust Assertion</strong></td><td>JWT for identity → VEO for uncertainty</td><td>Making the invisible portable and verifiable</td></tr>
+    <tr><td><strong>End-to-End Verifiable Trust</strong></td><td>E2E Encryption</td><td>Verify the full chain without trusting intermediaries</td></tr>
+    <tr><td><strong>Continuous Trust Health</strong></td><td>Battery Health (Apple)</td><td>Measuring not the charge, but the capacity to hold charge</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Where Each Name Lives</h2>
+
+<table>
+  <thead><tr><th>Document</th><th>Uses Technical Problem</th><th>Uses System Property</th><th>Uses Movement Language</th></tr></thead>
+  <tbody>
+    <tr><td>Patent application</td><td>✅ Primary</td><td>Background only</td><td>❌ Never</td></tr>
+    <tr><td>RFC / Specification</td><td>✅ Motivation section</td><td>✅ Title + throughout</td><td>❌ Never</td></tr>
+    <tr><td>Whitepaper</td><td>✅ Problem section</td><td>✅ Primary</td><td>Conclusion only</td></tr>
+    <tr><td>Conference talk</td><td>Opening hook</td><td>✅ Primary</td><td>✅ Closing</td></tr>
+    <tr><td>Manifesto</td><td>Background</td><td>✅ Throughout</td><td>✅ Primary</td></tr>
+    <tr><td>Cover Letter (attorney)</td><td>✅ Primary</td><td>Reference only</td><td>❌ Never</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>External Communication Rules</h2>
+
+<ul>
+  <li>❌ Do NOT use "Patent #4" or "Patent #5" externally</li>
+  <li>✅ Use: "Next Candidate", "Future Research", "Reserved Continuation"</li>
+  <li>Keep numbering flexible until Technical Problem is finalized and filed</li>
+  <li>"Computational Trust" is long-term vision context, not a claim limitation</li>
+  <li>"Second Law of Computational Trust" is whitepaper/manifesto language — never in patent claims</li>
+</ul>
+
+<hr>
+
+<!-- ================================================================ -->
+<h2>Next Steps</h2>
+
+<table>
+  <thead><tr><th>Action</th><th>Patent</th><th>Priority</th></tr></thead>
+  <tbody>
+    <tr><td>File Provisional + Non-Provisional</td><td>#2 (VDF Anti-Preview)</td><td>🔴 Urgent — VDF prior art increasing</td></tr>
+    <tr><td>File Provisional or Non-Provisional</td><td>#3 (VEO Trust Artifacts)</td><td>🔴 Urgent — provisional not yet filed</td></tr>
+    <tr><td>Write RFC-0002</td><td>#4 (Trust Continuity)</td><td>🟡 Next — Problem defined, protocol needed</td></tr>
+    <tr><td>Write RFC-0003</td><td>#5 (Trust Assurance)</td><td>🟡 Next — Problem defined, protocol needed</td></tr>
+    <tr><td>Workshop with Saint Island</td><td>All</td><td>🟢 After #2/#3 filed</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<p style="text-align:center; font-size:9pt; color:#aaa; margin-top:30px;">
+  OpenRNG — Patent Family Framework · Internal Document · June 2026<br>
+  Problem → Property → Protocol → Patent
+</p>
+
+</body>
+</html>
