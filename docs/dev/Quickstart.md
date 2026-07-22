@@ -42,7 +42,7 @@ OPENRNG_API=https://api.openrng.io npx ts-node arbiter.ts --audit
 ## Get a Verifiable Entropy Object
 
 ```bash
-curl https://api.openrng.io/v2/entropy
+curl https://api.openrng.io/api/v1/entropy
 ```
 
 Response:
@@ -79,7 +79,7 @@ This is not just a random number. It's a **Verifiable Entropy Object** — carry
 ## Verify an Object
 
 ```bash
-curl -X POST https://api.openrng.io/v2/entropy/verify \
+curl -X POST https://api.openrng.io/api/v1/verify \
   -H "Content-Type: application/json" \
   -d '{"entropy_object": <paste VEO here>}'
 ```
@@ -115,13 +115,13 @@ Use policy presets:
 
 ```bash
 # AI-grade: min 800 ECS, 2+ sources
-curl https://api.openrng.io/v2/entropy?policy=ai-grade
+curl https://api.openrng.io/api/v1/entropy?policy=ai-grade
 
 # Gaming-grade: min 850 ECS, 2+ sources, blockchain anchor required
-curl https://api.openrng.io/v2/entropy?policy=gaming-grade
+curl https://api.openrng.io/api/v1/entropy?policy=gaming-grade
 
 # Casino-grade: min 900 ECS, 3+ sources, blockchain anchor required
-curl https://api.openrng.io/v2/entropy?policy=casino-grade
+curl https://api.openrng.io/api/v1/entropy?policy=casino-grade
 ```
 
 If the system cannot meet the requested policy, it returns an error — never degraded entropy at a higher trust level.
@@ -194,7 +194,7 @@ Anyone can verify anchored entropy without trusting OpenRNG.
 ## Check System Status
 
 ```bash
-curl https://api.openrng.io/v2/entropy/status
+curl https://api.openrng.io/health
 ```
 
 Returns live source health, signing status, anchoring status, and contract info.
