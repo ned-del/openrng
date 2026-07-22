@@ -94,31 +94,50 @@ Every VEO carries:
 ### Get entropy
 
 ```bash
-curl https://api.openrng.io/v2/entropy
+curl https://api.openrng.io/api/v1/entropy
 ```
 
-### Get entropy with a policy
+Response:
+
+```json
+{
+  "entropy": "c9bfe895cf2a343c5e26f8c34432dfbd...",
+  "entropy_hash": "b7b2ead11225898...",
+  "source": "vdf_epoch",
+  "epoch": 248706,
+  "timestamp": 1784757870,
+  "veo_class": "VEO-1A",
+  "verify_url": "/api/v1/verify/{game_id}"
+}
+```
+
+No API key needed for basic entropy. For full access (games, batch generation, verification), [get an API key](https://api.openrng.io/docs).
+
+### Verify a game
 
 ```bash
-curl https://api.openrng.io/v2/entropy?policy=ai-grade
+curl https://api.openrng.io/api/v1/verify/{game_id}
 ```
 
-### Verify an object
+### SDK
 
 ```bash
-curl -X POST https://api.openrng.io/v2/entropy/verify \
-  -H "Content-Type: application/json" \
-  -d '{"entropy_object": {...}}'
+npm install @openrng/sdk
 ```
-
-### SDK (coming soon)
 
 ```typescript
-const veo = await openrng.getEntropy({ policy: 'ai-grade' });
-const result = await openrng.verify(veo);
+import { OpenRNG } from '@openrng/sdk';
 
-console.log(result.verification_level);
-// "cryptographically_verified"
+const rng = new OpenRNG({ apiKey: 'orn_xxx' });
+
+// Generate verified entropy
+const raw = await rng.generateRng();
+const result = await rng.waitForResult(raw.request_id);
+console.log(result.result.proof); // VDF proof included
+
+// Verify any game
+const verified = await rng.verifyGame(gameId);
+console.log(verified.verified); // true
 ```
 
 [Full Developer Quickstart →](docs/dev/Quickstart.md)
