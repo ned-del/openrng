@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenRNG — The Verifiable Entropy Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg-card: #12121a;
+    --bg-card-alt: #161622;
+    --bg-surface: #1a1a2e;
+    --accent: #7c6aef;
+    --accent-dim: rgba(124, 106, 239, 0.15);
+    --accent-glow: rgba(124, 106, 239, 0.3);
+    --green: #3ecf8e;
+    --green-dim: rgba(62, 207, 142, 0.15);
+    --red: #ef4444;
+    --orange: #f59e0b;
+    --text: #e4e4e7;
+    --text-dim: #a1a1aa;
+    --text-muted: #71717a;
+    --border: #27273a;
+    --border-accent: rgba(124, 106, 239, 0.3);
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── SLIDE SECTIONS ── */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  .slide:nth-child(even) {
+    background: linear-gradient(180deg, var(--bg) 0%, #0d0d15 50%, var(--bg) 100%);
+  }
+
+  .slide-inner {
+    max-width: 1100px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SECTION NUMBERS ── */
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  /* ── HEADINGS ── */
+  .heading-group { margin-bottom: 48px; }
+
+  .heading-en {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .heading-zh {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent);
+    opacity: 0.85;
+    margin-bottom: 16px;
+  }
+
+  .heading-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    border-radius: 2px;
+    margin-top: 20px;
+  }
+
+  /* ── BODY TEXT ── */
+  .body-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    max-width: 800px;
+  }
+
+  .body-text + .body-text-zh {
+    margin-top: 12px;
+  }
+
+  .body-text-zh {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 800px;
+  }
+
+  /* ── HIGHLIGHT QUOTE ── */
+  .quote-block {
+    border-left: 3px solid var(--accent);
+    padding: 24px 32px;
+    margin: 40px 0;
+    background: var(--accent-dim);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .quote-block p {
+    font-size: 1.15rem;
+    font-weight: 500;
+    font-style: italic;
+    color: #fff;
+    line-height: 1.6;
+  }
+
+  .quote-block .zh {
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin-top: 8px;
+  }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .card h3 .zh {
+    font-weight: 500;
+    color: var(--accent);
+    font-size: 0.95rem;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .card p .zh {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: #0d0d15;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .code-block .label {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .code-key { color: #93c5fd; }
+  .code-str { color: var(--green); }
+  .code-num { color: #f59e0b; }
+  .code-bool { color: var(--accent); }
+  .code-comment { color: var(--text-muted); font-style: italic; }
+  .code-dim { color: var(--text-muted); }
+
+  /* ── COMPARISON ── */
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 32px 0;
+  }
+
+  .compare-bad {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .compare-good {
+    background: rgba(62, 207, 142, 0.05);
+    border: 1px solid rgba(62, 207, 142, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .compare-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .compare-bad .compare-label { color: var(--red); }
+  .compare-good .compare-label { color: var(--green); }
+
+  /* ── METRICS ROW ── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin: 32px 0;
+  }
+
+  .metric {
+    text-align: center;
+    padding: 28px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .metric-value {
+    font-family: var(--font-mono);
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .metric-value.green { color: var(--green); }
+
+  .metric-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .metric-label-zh {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.9rem;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .data-table tr:hover td {
+    background: rgba(124, 106, 239, 0.03);
+  }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-green {
+    background: var(--green-dim);
+    color: var(--green);
+  }
+
+  .badge-accent {
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .badge-orange {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--orange);
+  }
+
+  /* ── GRADE CHIPS ── */
+  .grade-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+  }
+
+  .grade-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 220px;
+  }
+
+  .grade-letter {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+
+  .grade-aaa { color: #fbbf24; }
+  .grade-aa { color: var(--accent); }
+  .grade-a { color: var(--green); }
+
+  .grade-info {
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+
+  .grade-info .range {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.8rem;
+  }
+
+  .grade-info .use {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 40px 0;
+  }
+
+  .flow-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .flow-node .flow-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .flow-node .flow-detail {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .flow-arrow {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    padding: 0 6px;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    margin: 32px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--green), var(--accent));
+    border-radius: 1px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -29px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .timeline-item.current::before {
+    background: var(--green);
+    box-shadow: 0 0 0 3px var(--green-dim), 0 0 12px var(--green-dim);
+  }
+
+  .timeline-phase {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .timeline-items {
+    list-style: none;
+    padding: 0;
+  }
+
+  .timeline-items li {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    padding: 3px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .timeline-items li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+  }
+
+  /* ── STATUS LIST ── */
+  .status-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 8px;
+  }
+
+  .status-list li {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .status-list .icon { flex-shrink: 0; }
+
+  /* ── PATENT LIST ── */
+  .patent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .patent-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .patent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .patent-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .patent-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .patent-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── CTA SECTION ── */
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .cta-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+  }
+
+  .cta-box h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .cta-box h3 .zh {
+    display: block;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  .cta-box ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  .cta-box li {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cta-box li code {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    background: var(--bg-surface);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--green);
+  }
+
+  .cta-box a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-dim);
+    transition: border-color 0.2s;
+  }
+
+  .cta-box a:hover {
+    border-color: var(--accent);
+  }
+
+  /* ── COVER SPECIFIC ── */
+  .cover {
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  .cover-logo {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-logo::before,
+  .cover-logo::after {
+    content: '◆';
+    margin: 0 12px;
+    font-size: 0.5rem;
+    vertical-align: middle;
+    opacity: 0.5;
+  }
+
+  .cover h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), #a78bfa, var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cover .subtitle-zh {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+    opacity: 0.85;
+  }
+
+  .cover .tagline {
+    max-width: 700px;
+    margin: 40px auto 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover .tagline p {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .cover .tagline .zh {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-top: 4px;
+  }
+
+  .cover .meta {
+    margin-top: 48px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.05em;
+  }
+
+  .cover .meta a {
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+
+  .cover .meta a:hover { color: var(--accent); }
+
+  .cover .meta span { margin: 0 12px; opacity: 0.3; }
+
+  /* ── TIER TABLE ── */
+  .tier-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 32px 0;
+  }
+
+  .tier-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+  }
+
+  .tier-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 40px rgba(124, 106, 239, 0.1);
+  }
+
+  .tier-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .tier-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .tier-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .tier-card h3 .zh {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  .tier-card p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* ── TOKEN ── */
+  .token-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  .token-feat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .token-feat h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .token-feat p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── FINAL QUOTE ── */
+  .final-quote {
+    text-align: center;
+    margin: 60px 0 20px;
+    padding: 40px;
+  }
+
+  .final-quote p {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  .final-quote p .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .final-quote .zh {
+    font-size: 1.3rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* ── SEPARATOR ── */
+  .slide-sep {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .slide { padding: 60px 24px; }
+    .cover h1 { font-size: 2.5rem; }
+    .cover .subtitle-zh { font-size: 1.2rem; }
+    .heading-en { font-size: 2rem; }
+    .heading-zh { font-size: 1.1rem; }
+    .compare-row { grid-template-columns: 1fr; }
+    .cta-grid { grid-template-columns: 1fr; }
+    .tier-grid { grid-template-columns: 1fr; }
+    .flow-diagram { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; color: #111; }
+
+    .slide {
+      min-height: auto;
+      page-break-inside: avoid;
+      page-break-after: always;
+      padding: 40px 32px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .slide:last-child { page-break-after: auto; }
+
+    .slide::before { display: none; }
+    .slide:nth-child(even) { background: none; }
+
+    .cover::before { display: none; }
+    .cover h1 { font-size: 2.5rem; }
+    .cover h1 .gradient {
+      -webkit-text-fill-color: var(--accent);
+      color: var(--accent);
+    }
+    .cover .subtitle-zh { color: #555; }
+
+    .heading-en { color: #111; font-size: 1.8rem; }
+    .heading-zh { color: var(--accent); }
+    .heading-divider { background: var(--accent); }
+
+    .body-text { color: #333; }
+    .body-text-zh { color: #666; }
+
+    .card, .metric, .patent-card, .tier-card, .token-feat, .cta-box, .grade-chip, .flow-node {
+      background: #fafafa;
+      border-color: #ddd;
+      box-shadow: none;
+    }
+
+    .card:hover { transform: none; }
+
+    .code-block {
+      background: #f5f5f5;
+      border-color: #ddd;
+      color: #111;
+    }
+
+    .quote-block {
+      background: #f5f0ff;
+      border-color: var(--accent);
+    }
+
+    .quote-block p { color: #111; }
+    .quote-block .zh { color: #555; }
+
+    .compare-bad { background: #fff5f5; border-color: #fca5a5; }
+    .compare-good { background: #f0fdf4; border-color: #86efac; }
+
+    .metric-value { color: var(--accent); }
+    .metric-label, .metric-label-zh { color: #666; }
+
+    .data-table th { color: var(--accent); border-color: #ddd; }
+    .data-table td { color: #333; border-color: #eee; }
+
+    .badge { border: 1px solid; }
+
+    .status-list li { background: #fafafa; border-color: #eee; }
+
+    .section-num { color: var(--accent); }
+
+    .final-quote p {
+      color: #111;
+    }
+    .final-quote p .gradient {
+      -webkit-text-fill-color: var(--accent);
+      color: var(--accent);
+    }
+    .final-quote .zh { color: #555; }
+
+    .cta-box a { color: var(--accent); }
+
+    a { color: var(--accent); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 01. COVER                                               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide cover" id="cover">
+  <div class="cover-logo">OpenRNG</div>
+  <h1>The Verifiable<br><span class="gradient">Entropy Network</span></h1>
+  <div class="subtitle-zh">可驗證熵網路</div>
+  <div class="tagline">
+    <p>"Transform randomness from a disposable value into a verifiable digital object."</p>
+    <p class="zh">「將隨機性從一次性數值，轉化為可驗證的數位物件。」</p>
+  </div>
+  <div class="meta">
+    July 2026<span>|</span>
+    <a href="https://github.com/ned-del/openrng">github.com/ned-del/openrng</a><span>|</span>
+    <a href="https://api.openrng.io">api.openrng.io</a><span>|</span>
+    <a href="https://verify.openrng.io">verify.openrng.io</a>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 02. THE PROBLEM                                         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="problem">
+  <div class="slide-inner">
+    <div class="section-num">02 — The Problem</div>
+    <div class="heading-group">
+      <div class="heading-en">The Problem</div>
+      <div class="heading-zh">問題</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">⛓️</div>
+        <h3>Locked to Smart Contracts<span class="zh">鎖定於智能合約</span></h3>
+        <p>Every existing RNG solution — Chainlink VRF, Pyth, etc. — is designed exclusively for on-chain smart contracts.<span class="zh">現有的每一個 RNG 方案 — Chainlink VRF、Pyth 等 — 都專為鏈上智能合約設計。</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚫</div>
+        <h3>99% Underserved<span class="zh">99% 的開發者被忽略</span></h3>
+        <p>99% of developers who need provably fair randomness will never write a smart contract. They have no solution.<span class="zh">99% 需要可證明公平隨機性的開發者永遠不會撰寫智能合約。他們沒有任何解決方案。</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>AI Agents Are Blind<span class="zh">AI 代理的盲點</span></h3>
+        <p>AI agents making autonomous decisions need verifiable entropy — nobody serves this market today.<span class="zh">做出自主決策的 AI 代理需要可驗證的熵 — 目前沒有人服務這個市場。</span></p>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>"The verifiable randomness market serves only smart contracts. The other 99% of developers have nothing."</p>
+      <p class="zh">「現有的可驗證隨機性市場只服務智能合約開發者，其他 99% 的開發者無解。」</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 03. THE SOLUTION                                        -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="solution">
+  <div class="slide-inner">
+    <div class="section-num">03 — The Solution</div>
+    <div class="heading-group">
+      <div class="heading-en">The Solution</div>
+      <div class="heading-zh">解決方案</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <p class="body-text">OpenRNG makes verifiable randomness as easy as a REST API call or <code style="font-family: var(--font-mono); background: var(--bg-surface); padding: 2px 8px; border-radius: 4px; color: var(--green); font-size: 0.9rem;">npm install</code>. No smart contracts. No blockchain knowledge required. Works anywhere.</p>
+    <p class="body-text-zh">OpenRNG 讓可驗證隨機性像 REST API 呼叫或 npm install 一樣簡單。不需要智能合約，不需要區塊鏈知識。隨處可用。</p>
+
+    <p class="body-text" style="margin-top: 20px; font-weight: 600; color: #fff;">Traditional RNG returns a number. OpenRNG returns a <span style="color: var(--accent);">proof-carrying entropy object</span>.</p>
+    <p class="body-text-zh">傳統 RNG 回傳一個數字。OpenRNG 回傳一個<span style="color: var(--accent);">攜帶證明的熵物件</span>。</p>
+
+    <div class="compare-row">
+      <div class="compare-bad">
+        <div class="compare-label">❌ Math.random()</div>
+        <div class="code-block" style="margin: 12px 0 0; border: none; background: rgba(0,0,0,0.3);">
+          <span class="code-comment">// Trust me, bro</span><br>
+          <span class="code-num">0x8f3a...</span>
+        </div>
+      </div>
+      <div class="compare-good">
+        <div class="compare-label">✅ OpenRNG</div>
+        <div class="code-block" style="margin: 12px 0 0; border: none; background: rgba(0,0,0,0.3);">
+{<br>
+&nbsp;&nbsp;<span class="code-key">"entropy"</span>: <span class="code-str">"a7f2c9..."</span>,<br>
+&nbsp;&nbsp;<span class="code-key">"sources"</span>: [<span class="code-str">"drand"</span>, <span class="code-str">"bitcoin"</span>, <span class="code-str">"polygon"</span>],<br>
+&nbsp;&nbsp;<span class="code-key">"confidence"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"score"</span>: <span class="code-num">871</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"grade"</span>: <span class="code-str">"AA"</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="code-key">"proof"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"signature"</span>: <span class="code-str">"0x..."</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"verified"</span>: <span class="code-bool">true</span> <span style="color: var(--green);">✓</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="code-key">"anchor"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"chain"</span>: <span class="code-str">"polygon"</span><br>
+&nbsp;&nbsp;}<br>
+}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 04. VEO-1 STANDARD                                      -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="veo1">
+  <div class="slide-inner">
+    <div class="section-num">04 — VEO-1 Standard</div>
+    <div class="heading-group">
+      <div class="heading-en">VEO-1 Standard</div>
+      <div class="heading-zh">VEO-1 標準</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <p class="body-text"><strong style="color:#fff;">Verifiable Entropy Object</strong> — a frozen protocol standard (RFC-0001). The first protocol to standardize entropy as a verifiable digital object.</p>
+    <p class="body-text-zh">可驗證熵物件 — 凍結的協議標準 (RFC-0001)。VEO-1 是第一個將熵（隨機性）標準化為可驗證數位物件的協議。</p>
+
+    <div class="card-grid" style="margin-top: 32px;">
+      <div class="card">
+        <h3 style="font-family: var(--font-mono); color: var(--accent);">VEO-1A</h3>
+        <p><strong style="color:#fff;">Single Source</strong><span class="zh"><br>單一來源</span></p>
+        <p>Entropy from a single verified source. Simplest object class.<span class="zh"><br>來自單一已驗證來源的熵。最簡單的物件類別。</span></p>
+      </div>
+      <div class="card">
+        <h3 style="font-family: var(--font-mono); color: var(--accent);">VEO-1B</h3>
+        <p><strong style="color:#fff;">Composite</strong><span class="zh"><br>複合來源</span></p>
+        <p>Multi-source aggregated entropy with cross-validation.<span class="zh"><br>多來源聚合熵，具交叉驗證。</span></p>
+      </div>
+      <div class="card">
+        <h3 style="font-family: var(--font-mono); color: var(--accent);">VEO-1C</h3>
+        <p><strong style="color:#fff;">Anchored</strong><span class="zh"><br>已錨定</span></p>
+        <p>Blockchain-anchored entropy with Merkle proof and on-chain timestamp.<span class="zh"><br>區塊鏈錨定熵，附帶 Merkle 證明與鏈上時間戳。</span></p>
+      </div>
+      <div class="card">
+        <h3 style="font-family: var(--font-mono); color: var(--accent);">VEO-1D</h3>
+        <p><strong style="color:#fff;">Decision</strong> <span class="badge badge-orange">Reserved</span><span class="zh"><br>決策（保留）</span></p>
+        <p>Future: entropy objects optimized for AI agent autonomous decisions.<span class="zh"><br>未來：為 AI 代理自主決策優化的熵物件。</span></p>
+      </div>
+    </div>
+
+    <div style="margin-top: 32px;">
+      <p class="body-text" style="font-weight: 500; color: #fff;">Every VEO carries:</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+        <span class="badge badge-accent">Payload</span>
+        <span class="badge badge-accent">Provenance</span>
+        <span class="badge badge-accent">Confidence (ECS)</span>
+        <span class="badge badge-accent">Proof</span>
+        <span class="badge badge-accent">Anchor</span>
+      </div>
+      <p class="body-text" style="margin-top: 16px;">Required fields: <code style="font-family: var(--font-mono); color: var(--green); font-size: 0.9rem;">entropy</code>, <code style="font-family: var(--font-mono); color: var(--green); font-size: 0.9rem;">entropy_hash</code>, <code style="font-family: var(--font-mono); color: var(--green); font-size: 0.9rem;">sources</code>, <code style="font-family: var(--font-mono); color: var(--green); font-size: 0.9rem;">confidence</code>, <code style="font-family: var(--font-mono); color: var(--green); font-size: 0.9rem;">proof</code>, <code style="font-family: var(--font-mono); color: var(--green); font-size: 0.9rem;">provider</code></p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 05. ECS - ENTROPY CONFIDENCE SCORE                      -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="ecs">
+  <div class="slide-inner">
+    <div class="section-num">05 — Entropy Confidence Score</div>
+    <div class="heading-group">
+      <div class="heading-en">Entropy Confidence Score (ECS)</div>
+      <div class="heading-zh">熵信心分數</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <p class="body-text">A quantitative entropy quality measurement on a 0–1000 scale. Every VEO carries an ECS score, making entropy quality measurable for the first time.</p>
+    <p class="body-text-zh">0 到 1000 的量化熵品質衡量指標。每個 VEO 都附帶 ECS 分數，首次讓熵的品質變得可量化。</p>
+
+    <div style="margin: 40px 0 16px;">
+      <p class="body-text" style="font-weight: 600; color: #fff; margin-bottom: 16px;">6 Scoring Dimensions <span style="color: var(--text-muted); font-weight: 400;">/ 六大評分維度</span></p>
+    </div>
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value" style="font-size: 1.5rem;">⏱</div>
+        <div class="metric-label">Freshness</div>
+        <div class="metric-label-zh">新鮮度</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" style="font-size: 1.5rem;">🔀</div>
+        <div class="metric-label">Diversity</div>
+        <div class="metric-label-zh">多樣性</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" style="font-size: 1.5rem;">🔓</div>
+        <div class="metric-label">Independence</div>
+        <div class="metric-label-zh">獨立性</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" style="font-size: 1.5rem;">🛡</div>
+        <div class="metric-label">Manipulation Resistance</div>
+        <div class="metric-label-zh">抗操控性</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" style="font-size: 1.5rem;">✓</div>
+        <div class="metric-label">Verification</div>
+        <div class="metric-label-zh">驗證成功率</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" style="font-size: 1.5rem;">📡</div>
+        <div class="metric-label">Availability</div>
+        <div class="metric-label-zh">可用性</div>
+      </div>
+    </div>
+
+    <p class="body-text" style="font-weight: 600; color: #fff; margin: 32px 0 16px;">Confidence Grades <span style="color: var(--text-muted); font-weight: 400;">/ 信心等級</span></p>
+    <div class="grade-row">
+      <div class="grade-chip">
+        <div class="grade-letter grade-aaa">AAA</div>
+        <div class="grade-info">
+          <div class="range">900 – 1000</div>
+          <div class="use">Casino &amp; Regulatory / 賭場與監管</div>
+        </div>
+      </div>
+      <div class="grade-chip">
+        <div class="grade-letter grade-aa">AA</div>
+        <div class="grade-info">
+          <div class="range">800 – 899</div>
+          <div class="use">AI Agents &amp; Gaming / AI 代理與遊戲</div>
+        </div>
+      </div>
+      <div class="grade-chip">
+        <div class="grade-letter grade-a">A</div>
+        <div class="grade-info">
+          <div class="range">700 – 799</div>
+          <div class="use">Simulation / 模擬</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 06. ARCHITECTURE                                        -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="architecture">
+  <div class="slide-inner">
+    <div class="section-num">06 — Architecture</div>
+    <div class="heading-group">
+      <div class="heading-en">Architecture</div>
+      <div class="heading-zh">架構</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <p class="body-text" style="margin-bottom: 8px;">End-to-end pipeline from entropy sources to verifiable output.</p>
+    <p class="body-text-zh">從熵來源到可驗證輸出的端到端管線。</p>
+
+    <div class="flow-diagram">
+      <div class="flow-node">
+        <div class="flow-label">Sources</div>
+        <div class="flow-detail">drand · Bitcoin · Polygon</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-label">Verification</div>
+        <div class="flow-detail">Cryptographic checks</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-label">Scoring</div>
+        <div class="flow-detail">ECS (0–1000)</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-label">Aggregation</div>
+        <div class="flow-detail">Multi-source mix</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-label">Signing</div>
+        <div class="flow-detail">secp256k1 / EIP-191</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-label">Anchoring</div>
+        <div class="flow-detail">Polygon Merkle</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="border-color: var(--accent);">
+        <div class="flow-label" style="color: var(--green);">VEO-1</div>
+        <div class="flow-detail">Output object</div>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">⏳</div>
+        <h3>VDF Engine<span class="zh">可驗證延遲函數引擎</span></h3>
+        <p>Wesolowski proof, ~2.3s compute, 40,000 iterations. Prevents insider preview — no one can know the result before compute completes.<span class="zh">Wesolowski 證明，~2.3 秒計算，40,000 次迭代。防止內部人員提前預覽結果。</span></p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌳</div>
+        <h3>Merkle Anchoring<span class="zh">Merkle 錨定</span></h3>
+        <p>Batch anchoring to Polygon via Merkle tree roots. Immutable proof of existence with on-chain timestamps.<span class="zh">透過 Merkle 樹根批次錨定至 Polygon。具鏈上時間戳的不可變存在證明。</span></p>
+      </div>
+    </div>
+
+    <div class="metrics-row" style="margin-top: 32px;">
+      <div class="metric">
+        <div class="metric-value">1K</div>
+        <div class="metric-label">Req/sec sustained</div>
+        <div class="metric-label-zh">持續處理量</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">5K</div>
+        <div class="metric-label">Burst capacity</div>
+        <div class="metric-label-zh">爆發容量</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">&lt;16ms</div>
+        <div class="metric-label">p99 Latency</div>
+        <div class="metric-label-zh">p99 延遲</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value green">74/74</div>
+        <div class="metric-label">Tests passing</div>
+        <div class="metric-label-zh">測試通過</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; font-size: 0.85rem; color: var(--text-muted);">
+      <strong style="color: var(--text-dim);">Infrastructure:</strong> Hetzner AX42 — 16 cores, 64GB RAM, Ubuntu 24.04. VDF running continuously for weeks.
+      <br><span style="opacity: 0.7;">基礎設施：Hetzner AX42 — 16 核心、64GB RAM、Ubuntu 24.04。VDF 持續運行數週。</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 07. MARKET OPPORTUNITY                                  -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="market">
+  <div class="slide-inner">
+    <div class="section-num">07 — Market Opportunity</div>
+    <div class="heading-group">
+      <div class="heading-en">Market Opportunity</div>
+      <div class="heading-zh">市場機會</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <div class="quote-block">
+      <p>"OpenRNG is to computational trust what Stripe is to payments."</p>
+      <p class="zh">「OpenRNG 之於計算信任，猶如 Stripe 之於支付。」</p>
+    </div>
+
+    <p class="body-text" style="font-weight: 600; color: #fff; margin-bottom: 20px;">Two Parallel Markets <span style="color: var(--text-muted); font-weight: 400;">/ 兩個平行市場</span></p>
+
+    <div class="compare-row">
+      <div class="card" style="border-color: rgba(245, 158, 11, 0.3);">
+        <div class="card-icon">🎰</div>
+        <h3>Gaming — Proves the Technology<span class="zh">遊戲 — 驗證技術</span></h3>
+        <p>Sic Bo live demo, provably fair casino games. The trust proving ground.<span class="zh">骰寶即時演示，可證明公平的賭場遊戲。信任的驗證場。</span></p>
+      </div>
+      <div class="card" style="border-color: rgba(124, 106, 239, 0.3);">
+        <div class="card-icon">🤖</div>
+        <h3>AI Agents — Drives the Narrative<span class="zh">AI 代理 — 推動敘事</span></h3>
+        <p>Autonomous decisions need verifiable randomness. Trading bots, NPCs, agent-vs-agent competition, governance.<span class="zh">自主決策需要可驗證的隨機性。交易機器人、NPC、代理對代理競賽、治理。</span></p>
+      </div>
+    </div>
+
+    <div class="quote-block" style="border-color: var(--green); background: var(--green-dim);">
+      <p style="font-size: 1rem;">"The same SDK that powers a Sic Bo roll powers an AI agent's decision. That's the moat."</p>
+      <p class="zh">「驅動骰寶擲骰的 SDK，同樣驅動 AI 代理的決策。這就是護城河。」</p>
+    </div>
+
+    <p class="body-text" style="font-weight: 600; color: #fff; margin: 32px 0 16px;">Competitive Landscape <span style="color: var(--text-muted); font-weight: 400;">/ 競爭格局</span></p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Solution</th>
+          <th>On-Chain</th>
+          <th>Off-Chain</th>
+          <th>Cost</th>
+          <th>App Layer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color: #fff; font-weight: 500;">Chainlink VRF</td>
+          <td><span style="color: var(--green);">✓</span></td>
+          <td><span style="color: var(--red);">✗</span></td>
+          <td><span style="color: var(--orange);">~$4/req</span></td>
+          <td><span style="color: var(--red);">✗</span></td>
+        </tr>
+        <tr>
+          <td style="color: #fff; font-weight: 500;">Pyth</td>
+          <td><span style="color: var(--green);">✓</span></td>
+          <td><span style="color: var(--red);">✗</span></td>
+          <td>Varies</td>
+          <td><span style="color: var(--red);">✗</span></td>
+        </tr>
+        <tr>
+          <td style="color: #fff; font-weight: 500;">RANDOM.ORG</td>
+          <td><span style="color: var(--red);">✗</span></td>
+          <td><span style="color: var(--green);">✓</span></td>
+          <td>Free/Paid</td>
+          <td><span style="color: var(--red);">✗</span></td>
+        </tr>
+        <tr>
+          <td style="color: #fff; font-weight: 500;">drand</td>
+          <td><span style="color: var(--red);">✗</span></td>
+          <td><span style="color: var(--green);">✓</span></td>
+          <td>Free</td>
+          <td><span style="color: var(--red);">✗</span> Raw only</td>
+        </tr>
+        <tr style="background: var(--accent-dim);">
+          <td style="color: var(--accent); font-weight: 700;">OpenRNG</td>
+          <td><span style="color: var(--green);">✓</span> Anchored</td>
+          <td><span style="color: var(--green);">✓</span> Native</td>
+          <td style="color: var(--green);">Free tier</td>
+          <td><span style="color: var(--green);">✓</span> Full stack</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="body-text" style="margin-top: 16px;"><strong style="color: #fff;">Position:</strong> OpenRNG = drand's application layer for the off-chain world.</p>
+    <p class="body-text-zh">定位：OpenRNG = drand 在鏈下世界的應用層。現有方案都鎖定鏈上智能合約。OpenRNG 服務的是鏈下世界 — AI 代理、遊戲伺服器、SaaS 後端。</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 08. PRODUCT TIERS                                       -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="product">
+  <div class="slide-inner">
+    <div class="section-num">08 — Product Tiers</div>
+    <div class="heading-group">
+      <div class="heading-en">Product Tiers</div>
+      <div class="heading-zh">產品層級</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <div class="tier-grid">
+      <div class="tier-card">
+        <div class="tier-label">Tier 0</div>
+        <h3>Raw RNG<span class="zh">原始 RNG</span></h3>
+        <p>Verified random numbers, no game logic. Widest aperture for any developer, any use case.</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">已驗證隨機數字，無遊戲邏輯。最廣泛的適用範圍。</p>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-label">Tier 1</div>
+        <h3>Game Engine API<span class="zh">遊戲引擎 API</span></h3>
+        <p>Provably fair games — Sic Bo, Dice, and more coming. Ready-to-use game primitives.</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">可證明公平遊戲 — 骰寶、骰子及更多。即用型遊戲元件。</p>
+      </div>
+      <div class="tier-card">
+        <div class="tier-label">Tier 2</div>
+        <h3>Full Platform<span class="zh">完整平台</span></h3>
+        <p>Multi-agent, staking, house edge, transparency dashboard. Enterprise-grade infrastructure.</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">多代理、質押、莊家優勢、透明度儀表板。企業級基礎設施。</p>
+      </div>
+    </div>
+
+    <p class="body-text" style="font-weight: 600; color: #fff; margin: 40px 0 16px;">Live Now <span style="color: var(--text-muted); font-weight: 400;">/ 已上線</span></p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>🔌 API<span class="zh">應用程式介面</span></h3>
+        <p><a href="https://api.openrng.io" style="color: var(--accent); text-decoration: none;">api.openrng.io</a> — Live, with <a href="https://api.openrng.io/docs" style="color: var(--accent); text-decoration: none;">Swagger docs</a></p>
+      </div>
+      <div class="card">
+        <h3>📦 SDK</h3>
+        <p><code style="font-family: var(--font-mono); color: var(--green); font-size: 0.85rem;">@openrng/sdk</code> — TypeScript, zero dependencies</p>
+      </div>
+      <div class="card">
+        <h3>✅ Verifier<span class="zh">驗證器</span></h3>
+        <p><a href="https://verify.openrng.io" style="color: var(--accent); text-decoration: none;">verify.openrng.io</a> — Browser-based VEO verifier</p>
+      </div>
+      <div class="card">
+        <h3>📊 Dashboard<span class="zh">儀表板</span></h3>
+        <p><a href="https://trust.openrng.io" style="color: var(--accent); text-decoration: none;">trust.openrng.io</a> — Transparency dashboard</p>
+      </div>
+      <div class="card">
+        <h3>🎲 Demo<span class="zh">展示</span></h3>
+        <p><a href="https://play.openrng.io" style="color: var(--accent); text-decoration: none;">play.openrng.io</a> — Sic Bo + Dice live demo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 09. PATENT PORTFOLIO                                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="patents">
+  <div class="slide-inner">
+    <div class="section-num">09 — Patent Portfolio</div>
+    <div class="heading-group">
+      <div class="heading-en">Patent Portfolio</div>
+      <div class="heading-zh">專利組合</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 24px;">
+      <span class="badge badge-green" style="font-size: 0.8rem; padding: 6px 14px;">PCT FILED</span>
+      <span class="badge badge-green" style="font-size: 0.8rem; padding: 6px 14px;">ISR: HIGHLY FAVORABLE</span>
+      <span style="color: var(--text-dim); font-size: 0.9rem;">PCT/CN2026/086184 · Applicant: HSU Nan-Hsuan</span>
+    </div>
+
+    <div class="quote-block" style="border-color: var(--green); background: var(--green-dim);">
+      <p style="font-size: 1rem; color: var(--green);">ISR Result: All 6 cited references = Category A (background only). No anticipation, no obviousness combinations. Strong position for US/EU/JP national phase filings.</p>
+      <p class="zh">PCT 國際搜索報告結果極為有利 — 所有引用文獻均為 A 類（僅背景技術）。無預見性，無顯而易見的組合。對美國/歐盟/日本國家階段申請有利。</p>
+    </div>
+
+    <p class="body-text" style="font-weight: 600; color: #fff; margin: 32px 0 16px;">5-Patent Portfolio <span style="color: var(--text-muted); font-weight: 400;">/ 五大專利組合</span></p>
+
+    <div class="patent-grid">
+      <div class="patent-card">
+        <div class="patent-num">Patent #1</div>
+        <h4>Game RNG with Blockchain / Merkle</h4>
+        <p>PCT filed, ISR favorable. Core game randomness with blockchain anchoring.</p>
+        <p style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">遊戲 RNG 結合區塊鏈/Merkle</p>
+      </div>
+      <div class="patent-card">
+        <div class="patent-num">Patent #2</div>
+        <h4>VDF Pipeline</h4>
+        <p>Dual temporal integrity via verifiable delay functions.</p>
+        <p style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">VDF 管線（雙重時間完整性）</p>
+      </div>
+      <div class="patent-card">
+        <div class="patent-num">Patent #3</div>
+        <h4>VEO Format + ECS Scoring</h4>
+        <p>Genuinely novel — standardized entropy objects with quality scoring.</p>
+        <p style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">VEO 格式 + ECS 評分（真正創新）</p>
+      </div>
+      <div class="patent-card">
+        <div class="patent-num">Patent #4</div>
+        <h4>Trust Coordination</h4>
+        <p>Consensus protocol for cross-boundary trust verification.</p>
+        <p style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">信任協調（共識協議，跨邊界）</p>
+      </div>
+      <div class="patent-card">
+        <div class="patent-num">Patent #5 — Strongest</div>
+        <h4>Trust Runtime ("Trust Health")</h4>
+        <p>New category — like Battery Health but for computational trust. Continuous runtime trust monitoring.</p>
+        <p style="margin-top: 4px; color: var(--text-muted); font-size: 0.8rem;">信任運行時（「信任健康度」— 最強，新類別）</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; font-size: 0.85rem; color: var(--text-muted);">
+      <strong style="color: var(--text-dim);">Big Tech interest mapping:</strong> OpenAI → #4/#5 · Google/Microsoft → #5 · Gaming → #1-3
+      <br>Strategy: Stop after #5, let next patent emerge from real usage.
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 10. TOKEN ECONOMICS                                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="token">
+  <div class="slide-inner">
+    <div class="section-num">10 — Token Economics</div>
+    <div class="heading-group">
+      <div class="heading-en">Token Economics — $ORNG</div>
+      <div class="heading-zh">代幣經濟</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <div class="quote-block">
+      <p style="font-size: 1rem;">"Token launches after 50+ paying clients — not before product-market fit."</p>
+      <p class="zh">「代幣在產品市場適配後才推出 — 不是之前。」</p>
+    </div>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 24px 0;">
+      <span class="badge badge-accent" style="font-size: 0.8rem; padding: 5px 12px;">ERC-20 on Polygon</span>
+      <span class="badge badge-accent" style="font-size: 0.8rem; padding: 5px 12px;">Hybrid Model</span>
+      <span class="badge badge-accent" style="font-size: 0.8rem; padding: 5px 12px;">2% Annual Inflation Cap</span>
+    </div>
+
+    <div class="token-features">
+      <div class="token-feat">
+        <h4>🔥 Burn per Request</h4>
+        <p>~$0.0001 dynamic burn pegged to USD via TWAP oracle. Price up → burn slows. Price down → burn accelerates.</p>
+        <p style="margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">每次請求動態燃燒，與美元掛鉤</p>
+      </div>
+      <div class="token-feat">
+        <h4>🏦 Stake for Access</h4>
+        <p>Free: 100 req/min · Pro: 10K req/min · Enterprise: unlimited. Tier access through staking.</p>
+        <p style="margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">質押解鎖層級存取</p>
+      </div>
+      <div class="token-feat">
+        <h4>✅ Verifier Rewards</h4>
+        <p>Independent proof-checkers earn rewards for validating VEOs. Decentralized trust verification.</p>
+        <p style="margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">獨立驗證者獎勵</p>
+      </div>
+      <div class="token-feat">
+        <h4>🎁 SDK Grants</h4>
+        <p>Grants for framework integrations — LangChain, CrewAI, and beyond.</p>
+        <p style="margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">框架整合補助</p>
+      </div>
+    </div>
+
+    <div class="quote-block" style="margin-top: 32px; border-color: var(--green); background: var(--green-dim);">
+      <p style="font-size: 1rem;">Key insight: AI agents with wallets are the primary customer. Just-in-time USDC → $ORNG swap.</p>
+      <p class="zh">關鍵洞察：擁有錢包的 AI 代理是主要客戶。即時 USDC → $ORNG 兌換。動態燃燒機制確保代幣價值與使用量掛鉤。</p>
+    </div>
+
+    <div style="margin-top: 24px; font-size: 0.85rem; color: var(--text-muted);">
+      <strong style="color: var(--text-dim);">Contract:</strong> <code style="font-family: var(--font-mono); color: var(--green); font-size: 0.8rem;">ORNGToken.sol</code> — ERC-20 + Burnable + AccessControl, <span style="color: var(--green);">20 tests passing</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 11. ROADMAP                                             -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="roadmap">
+  <div class="slide-inner">
+    <div class="section-num">11 — Roadmap</div>
+    <div class="heading-group">
+      <div class="heading-en">Roadmap</div>
+      <div class="heading-zh">路線圖</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <p class="body-text" style="font-weight: 600; color: #fff; margin-bottom: 24px;">90-Day Plan <span style="color: var(--text-muted); font-weight: 400;">/ 90 天計劃</span></p>
+
+    <div class="timeline">
+      <div class="timeline-item current">
+        <div class="timeline-phase">Weeks 1–4 — SHIP</div>
+        <div class="timeline-title">Ship Core Products / 出貨核心產品</div>
+        <ul class="timeline-items">
+          <li>Sic Bo demo → verify.openrng.io → SDK → MCP server</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Weeks 5–8 — PROVE</div>
+        <div class="timeline-title">Prove Market Fit / 驗證市場契合</div>
+        <ul class="timeline-items">
+          <li>Design partners → B2B API → stress testing → documentation</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Weeks 9–12 — SCALE</div>
+        <div class="timeline-title">Scale Distribution / 擴展分發</div>
+        <ul class="timeline-items">
+          <li>Multi-game → agent integrations → LangChain/CrewAI plugins</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Week 13+ — TOKEN</div>
+        <div class="timeline-title">Token Launch / 代幣啟動</div>
+        <ul class="timeline-items">
+          <li>$ORNG deployment → liquidity → verifier network</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="body-text" style="font-weight: 600; color: #fff; margin: 40px 0 16px;">Current Status — July 2026 <span style="color: var(--text-muted); font-weight: 400;">/ 目前狀態</span></p>
+
+    <ul class="status-list">
+      <li><span class="icon" style="color: var(--green);">✅</span> VEO-1 standard frozen (RFC-0001)</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> API live — 2+ weeks continuous uptime</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> VDF engine active — Wesolowski proofs, ~2.3s</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> Polygon contract deployed (Merkle anchoring)</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> Sic Bo + Dice live demo</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> verify.openrng.io (browser VEO verifier)</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> trust.openrng.io (transparency dashboard)</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> 74/74 tests passing</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> Patent PCT filed, ISR favorable</li>
+      <li><span class="icon" style="color: var(--green);">✅</span> GitHub repo public</li>
+      <li><span class="icon" style="color: var(--accent);">🔜</span> SDK npm publish</li>
+      <li><span class="icon" style="color: var(--accent);">🔜</span> MCP server for AI agent frameworks</li>
+      <li><span class="icon" style="color: var(--accent);">🔜</span> $ORNG token deployment</li>
+      <li><span class="icon" style="color: var(--accent);">🔜</span> GLI audit prep</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 12. GET INVOLVED                                        -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="slide" id="involved">
+  <div class="slide-inner">
+    <div class="section-num">12 — Get Involved</div>
+    <div class="heading-group">
+      <div class="heading-en">Get Involved</div>
+      <div class="heading-zh">加入我們</div>
+      <div class="heading-divider"></div>
+    </div>
+
+    <div class="cta-grid">
+      <div class="cta-box">
+        <h3>🔧 For Builders<span class="zh">開發者</span></h3>
+        <ul>
+          <li>📂 GitHub: <a href="https://github.com/ned-del/openrng">github.com/ned-del/openrng</a></li>
+          <li>🔌 API: <a href="https://api.openrng.io">api.openrng.io</a> <span style="color: var(--text-muted); font-size: 0.8rem;">(no key needed for basic entropy)</span></li>
+          <li>📖 Docs: <a href="https://api.openrng.io/docs">api.openrng.io/docs</a> <span style="color: var(--text-muted); font-size: 0.8rem;">(Swagger UI)</span></li>
+          <li>📦 SDK: <code>npm install @openrng/sdk</code></li>
+          <li>🧪 Try it:</li>
+        </ul>
+        <div class="code-block" style="margin-top: 8px;">
+          <span class="code-dim">$</span> curl https://api.openrng.io/api/v1/entropy
+        </div>
+      </div>
+      <div class="cta-box">
+        <h3>💼 For Investors<span class="zh">投資人</span></h3>
+        <ul>
+          <li>📧 Contact: <a href="mailto:ned@openrng.io">ned@openrng.io</a> · <a href="mailto:jumboned@gmail.com">jumboned@gmail.com</a></li>
+          <li>📜 Patent portfolio: 5 patents, PCT ISR favorable</li>
+          <li>💰 Revenue model:</li>
+        </ul>
+        <div style="padding-left: 28px; margin-top: 4px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.8;">
+          B2B GGR % → API subscriptions → $ORNG token → trust infrastructure licensing
+        </div>
+        <div style="margin-top: 16px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.8;">
+          <strong style="color: #fff;">Trust Thesis:</strong><br>
+          <span style="color: var(--accent);">Randomness → Fairness → Verification → Trust → Agents</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="final-quote">
+      <p>"Don't trust randomness. <span class="gradient">Verify it.</span>"</p>
+      <p class="zh">「不要信任隨機性。驗證它。」</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <div style="display: inline-flex; gap: 24px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+        <a href="https://github.com/ned-del/openrng" style="color: var(--text-dim); text-decoration: none;">GitHub</a>
+        <a href="https://api.openrng.io" style="color: var(--text-dim); text-decoration: none;">API</a>
+        <a href="https://verify.openrng.io" style="color: var(--text-dim); text-decoration: none;">Verify</a>
+        <a href="https://trust.openrng.io" style="color: var(--text-dim); text-decoration: none;">Trust</a>
+        <a href="https://play.openrng.io" style="color: var(--text-dim); text-decoration: none;">Play</a>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 48px; font-size: 0.7rem; color: var(--text-muted); opacity: 0.5;">
+      © 2026 OpenRNG · Built with verifiable trust
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
