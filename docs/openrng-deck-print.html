@@ -173,14 +173,14 @@
           On-chain VRFs (Chainlink, Pyth, Supra) require Solidity. Off-chain options like <strong>drand</strong> and <strong>RANDOM.ORG</strong> provide raw numbers or signed responses — but no provenance scoring, no blockchain anchoring, no replay verification.
         </p>
         <p style="font-size: 12.5px; margin-top: 10px;">
-          <strong style="color:#1a1a2e;">Nobody packages randomness as a verifiable object.</strong> Existing off-chain solutions return a number with a signature. OpenRNG returns a proof-carrying entropy object with source provenance, confidence scoring, and chain-of-custody.
+          <strong style="color:#1a1a2e;">Existing solutions solve derivation, not provenance.</strong> VRFs prove a number was derived correctly. Beacons provide public randomness. But none package entropy with source tracking, quality scoring, or chain-of-custody. OpenRNG does.
         </p>
         <p style="font-size: 12.5px; margin-top: 10px;">
           AI agents making autonomous decisions need more than a signed number — they need <strong style="color:#6c5ce7;">auditable, scored, anchored entropy</strong>.
         </p>
       </div>
       <div style="font-size: 12px; color: #888; line-height: 1.7; padding: 0 4px;">
-        鏈上 VRF 需要 Solidity。drand 和 RANDOM.ORG 提供原始數字或簽名回應，但沒有來源追蹤、信心評分、區塊鏈錨定或重播驗證。<br>沒有人將隨機性包裝成可驗證物件。
+        鏈上 VRF 需要 Solidity。drand 和 RANDOM.ORG 提供原始數字或簽名回應，但沒有來源追蹤、信心評分、區塊鏈錨定或重播驗證。<br>現有方案解決了推導問題，卻忽略了來源追蹤。OpenRNG 填補這個缺口。
       </div>
     </div>
     <div>
@@ -199,7 +199,7 @@
         </tbody>
       </table>
       <p style="font-size: 11.5px; margin-top: 12px; color: #888; line-height: 1.5;">
-        OpenRNG is <strong style="color:#333;">drand's application layer for the off-chain world</strong> — the only solution combining REST API + blockchain verification.
+        OpenRNG is <strong style="color:#333;">drand's application layer for the off-chain world</strong> — the only platform that turns raw entropy into a scored, signed, chain-anchored verifiable object.
       </p>
     </div>
   </div>
@@ -277,8 +277,8 @@
       <h3 style="margin-bottom: 10px;">Two Parallel Markets / 雙軌市場</h3>
       <div class="card-green" style="margin-bottom: 10px; border-left: 3px solid #059669;">
         <div style="font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.2px; color: #059669; margin-bottom: 4px;">Gaming — Proves the Technology / 遊戲 — 驗證技術</div>
-        <p style="font-size: 12px; color:#333;">Live Sic Bo demo with provably fair VDF outcomes. Casino operators verify every roll independently.</p>
-        <p style="font-size: 10.5px; color:#888; margin-top: 3px;">即時骰寶示範 — 每次擲骰都可獨立驗證。</p>
+        <p style="font-size: 12px; color:#333;">Live Sic Bo demo with provably fair VDF outcomes. Players and regulators verify every outcome independently — no trust required in the operator.</p>
+        <p style="font-size: 10.5px; color:#888; margin-top: 3px;">即時骰寶示範 — 玩家和監管機構可獨立驗證每次結果。</p>
       </div>
       <div class="card-accent" style="margin-bottom: 12px; border-left: 3px solid #6c5ce7;">
         <div style="font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.2px; color: #6c5ce7; margin-bottom: 4px;">AI Agents — Drives the Narrative / AI 代理 — 驅動敘事</div>
@@ -289,11 +289,11 @@
       <h3 style="margin-bottom: 8px;">Use Cases / 應用場景</h3>
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
         <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Online Casino</strong><br><span style="font-size:9.5px; color:#888;">線上賭場</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Trading Bots</strong><br><span style="font-size:9.5px; color:#888;">交易機器人</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Game NPCs</strong><br><span style="font-size:9.5px; color:#888;">遊戲 NPC</span></div>
         <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Agent Decisions</strong><br><span style="font-size:9.5px; color:#888;">代理決策</span></div>
+        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Game NPCs</strong><br><span style="font-size:9.5px; color:#888;">遊戲 NPC</span></div>
+        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Lottery / Fair Launch</strong><br><span style="font-size:9.5px; color:#888;">抽獎 / 公平發行</span></div>
         <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Loot Drops</strong><br><span style="font-size:9.5px; color:#888;">戰利品掉落</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Governance</strong><br><span style="font-size:9.5px; color:#888;">治理選舉</span></div>
+        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Governance</strong><br><span style="font-size:9.5px; color:#888;">治理決策</span></div>
       </div>
     </div>
     <div>
@@ -310,7 +310,7 @@
       <h3 style="margin-bottom: 8px;">Position / 定位</h3>
       <div class="card-accent" style="margin-bottom: 12px;">
         <p style="font-size: 12.5px; color: #333; line-height: 1.6;">
-          <strong>drand's application layer for the off-chain world.</strong> Existing solutions serve on-chain smart contracts. OpenRNG serves everyone else — the 99%.
+          <strong>drand gives you a random number. OpenRNG makes it a verifiable trust artifact your application can prove it used correctly.</strong> Existing solutions serve on-chain smart contracts. OpenRNG serves the applications that need verifiable entropy objects, not just verified numbers.
         </p>
         <p style="font-size: 11px; color: #888; margin-top: 4px;">drand 在鏈下世界的應用層。服務其他 99% 的開發者。</p>
       </div>
@@ -557,7 +557,7 @@
       <div style="font-size: 10px; color: #888;">SDK</div>
       <div class="mono" style="font-size: 10.5px; color: #6c5ce7; margin: 4px 0;">@openrng/sdk</div>
       <div style="font-size: 9.5px; color: #999;">TypeScript · zero deps</div>
-      <div style="margin-top: 4px;"><span class="badge badge-orange">PUBLISHING</span></div>
+      <div style="margin-top: 4px;"><span class="badge badge-green">LIVE</span></div>
     </div>
   </div>
 
@@ -873,7 +873,7 @@
   <div class="cols-2 grow" style="gap: 24px;">
     <div>
       <div class="team-card" style="margin-bottom: 14px; border-left: 3px solid #6c5ce7;">
-        <div class="team-name">Founder</div>
+        <div class="team-name">Nan-Hsuan Hsu</div>
         <div class="team-role">Founder</div>
         <div class="done" style="margin-bottom: 5px;"><strong>Web3-native builder</strong> — blockchain entrepreneur since early Ethereum</div>
         <div class="done" style="margin-bottom: 5px;"><strong>NFT project founder</strong> — launched top-volume collection in Asia</div>
@@ -944,7 +944,7 @@
         <div class="done" style="margin-bottom: 6px;"><strong>GitHub</strong> — <span class="mono" style="font-size:11px; color:#6c5ce7;">github.com/ned-del/openrng</span></div>
         <div class="done" style="margin-bottom: 6px;"><strong>API</strong> — <span class="mono" style="font-size:11px; color:#6c5ce7;">api.openrng.io</span> <span style="font-size:10px; color:#888;">(no key for basic entropy)</span></div>
         <div class="done" style="margin-bottom: 6px;"><strong>Docs</strong> — <span class="mono" style="font-size:11px; color:#6c5ce7;">api.openrng.io/docs</span> <span style="font-size:10px; color:#888;">(Swagger UI)</span></div>
-        <div class="done" style="margin-bottom: 6px;"><strong>SDK</strong> — <span class="mono" style="font-size:11px; color:#6c5ce7;">@openrng/sdk</span> <span style="font-size:10px; color:#888;">(TypeScript, zero deps)</span></div>
+        <div class="done" style="margin-bottom: 6px;"><strong>SDK</strong> — <span class="mono" style="font-size:11px; color:#6c5ce7;">npm install @openrng/sdk</span></div>
         <div class="done" style="margin-bottom: 6px;"><strong>Verify</strong> — <span class="mono" style="font-size:11px; color:#6c5ce7;">verify.openrng.io</span></div>
 
         <div class="code-block" style="margin-top: 14px;">
@@ -971,7 +971,7 @@
 
       <div class="card" style="text-align: center; padding: 16px;">
         <div style="font-size: 11px; color: #888;">Founder</div>
-        <div style="font-size: 14px; font-weight: 600; color: #333; margin-top: 2px;">Founder</div>
+        <div style="font-size: 14px; font-weight: 600; color: #333; margin-top: 2px;">Nan-Hsuan Hsu · Founder</div>
         <div class="mono" style="font-size: 15px; color: #6c5ce7; margin-top: 4px;">hello@openrng.io</div>
       </div>
     </div>
