@@ -157,7 +157,7 @@
       <a href="https://verify.openrng.io">verify.openrng.io</a>
     </div>
   </div>
-  <div class="slide-num">01 / 12</div>
+  <div class="slide-num">01 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 02: PROBLEM ==================== -->
@@ -184,26 +184,30 @@
       </div>
     </div>
     <div>
-      <h3 style="margin-bottom: 10px;">Competitive Landscape</h3>
-      <table>
-        <thead><tr><th>Solution</th><th>Target</th><th>Cost</th><th>Verifiable Object</th></tr></thead>
+      <h3 style="margin-bottom: 8px;">Competitive Landscape</h3>
+      <table style="font-size: 10.5px;">
+        <thead><tr><th>Solution</th><th>Anti-Preview</th><th>Chain Anchor</th><th>ECS / Provenance</th><th>Off-Chain</th></tr></thead>
         <tbody>
-          <tr><td style="color:#333; font-weight:500;">Chainlink VRF</td><td>Solidity</td><td style="color:#dc2626;">~$4/req</td><td style="color:#dc2626; font-weight:600;">✗</td></tr>
-          <tr><td style="color:#333; font-weight:500;">Pyth Entropy</td><td>EVM</td><td>Gas token</td><td style="color:#dc2626; font-weight:600;">✗</td></tr>
-          <tr><td style="color:#333; font-weight:500;">ARPA Randcast</td><td>Solidity</td><td>ARPA token</td><td style="color:#dc2626; font-weight:600;">✗</td></tr>
-          <tr><td style="color:#333; font-weight:500;">Supra dVRF</td><td>Solidity</td><td>SUPRA token</td><td style="color:#dc2626; font-weight:600;">✗</td></tr>
-          <tr><td style="color:#333; font-weight:500;">Gelato VRF</td><td>Solidity</td><td>Free</td><td style="color:#dc2626; font-weight:600;">✗</td></tr>
-          <tr><td style="color:#333; font-weight:500;">drand</td><td>HTTP API</td><td>Free</td><td style="color:#059669;">✓ <span style="color:#999; font-size:10px;">raw beacon only</span></td></tr>
-          <tr><td style="color:#333; font-weight:500;">RANDOM.ORG</td><td>HTTP API</td><td>Paid</td><td style="color:#059669;">✓ <span style="color:#999; font-size:10px;">signed, no anchor</span></td></tr>
-          <tr style="background:#f0edff;"><td style="color:#6c5ce7; font-weight:700;">OpenRNG</td><td style="color:#059669; font-weight:600;">REST API</td><td style="color:#059669; font-weight:600;">Free tier</td><td style="color:#059669; font-weight:700;">✓ Full VEO</td></tr>
+          <tr><td style="color:#333; font-weight:500;">Commit-Reveal (Stake etc.)</td><td style="color:#dc2626;">✗ operator grinds</td><td style="color:#dc2626;">✗</td><td style="color:#dc2626;">✗</td><td style="color:#059669;">✓</td></tr>
+          <tr><td style="color:#333; font-weight:500;">Chainlink VRF</td><td style="color:#059669;">✓</td><td style="color:#059669;">✓</td><td style="color:#dc2626;">✗</td><td style="color:#dc2626;">✗ Solidity</td></tr>
+          <tr><td style="color:#333; font-weight:500;">drand beacon</td><td style="color:#059669;">✓</td><td style="color:#dc2626;">✗</td><td style="color:#dc2626;">✗</td><td style="color:#059669;">✓</td></tr>
+          <tr><td style="color:#333; font-weight:500;">DIY (drand + log)</td><td style="color:#059669;">✓</td><td style="color:#d97706;">partial</td><td style="color:#dc2626;">✗</td><td style="color:#059669;">✓</td></tr>
+          <tr><td style="color:#333; font-weight:500;">TEE attestation</td><td style="color:#059669;">✓</td><td style="color:#d97706;">varies</td><td style="color:#dc2626;">✗ attests exec</td><td style="color:#059669;">✓</td></tr>
+          <tr><td style="color:#333; font-weight:500;">RANDOM.ORG</td><td style="color:#dc2626;">✗</td><td style="color:#dc2626;">✗</td><td style="color:#dc2626;">✗</td><td style="color:#059669;">✓</td></tr>
+          <tr style="background:#f0edff;"><td style="color:#6c5ce7; font-weight:700;">OpenRNG</td><td style="color:#059669; font-weight:600;">✓ VDF</td><td style="color:#059669; font-weight:600;">✓ Polygon</td><td style="color:#059669; font-weight:600;">✓ VEO + ECS</td><td style="color:#059669; font-weight:600;">✓ REST</td></tr>
         </tbody>
       </table>
-      <p style="font-size: 11.5px; margin-top: 12px; color: #888; line-height: 1.5;">
-        OpenRNG is <strong style="color:#333;">drand's application layer for the off-chain world</strong> — the only platform that turns raw entropy into a scored, signed, chain-anchored verifiable object.
-      </p>
+      <div style="margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <p style="font-size: 10px; color: #888; line-height: 1.4;">
+          <strong style="color:#555;">vs Commit-Reveal:</strong> Free and good enough for grey-market. VDF makes preview physically impossible — matters where GLI-19 forces the issue.
+        </p>
+        <p style="font-size: 10px; color: #888; line-height: 1.4;">
+          <strong style="color:#555;">vs TEE:</strong> Complementary, not competing. TEE attests execution; VEO attests entropy input. VEO as input attestation inside a TEE stack.
+        </p>
+      </div>
     </div>
   </div>
-  <div class="slide-num">02 / 12</div>
+  <div class="slide-num">02 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 03: SOLUTION ==================== -->
@@ -258,13 +262,13 @@
       </div>
       <div class="card-green" style="margin-top:auto;">
         <p style="font-size: 12px; color: #065f46; line-height: 1.5;">
-          <strong>The same SDK that powers a Sic Bo roll powers an AI agent's decision.</strong> Every response includes provenance, confidence scoring, and cryptographic proof.
+          <strong>An SDK built for GLI-19 audit requirements — the same standard powers AI agent entropy.</strong> One standard, two markets — compliance today, audit-readiness tomorrow.
         </p>
-        <p style="font-size: 11px; color: #888; margin-top: 4px;">驅動骰寶的同一個 SDK，也驅動 AI 代理的決策。</p>
+        <p style="font-size: 11px; color: #888; margin-top: 4px;">為 GLI-19 而建的 SDK，也驅動 AI 代理的決策。</p>
       </div>
     </div>
   </div>
-  <div class="slide-num">03 / 12</div>
+  <div class="slide-num">03 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 04: MARKET + WHY NOW ==================== -->
@@ -274,45 +278,46 @@
 
   <div class="cols-2 grow" style="gap: 24px;">
     <div>
-      <h3 style="margin-bottom: 10px;">Two Parallel Markets / 雙軌市場</h3>
+      <h3 style="margin-bottom: 10px;">Two Markets: Proof Today, Option Tomorrow / 雙軌市場：今日驗證，明日佈局</h3>
       <div class="card-green" style="margin-bottom: 10px; border-left: 3px solid #059669;">
-        <div style="font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.2px; color: #059669; margin-bottom: 4px;">Gaming — Proves the Technology / 遊戲 — 驗證技術</div>
-        <p style="font-size: 12px; color:#333;">Live Sic Bo demo with provably fair VDF outcomes. Players and regulators verify every outcome independently — no trust required in the operator.</p>
-        <p style="font-size: 10.5px; color:#888; margin-top: 3px;">即時骰寶示範 — 玩家和監管機構可獨立驗證每次結果。</p>
+        <div style="font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.2px; color: #059669; margin-bottom: 4px;">Gaming — Compelled Buyer Today / 遊戲 — 今日的強制需求</div>
+        <p style="font-size: 12px; color:#333;">GLI-19 requires provable fairness. Operators currently use circular audit logs. One API call gives operators independently verifiable evidence designed for GLI-19 certification. Players and regulators verify independently.</p>
+        <p style="font-size: 10.5px; color:#888; margin-top: 3px;">GLI-19 要求可證明的公平性。一次 API 呼叫即可提供為 GLI-19 認證而設計的獨立可驗證證據。玩家和監管機構可獨立驗證。</p>
       </div>
       <div class="card-accent" style="margin-bottom: 12px; border-left: 3px solid #6c5ce7;">
-        <div style="font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.2px; color: #6c5ce7; margin-bottom: 4px;">AI Agents — Drives the Narrative / AI 代理 — 驅動敘事</div>
-        <p style="font-size: 12px; color:#333;">Autonomous agents need verifiable entropy for decisions. Nobody owns this space yet.</p>
-        <p style="font-size: 10.5px; color:#888; margin-top: 3px;">自主 AI 代理需要可驗證的熵來做決策 — 無人佔領此市場。</p>
+        <div style="font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.2px; color: #6c5ce7; margin-bottom: 4px;">AI Agents — Positioned for Tomorrow / AI 代理 — 佈局未來</div>
+        <p style="font-size: 12px; color:#333;">Trade execution jitter (anti-MEV), multi-agent resource allocation, RL exploration audits — wherever randomness is developer-injected and adversarially scrutinized after the fact. Positioned for EU AI Act audit requirements.</p>
+        <p style="font-size: 10.5px; color:#888; margin-top: 3px;">交易執行隨機化（防搶跑）、多代理資源分配、強化學習探索審計 — 開發者注入的隨機性在事後被對抗性審查的場景。佈局 EU AI Act 審計要求。</p>
       </div>
 
-      <h3 style="margin-bottom: 8px;">Use Cases / 應用場景</h3>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Online Casino</strong><br><span style="font-size:9.5px; color:#888;">線上賭場</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Agent Decisions</strong><br><span style="font-size:9.5px; color:#888;">代理決策</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Game NPCs</strong><br><span style="font-size:9.5px; color:#888;">遊戲 NPC</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Lottery / Fair Launch</strong><br><span style="font-size:9.5px; color:#888;">抽獎 / 公平發行</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Loot Drops</strong><br><span style="font-size:9.5px; color:#888;">戰利品掉落</span></div>
-        <div class="card-sm" style="padding:7px;"><strong style="font-size:11px;">Governance</strong><br><span style="font-size:9.5px; color:#888;">治理決策</span></div>
+      <h3 style="margin-bottom: 6px;">Diligence-Proof Use Cases / 經得起盡職調查的應用場景</h3>
+      <p style="font-size: 10px; color: #888; margin-bottom: 6px;">Common pattern: developer-injected randomness, adversarially scrutinized after the fact.</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+        <div class="card-sm" style="padding:6px; border-left: 2px solid #059669;"><strong style="font-size:10.5px;">Casino / GLI Compliance</strong><br><span style="font-size:9px; color:#888;">法規強制的可證明公平性</span></div>
+        <div class="card-sm" style="padding:6px; border-left: 2px solid #6c5ce7;"><strong style="font-size:10.5px;">Trade Execution Jitter</strong><br><span style="font-size:9px; color:#888;">交易時機隨機化防搶跑</span></div>
+        <div class="card-sm" style="padding:6px; border-left: 2px solid #6c5ce7;"><strong style="font-size:10.5px;">Multi-Agent Allocation</strong><br><span style="font-size:9px; color:#888;">資源分配公平性證明</span></div>
+        <div class="card-sm" style="padding:6px; border-left: 2px solid #6c5ce7;"><strong style="font-size:10.5px;">RL Exploration Audit</strong><br><span style="font-size:9px; color:#888;">探索決策可驗證性</span></div>
+        <div class="card-sm" style="padding:6px; border-left: 2px solid #d97706;"><strong style="font-size:10.5px;">Compliance Sampling</strong><br><span style="font-size:9px; color:#888;">審計抽樣可防辯性</span></div>
+        <div class="card-sm" style="padding:6px; border-left: 2px solid #d97706;"><strong style="font-size:10.5px;">Stochastic Attestation</strong><br><span style="font-size:9px; color:#888;">隨機管線可重現證明</span></div>
       </div>
     </div>
     <div>
       <h3 style="margin-bottom: 10px;">Why Now / 為什麼是現在</h3>
       <div class="card" style="margin-bottom: 12px; border-left: 3px solid #d97706;">
         <p style="font-size: 13px; color: #333; line-height: 1.7; margin-bottom: 8px;">
-          <strong>AI agents are gaining autonomy</strong> — making financial decisions, selecting strategies, allocating resources. Every autonomous decision is a <strong style="color:#6c5ce7;">trust surface</strong> that needs verifiable randomness.
+          <strong>Gaming compliance is mandatory today</strong> (GLI-19). <strong>Agent audit regulation is coming</strong> (EU AI Act). OpenRNG is built for both — provably fair gaming now, auditable agent entropy when regulators require it.
         </p>
         <p style="font-size: 11.5px; color: #888; line-height: 1.5;">
-          AI 代理正獲得更多自主權。每個自主決策都是需要可驗證隨機性的信任界面。
+          遊戲合規是今天的強制要求（GLI-19）。代理審計法規即將到來（EU AI Act）。OpenRNG 為兩者而建。
         </p>
       </div>
 
       <h3 style="margin-bottom: 8px;">Position / 定位</h3>
       <div class="card-accent" style="margin-bottom: 12px;">
         <p style="font-size: 12.5px; color: #333; line-height: 1.6;">
-          <strong>drand gives you a random number. OpenRNG makes it a verifiable trust artifact your application can prove it used correctly.</strong> Existing solutions serve on-chain smart contracts. OpenRNG serves the applications that need verifiable entropy objects, not just verified numbers.
+          <strong>drand gives you a random number. OpenRNG makes it a verifiable trust artifact your application can prove it used correctly.</strong> Commit-reveal trusts the operator. DIY gets you 80%. OpenRNG is Stripe vs. raw bank APIs — convenience + the VDF guarantee.
         </p>
-        <p style="font-size: 11px; color: #888; margin-top: 4px;">drand 在鏈下世界的應用層。服務其他 99% 的開發者。</p>
+        <p style="font-size: 11px; color: #888; margin-top: 4px;">drand 提供公共隨機數，OpenRNG 將其轉化為可驗證的信任物件。</p>
       </div>
 
       <div class="card-green" style="text-align: center; padding: 14px;">
@@ -324,7 +329,7 @@
       </div>
     </div>
   </div>
-  <div class="slide-num">04 / 12</div>
+  <div class="slide-num">04 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 05: TRACTION ==================== -->
@@ -368,16 +373,16 @@
       <h3 style="margin-bottom: 8px;">Performance / 效能</h3>
       <div class="card-green" style="margin-bottom: 10px;">
         <div class="cols-4" style="gap: 6px;">
-          <div class="metric"><div class="value" style="font-size: 20px; color:#059669;">1K/s</div><div class="mlabel">Sustained</div></div>
-          <div class="metric"><div class="value" style="font-size: 20px; color:#059669;">5K/s</div><div class="mlabel">Burst</div></div>
+          <div class="metric"><div class="value" style="font-size: 20px; color:#059669;">9.8K/s</div><div class="mlabel">Cached Peak</div></div>
+          <div class="metric"><div class="value" style="font-size: 20px; color:#059669;">50K/s</div><div class="mlabel">w/ CDN est.</div></div>
           <div class="metric"><div class="value" style="font-size: 20px; color:#059669;">&lt;16ms</div><div class="mlabel">p99 Latency</div></div>
           <div class="metric"><div class="value" style="font-size: 20px; color:#059669;">74/74</div><div class="mlabel">Tests Pass</div></div>
         </div>
       </div>
       <p style="font-size: 11.5px; color: #555; line-height: 1.5;">
-        Stress tested: 988/s × 60s sustained (0% errors), 4,007/s burst × 40s (0% errors). Operational since July 8, 2026.
+        Redis-cached: 9,800 req/s peak (29x improvement). CDN-ready for 50K+ req/s. Operational since July 8, 2026.
       </p>
-      <p style="font-size: 10.5px; color: #888; margin-top: 3px;">壓力測試通過：持續 988/s × 60秒（零錯誤）。自 2026 年 7 月 8 日起運行。</p>
+      <p style="font-size: 10.5px; color: #888; margin-top: 3px;">Redis 快取：峰值 9,800 req/s（29 倍提升）。CDN 就緒，可支援 50K+ req/s。自 2026 年 7 月 8 日起運行。</p>
     </div>
     <div>
       <h3 style="margin-bottom: 8px;">Live Endpoints / 線上端點</h3>
@@ -421,7 +426,7 @@
       <span class="key">$</span> curl https://api.openrng.io/api/v1/entropy &nbsp;<span class="key"># Try it now · 立刻試試 · No setup required</span>
     </div>
   </div>
-  <div class="slide-num">05 / 12</div>
+  <div class="slide-num">05 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 06: HOW IT WORKS — VEO + ARCHITECTURE ==================== -->
@@ -498,7 +503,7 @@
       </div>
     </div>
   </div>
-  <div class="slide-num">06 / 12</div>
+  <div class="slide-num">06 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 07: PRODUCT TIERS ==================== -->
@@ -567,7 +572,7 @@
       <span class="key">$</span> curl https://api.openrng.io/api/v1/entropy &nbsp;<span class="key"># No key needed · 無需 key</span>
     </div>
   </div>
-  <div class="slide-num">07 / 12</div>
+  <div class="slide-num">07 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 08: TOKEN BURN SCENARIOS ==================== -->
@@ -635,7 +640,7 @@
       <div class="card-accent" style="padding: 14px;">
         <h3 style="font-size: 12px; margin-bottom: 6px;">🔑 Key Insight</h3>
         <p style="font-size: 13px; color: #333; line-height: 1.6;">
-          <strong>AI agents with wallets are a key customer segment</strong> — just-in-time USDC → ORNG swap, zero price exposure.
+          <strong>AI agents with wallets are a key customer segment</strong> — just-in-time USDC → ORNG swap, zero price exposure. Burns apply to paid tiers; free tier is subsidized to drive adoption.
         </p>
         <p style="font-size: 11px; color: #888; margin-top: 4px;">
           擁有錢包的 AI 代理才是主要客戶 — 即時兌換，零價格風險。
@@ -643,7 +648,7 @@
       </div>
     </div>
   </div>
-  <div class="slide-num">08 / 12</div>
+  <div class="slide-num">08 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 09: PATENT PORTFOLIO ==================== -->
@@ -651,57 +656,49 @@
   <h2>Patent Portfolio <span class="accent">/</span> 專利組合</h2>
   <div class="zh-title">PCT 國際搜索報告結果極為有利 — 所有引用文獻均為 A 類</div>
 
-  <div class="card-green mb-12" style="padding: 12px 16px;">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <strong style="font-size: 13px; color: #065f46;">PCT/CN2026/086184 — ISR: HIGHLY FAVORABLE</strong>
-        <span style="font-size: 11.5px; color: #555; display: block; margin-top: 2px;">All 6 cited references = Category A (background only) · No anticipation · No obviousness</span>
-      </div>
-      <span class="badge badge-green" style="font-size: 10px; padding: 4px 12px;">STRONG POSITION</span>
-    </div>
-  </div>
+  
 
   <div class="cols-5" style="margin-bottom: 14px;">
     <div class="patent-item" style="border-top: 3px solid #059669;">
       <div style="font-size: 9px; color: #059669; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Patent #1</div>
       <h3>Game RNG + Blockchain</h3>
       <p>Merkle-based randomness with blockchain anchoring</p>
-      <p style="color:#888;">遊戲隨機數 + 區塊鏈</p>
-      <div style="margin-top: 6px;"><span class="badge badge-green">PCT FILED</span></div>
+      <p style="color:#059669; font-size:9.5px; margin-top:3px;">ISR: All 6 refs = Cat A · No anticipation</p>
+      <div style="margin-top: 6px;"><span class="badge badge-green">PCT + ISR ✓</span></div>
     </div>
     <div class="patent-item" style="border-top: 3px solid #059669;">
       <div style="font-size: 9px; color: #059669; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Patent #2</div>
       <h3>VDF Pipeline</h3>
       <p>Dual temporal integrity — time-lock + post-commit</p>
       <p style="color:#888;">雙重時序完整性</p>
-      <div style="margin-top: 6px;"><span class="badge badge-green">FILED</span></div>
+      <div style="margin-top: 6px;"><span class="badge badge-purple">US PROVISIONAL</span></div>
     </div>
     <div class="patent-item" style="border-top: 3px solid #6c5ce7;">
       <div style="font-size: 9px; color: #6c5ce7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Patent #3</div>
       <h3>VEO + ECS</h3>
       <p>Entropy object format + confidence scoring</p>
       <p style="color:#888;">熵物件 + 信心評分</p>
-      <div style="margin-top: 6px;"><span class="badge badge-green">FILED</span></div>
+      <div style="margin-top: 6px;"><span class="badge badge-purple">US PROVISIONAL</span></div>
     </div>
     <div class="patent-item" style="border-top: 3px solid #6c5ce7;">
       <div style="font-size: 9px; color: #6c5ce7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Patent #4</div>
       <h3>Trust Coordination</h3>
       <p>Multi-agent consensus + cross-boundary handoff</p>
       <p style="color:#888;">多代理共識協議</p>
-      <div style="margin-top: 6px;"><span class="badge badge-green">FILED</span></div>
+      <div style="margin-top: 6px;"><span class="badge badge-purple">US PROVISIONAL</span></div>
     </div>
     <div class="patent-item" style="border-top: 3px solid #d97706; background: #fffbeb;">
       <div style="font-size: 9px; color: #d97706; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Patent #5 ★</div>
       <h3>Trust Runtime</h3>
       <p>"Trust Health" — new category like Battery Health</p>
       <p style="color:#888;">信任健康度 — 全新品類</p>
-      <div style="margin-top: 6px;"><span class="badge badge-orange">STRONGEST</span></div>
+      <div style="margin-top: 6px;"><span class="badge badge-purple">US PROVISIONAL</span></div>
     </div>
   </div>
 
   <div class="cols-2">
     <div class="card">
-      <h3 style="font-size: 12px; margin-bottom: 6px;">Big Tech Interest Mapping</h3>
+      <h3 style="font-size: 12px; margin-bottom: 6px;">Potential Licensees</h3>
       <table>
         <tbody>
           <tr><td style="color:#333; font-weight:500; width:140px;">OpenAI</td><td>Patents #4, #5 — agent delegation</td></tr>
@@ -721,7 +718,7 @@
       </p>
     </div>
   </div>
-  <div class="slide-num">09 / 12</div>
+  <div class="slide-num">09 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 10: BUSINESS MODEL + REVENUE ==================== -->
@@ -754,7 +751,7 @@
     <div class="card-sm" style="border-top: 3px solid #d97706;">
       <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #d97706; margin-bottom: 4px;">Stream 3 · Token</div>
       <h3 style="font-size: 12px; margin-bottom: 3px;">$ORNG Burn</h3>
-      <p style="font-size: 10.5px;">Burn-per-request creates deflationary demand. Token value ∝ network usage.</p>
+      <p style="font-size: 10.5px;">Burn-per-request creates deflationary demand. Burn rate scales with API request volume.</p>
       <p style="font-size: 10px; color:#888; margin-top: 3px;">使用量驅動代幣通縮</p>
     </div>
     <div class="card-sm" style="border-top: 3px solid #dc2626;">
@@ -782,9 +779,9 @@
       </tr>
       <tr>
         <td style="color:#555;">Gaming clients / 博弈客戶</td>
-        <td style="text-align:center;">5 casinos × $2M GGR</td>
-        <td style="text-align:center;">15 casinos × $3M GGR</td>
-        <td style="text-align:center;">30 casinos × $5M GGR</td>
+        <td style="text-align:center;">5 casinos × $2M GGR/mo</td>
+        <td style="text-align:center;">15 casinos × $3M GGR/mo</td>
+        <td style="text-align:center;">30 casinos × $5M GGR/mo</td>
       </tr>
       <tr>
         <td style="color:#555;">GGR take rate</td>
@@ -835,7 +832,7 @@
         <td style="color:#555;">Patent licensing</td>
         <td style="text-align:center;">1 × $100K</td>
         <td style="text-align:center;">3 × $200K</td>
-        <td style="text-align:center;">5 × $500K</td>
+        <td style="text-align:center;">5 × $250K</td>
       </tr>
       <tr style="border-top: 2px solid #e9ecef;">
         <td style="color:#333; font-weight:700;">Year 2 Total / 第二年合計</td>
@@ -862,74 +859,7 @@
       <div style="font-size: 10px; color: #888; margin-top: 2px;">隨機性 → 公平性 → 驗證 → 信任 → 代理</div>
     </div>
   </div>
-  <div class="slide-num">10 / 12</div>
-</div>
-
-<!-- ==================== SLIDE 11: TEAM ==================== -->
-<div class="slide">
-  <h2>Team <span class="accent">/</span> 團隊</h2>
-  <div class="zh-title">Crypto-native 創辦人 + AI 驅動的治理系統 + 國際專利團隊。</div>
-
-  <div class="cols-2 grow" style="gap: 24px;">
-    <div>
-      <div class="team-card" style="margin-bottom: 14px; border-left: 3px solid #6c5ce7;">
-        <div class="team-name">Nan-Hsuan Hsu</div>
-        <div class="team-role">Founder</div>
-        <div class="done" style="margin-bottom: 5px;"><strong>Web3-native builder</strong> — blockchain entrepreneur since early Ethereum</div>
-        <div class="done" style="margin-bottom: 5px;"><strong>NFT project founder</strong> — launched top-volume collection in Asia</div>
-        <div class="done" style="margin-bottom: 5px;"><strong>DTC brand co-founder</strong> — operating flagship retail in Taipei</div>
-        <div class="done" style="margin-bottom: 5px;"><strong>Patent</strong> — PCT/CN2026/086184 applicant</div>
-        <div class="done"><strong>Background</strong> — Crypto-native builder, blockchain entrepreneur since early ETH</div>
-      </div>
-
-      <div class="card" style="border-left: 3px solid #059669;">
-        <h3 style="font-size: 13px; margin-bottom: 6px;">Advisory / IP — 聖島國際專利</h3>
-        <p style="font-size: 12px; color: #333; line-height: 1.6;">
-          Saint Island International Patent — Patent counsel for 5-patent portfolio.
-        </p>
-        <p style="font-size: 11px; color: #888; margin-top: 4px;">
-          PCT ISR: All Category A references. Highly favorable position across all five patents.
-        </p>
-        <p style="font-size: 10.5px; color: #888; margin-top: 3px;">聖島國際專利事務所 — 五項專利組合法律顧問。</p>
-      </div>
-    </div>
-    <div>
-      <div class="team-card" style="margin-bottom: 14px; border-left: 3px solid #d97706; background: #fffbeb; border-color: #fde68a;">
-        <div class="team-name">AIDAO <span style="font-size: 13px; color: #888;">AI 治理系統</span></div>
-        <div class="team-role" style="color: #d97706;">AI-Powered Governance</div>
-        <div class="done" style="margin-bottom: 5px;"><strong>Multi-Agent</strong> — ChatGPT × Gemini × OMI decision system</div>
-        <div class="done" style="margin-bottom: 5px;"><strong>Voting</strong> — Confidence-based voting with structured debate</div>
-        <div class="done" style="margin-bottom: 5px;"><strong>Anchoring</strong> — Blockchain-anchored decisions for audit trail</div>
-        <div class="done"><strong>Usage</strong> — Internally validates OpenRNG strategy &amp; architecture</div>
-        <p style="font-size: 11px; color: #888; margin-top: 8px; line-height: 1.5;">
-          AIDAO 是 OpenRNG 的 AI 治理系統 — 多代理辯論 + 區塊鏈錨定決策。用於驗證策略方向與架構決定。
-        </p>
-      </div>
-
-      <div class="card-accent" style="padding: 16px;">
-        <h3 style="font-size: 13px; margin-bottom: 10px;">Why This Team / 為什麼是這個團隊</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <div class="card-sm" style="background: #fff;">
-            <strong style="font-size: 11.5px; color: #6c5ce7;">Web3 Native</strong>
-            <p style="font-size: 10.5px; margin-top: 2px;">Built and sold NFT projects at scale</p>
-          </div>
-          <div class="card-sm" style="background: #fff;">
-            <strong style="font-size: 11.5px; color: #6c5ce7;">Builder, Not Theorist</strong>
-            <p style="font-size: 10.5px; margin-top: 2px;">Product is live, running, tested</p>
-          </div>
-          <div class="card-sm" style="background: #fff;">
-            <strong style="font-size: 11.5px; color: #6c5ce7;">IP-First</strong>
-            <p style="font-size: 10.5px; margin-top: 2px;">5 patents filed before fundraising</p>
-          </div>
-          <div class="card-sm" style="background: #fff;">
-            <strong style="font-size: 11.5px; color: #6c5ce7;">AI Governance</strong>
-            <p style="font-size: 10.5px; margin-top: 2px;">AIDAO validates every major decision</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">11 / 12</div>
+  <div class="slide-num">10 / 11</div>
 </div>
 
 <!-- ==================== SLIDE 12: GET INVOLVED ==================== -->
@@ -959,8 +889,8 @@
         <div class="done" style="margin-bottom: 6px;"><strong>5-patent portfolio</strong> — PCT ISR favorable / 五項專利</div>
         <div class="done" style="margin-bottom: 6px;"><strong>Revenue model</strong> — B2B GGR% → API → $ORNG → licensing</div>
         <div class="done" style="margin-bottom: 6px;"><strong>Live infrastructure</strong> — proven, running, tested</div>
-        <div class="done" style="margin-bottom: 6px;"><strong>Blue ocean</strong> — no competition in off-chain verifiable RNG</div>
-        <div class="done" style="margin-bottom: 6px;"><strong>500K+ VDF proofs</strong> — 3,442 games resolved</div>
+        <div class="done" style="margin-bottom: 6px;"><strong>First mover</strong> — verifiable entropy objects as a product category</div>
+        <div class="done" style="margin-bottom: 6px;"><strong>250K+ VDF proofs</strong> — 3,442 games resolved</div>
 
         <div class="card" style="margin-top: 12px; text-align: center; background: #fff;">
           <div style="font-size: 11px; color: #888;">Trust Thesis / 信任論點</div>
@@ -970,7 +900,7 @@
       </div>
 
       <div class="card" style="text-align: center; padding: 16px;">
-        <div style="font-size: 11px; color: #888;">Founder</div>
+        <div style="font-size: 11px; color: #888;">Nan-Hsuan Hsu · Founder</div>
         <div style="font-size: 14px; font-weight: 600; color: #333; margin-top: 2px;">Nan-Hsuan Hsu · Founder</div>
         <div class="mono" style="font-size: 15px; color: #6c5ce7; margin-top: 4px;">hello@openrng.io</div>
       </div>
@@ -985,7 +915,7 @@
     <p style="font-size: 13px; color: #888;">「不要信任隨機性。驗證它。」</p>
   </div>
 
-  <div class="slide-num">12 / 12</div>
+  <div class="slide-num">11 / 11</div>
 </div>
 
 </body>
