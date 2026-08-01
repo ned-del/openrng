@@ -1,0 +1,20 @@
+{
+  "name": "verified-random-x402",
+  "version": "0.1.0",
+  "description": "x402 agent-payable verifiable randomness — pay USDC, get VDF-proven entropy",
+  "scripts": {
+    "start": "tsx server.ts",
+    "dev": "tsx watch server.ts"
+  },
+  "dependencies": {
+    "@x402/express": "^2.0.0",
+    "@x402/core": "^2.0.0",
+    "@x402/evm": "^2.0.0",
+    "express": "^5.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "@types/express": "^5.0.0",
+    "typescript": "^5.0.0"
+  }
+}
