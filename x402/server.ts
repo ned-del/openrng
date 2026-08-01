@@ -91,7 +91,7 @@ setInterval(() => {
 // ─── Canceled Payment Log (async, durable) ───
 // NOTE: These are CANCELED payments — buyer was NOT charged.
 // The v2.20 middleware cancels payment when handler returns ≥400.
-function logCanceledPayment(entry: { payer?: string; error: string }) {
+function logCanceledPayment(entry: { payer?: string; reason?: string; error?: string; responseStatus?: number }) {
   const record = JSON.stringify({ timestamp: new Date().toISOString(), ...entry });
   appendFile(FAILED_LOG, record + "\n").catch(err =>
     console.error("[verified-random] Log write failed:", err.message)
@@ -118,9 +118,11 @@ const resourceServer = new x402ResourceServer(facilitator)
   // Runs after payment is verified but BEFORE handler + settlement
   // Returning { abort: true } denies without charging the buyer
   .onAfterVerify(async (ctx: any) => {
+    // Primary: authorization.from (always present in ExactEIP3009Payload)
+    // Fallback: result.payer (optional facilitator field)
     const payer: string | undefined =
-      ctx.result?.payer ??
-      (ctx.paymentPayload as any)?.payload?.authorization?.from;
+      (ctx.paymentPayload as any)?.payload?.authorization?.from ??
+      ctx.result?.payer;
     if (payer && !checkWalletRate(payer)) {
       return {
         abort: true,
@@ -128,6 +130,14 @@ const resourceServer = new x402ResourceServer(facilitator)
         message: `Per-wallet limit: ${RATE_LIMIT_PER_WALLET} req/s. Retry in 1s.`,
       };
     }
+  })
+  // Auditor-recommended: single hook for all canceled-payment logging
+  .onVerifiedPaymentCanceled(async (ctx: any) => {
+    logCanceledPayment({
+      payer: (ctx.paymentPayload as any)?.payload?.authorization?.from,
+      reason: ctx.reason, // "after_verify_aborted" | "handler_failed" | ...
+      responseStatus: ctx.responseStatus,
+    });
   });
 
 app.use(
@@ -158,7 +168,7 @@ app.get("/v1/rng/latest", async (req, res) => {
     });
 
     if (!resp.ok) {
-      logCanceledPayment({ error: `upstream_${resp.status}` });
+      // Handler failure → middleware cancels payment (v2.20). onVerifiedPaymentCanceled logs it.
       return res.status(502).json({ error: "upstream_unavailable" });
     }
 
@@ -166,11 +176,9 @@ app.get("/v1/rng/latest", async (req, res) => {
 
     // N7: validate before serving paid 200
     if (!data?.entropy || typeof data.entropy !== "string" || !/^(0x)?[0-9a-f]{64}$/i.test(data.entropy)) {
-      logCanceledPayment({ error: "upstream_invalid_entropy" });
       return res.status(502).json({ error: "upstream_unavailable" });
     }
     if (!data?.epoch) {
-      logCanceledPayment({ error: "upstream_missing_epoch" });
       return res.status(502).json({ error: "upstream_unavailable" });
     }
 
@@ -193,7 +201,6 @@ app.get("/v1/rng/latest", async (req, res) => {
       },
     });
   } catch {
-    logCanceledPayment({ error: "upstream_timeout" });
     res.status(502).json({ error: "upstream_unavailable" });
   }
 });
@@ -206,7 +213,7 @@ app.get("/v1/rng/pricing", (_req, res) => {
     description:
       "Cryptographically verifiable random number generation. VDF-proven entropy (Wesolowski 2048-bit), pool-served sub-2ms latency.",
     protocol: "x402",
-    network: NETWORK.replace("eip155:", "base-"),
+    network: NETWORK === "eip155:8453" ? "base" : NETWORK === "eip155:84532" ? "base-sepolia" : NETWORK,
     asset: "USDC",
     endpoints: [
       {
@@ -264,14 +271,12 @@ app.get("/internal/canceled-payments", (req, res) => {
 
 // ─── Boot Self-Test (N1b: cause-separated, 503 = warn not exit) ───
 async function bootSelfTest(retries = 3) {
-  let sawPaywall = false;
   for (let attempt = 1; attempt <= retries; attempt++) {
     await new Promise(r => setTimeout(r, 2000 * attempt));
     try {
       const resp = await fetch(`http://localhost:${PORT}/v1/rng/latest`);
       if (resp.status === 402) {
         console.log("[BOOT TEST] ✅ /v1/rng/latest → 402 (payment required)");
-        sawPaywall = true;
         return;
       }
       if (resp.status === 200) {
@@ -288,12 +293,20 @@ async function bootSelfTest(retries = 3) {
       console.warn(`[BOOT TEST] ⚠️  Network error (attempt ${attempt}/${retries}): ${(err as Error).message}`);
     }
   }
-  if (!sawPaywall) {
+  // All retries exhausted without seeing 402 — warn but don't exit
+  {
     console.warn("[BOOT TEST] ⚠️  Could not confirm 402 after retries — upstream may be down. Server continues.");
     console.warn("[BOOT TEST]     Will re-test when upstream becomes healthy.");
     // Schedule re-test when upstream comes up
+    let retestAttempts = 0;
     const retest = setInterval(async () => {
       if (!upstreamHealthy) return;
+      retestAttempts++;
+      if (retestAttempts > 30) { // cap at 5 minutes
+        console.warn("[BOOT TEST] Deferred test capped. Manual verification recommended.");
+        clearInterval(retest);
+        return;
+      }
       try {
         const resp = await fetch(`http://localhost:${PORT}/v1/rng/latest`);
         if (resp.status === 402) {
