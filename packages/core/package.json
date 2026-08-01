@@ -1,6 +1,6 @@
 {
   "name": "@openrng/core",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "VEO-2 types, schema, and shared primitives for OpenRNG",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,11 +9,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    },
-    "./schema": {
-      "types": "./dist/schema.d.ts",
-      "import": "./dist/schema.mjs",
-      "require": "./dist/schema.js"
     }
   },
   "files": [
@@ -22,8 +17,9 @@
     "veo-2.schema.json"
   ],
   "scripts": {
-    "build": "tsc && tsc -p tsconfig.esm.json",
-    "test": "jest --runInBand"
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "test": "jest --runInBand",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "openrng",
@@ -46,6 +42,7 @@
     "@types/node": "^26.1.2",
     "jest": "^30.4.2",
     "ts-jest": "^29.4.12",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   }
 }
