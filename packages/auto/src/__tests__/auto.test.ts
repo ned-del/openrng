@@ -167,6 +167,102 @@ describe('@openrng/auto', () => {
     expect(result.choices[0].message.content).toBe('The capital of France is Paris.');
   });
 
+  // Bug 1 fix: private fields on non-instrumented methods
+  test('non-instrumented methods work with private fields', async () => {
+    // Simulate SDK with private-field-like behavior
+    class MockSDK {
+      private secret: string = 'hidden';
+      chat = { completions: {
+        create: async (p: any) => ({ choices: [{ message: { content: 'ok' } }], model: p.model }),
+      }};
+      getSecret() { return this.secret; }
+      files = { list: async () => ({ data: ['file1'] }) };
+    }
+
+    const store = new MemoryStore();
+    const client = auto(new MockSDK() as any, { store });
+
+    // Non-instrumented method should work (no private field crash)
+    const secret = client.getSecret();
+    expect(secret).toBe('hidden');
+
+    // Instrumented method still works
+    await client.chat.completions.create({ model: 'gpt-4o', messages: [] });
+    expect(store.list()).toHaveLength(1);
+  });
+
+  // Bug 2 fix: streaming detection
+  test('streaming response marked honestly, not captured as junk', async () => {
+    const streamClient = {
+      chat: { completions: {
+        create: async () => {
+          // Return async iterable (simulating SSE stream)
+          return {
+            [Symbol.asyncIterator]: async function* () {
+              yield { choices: [{ delta: { content: 'hello' } }] };
+              yield { choices: [{ delta: { content: ' world' } }] };
+            },
+          };
+        },
+      }},
+    };
+
+    const store = new MemoryStore();
+    const client = auto(streamClient, { store });
+    const stream = await (client.chat.completions.create as any)({ model: 'gpt-4o', messages: [], stream: true });
+
+    // Stream should still be consumable
+    const chunks: any[] = [];
+    for await (const chunk of stream) chunks.push(chunk);
+    expect(chunks).toHaveLength(2);
+
+    // Wait for fire-and-forget VEO
+    await new Promise(r => setTimeout(r, 50));
+    const veos = store.list();
+    expect(veos).toHaveLength(1);
+    // Confidence lowered for stream
+    expect(veos[0].confidence.score).toBe(300);
+    // Output honestly marked
+    expect(veos[0].metadata?.stream).toBe(true);
+  });
+
+  // Bug 3 fix: fire-and-forget by default
+  test('onVEO does not block the caller by default', async () => {
+    let callbackDone = false;
+    const client = auto(createMockOpenAI(), {
+      onVEO: async () => {
+        await new Promise(r => setTimeout(r, 200));
+        callbackDone = true;
+      },
+    });
+
+    const start = Date.now();
+    await client.chat.completions.create({ model: 'gpt-4o', messages: [{ role: 'user', content: 'test' }] });
+    const elapsed = Date.now() - start;
+
+    // Should NOT have waited for the 200ms callback
+    expect(elapsed).toBeLessThan(100);
+    expect(callbackDone).toBe(false);
+
+    // Callback completes later
+    await new Promise(r => setTimeout(r, 300));
+    expect(callbackDone).toBe(true);
+  });
+
+  test('awaitCapture: true blocks until VEO is saved', async () => {
+    let saved = false;
+    const client = auto(createMockOpenAI(), {
+      awaitCapture: true,
+      onVEO: async () => {
+        await new Promise(r => setTimeout(r, 50));
+        saved = true;
+      },
+    });
+
+    await client.chat.completions.create({ model: 'gpt-4o', messages: [{ role: 'user', content: 'test' }] });
+    expect(saved).toBe(true); // waited for callback
+  });
+
   test('multiple calls produce multiple VEOs', async () => {
     const store = new MemoryStore();
     const client = auto(createMockOpenAI(), { store });

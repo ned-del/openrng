@@ -15,6 +15,7 @@ export interface VEOStore {
 export class MemoryStore implements VEOStore {
   private veos: Map<string, VEO> = new Map();
   private maxSize: number;
+  private _evictions: number = 0;
 
   constructor(maxSize: number = 10000) {
     this.maxSize = maxSize;
@@ -22,9 +23,12 @@ export class MemoryStore implements VEOStore {
 
   save(veo: VEO): void {
     if (this.veos.size >= this.maxSize) {
-      // Evict oldest
+      // FIFO eviction — oldest entry removed
       const firstKey = this.veos.keys().next().value;
-      if (firstKey) this.veos.delete(firstKey);
+      if (firstKey) {
+        this.veos.delete(firstKey);
+        this._evictions++;
+      }
     }
     this.veos.set(veo.object_id, veo);
   }
@@ -35,5 +39,21 @@ export class MemoryStore implements VEOStore {
 
   get(objectId: string): VEO | undefined {
     return this.veos.get(objectId);
+  }
+
+  /** Number of VEOs evicted due to capacity limits */
+  get evictions(): number {
+    return this._evictions;
+  }
+
+  /** Current store size */
+  get size(): number {
+    return this.veos.size;
+  }
+
+  /** Clear all stored VEOs */
+  clear(): void {
+    this.veos.clear();
+    this._evictions = 0;
   }
 }

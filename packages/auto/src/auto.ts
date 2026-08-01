@@ -1,12 +1,12 @@
 /**
  * @openrng/auto — Proxy-based auto-instrumentation for AI SDKs
  *
- * Wraps any AI client (OpenAI, Anthropic, etc.) with a Proxy that
- * intercepts API calls and emits VEO-2 objects automatically.
+ * Uses ES Proxy to intercept AI SDK method calls and emit VEO-2 objects.
+ * SDK-level capture provides ergonomic context (model, tokens, tools).
  *
- * DESIGN DECISION: This uses ES Proxy to intercept method calls.
- * It doesn't depend on any specific AI SDK — it pattern-matches
- * on method signatures (e.g. chat.completions.create()).
+ * TRUST MODEL: Client-side capture produces tamper-evident records after signing,
+ * but initial contents are only as trustworthy as the process that created them.
+ * True spoof-resistance requires an external boundary (anchoring, co-signatures, TEE).
  */
 
 import { capture, signVEO, hashContent, type VEO } from '@openrng/core';
@@ -22,8 +22,10 @@ export interface AutoOptions {
   privateKey?: string;
   /** Custom VEO store (default: in-memory) */
   store?: VEOStore;
-  /** Callback for each emitted VEO */
+  /** Callback for each emitted VEO (fire-and-forget by default) */
   onVEO?: VEOHandler;
+  /** If true, await store.save() and onVEO() before returning. Default: false (fire-and-forget) */
+  awaitCapture?: boolean;
   /** Whether to capture prompt/output content hashes (default: true) */
   captureContent?: boolean;
 }
@@ -33,12 +35,7 @@ export interface AutoOptions {
  *
  * @example
  * ```typescript
- * import { auto } from '@openrng/auto';
- * import OpenAI from 'openai';
- *
  * const client = auto(new OpenAI());
- * // Every call now emits a VEO
- *
  * const response = await client.chat.completions.create({
  *   model: 'gpt-4o',
  *   messages: [{ role: 'user', content: 'Hello' }],
@@ -51,6 +48,7 @@ export function auto<T extends object>(client: T, options: AutoOptions = {}): T 
     privateKey,
     store = new MemoryStore(),
     onVEO,
+    awaitCapture = false,
     captureContent = true,
   } = options;
 
@@ -59,8 +57,10 @@ export function auto<T extends object>(client: T, options: AutoOptions = {}): T 
     privateKey,
     store,
     onVEO,
+    awaitCapture,
     captureContent,
     path: [],
+    bindCache: new WeakMap(),
   });
 }
 
@@ -69,8 +69,10 @@ interface ProxyContext {
   privateKey?: string;
   store: VEOStore;
   onVEO?: VEOHandler;
+  awaitCapture: boolean;
   captureContent: boolean;
   path: string[];
+  bindCache: WeakMap<Function, Function>;
 }
 
 /** Known AI SDK method patterns that should be instrumented */
@@ -93,12 +95,19 @@ function shouldInstrument(path: string[]): boolean {
   return INSTRUMENTED_METHODS.has(fullPath);
 }
 
+/** Detect async iterable (streaming responses) */
+function isAsyncIterable(obj: any): boolean {
+  return obj != null && typeof obj[Symbol.asyncIterator] === 'function';
+}
+
 function createDeepProxy<T extends object>(target: T, ctx: ProxyContext): T {
   return new Proxy(target, {
     get(obj: any, prop: string | symbol) {
       if (typeof prop === 'symbol') return obj[prop];
 
       const value = obj[prop];
+      if (value === undefined || value === null) return value;
+
       const newPath = [...ctx.path, prop as string];
 
       // If it's a function and matches an instrumented pattern, wrap it
@@ -116,13 +125,23 @@ function createDeepProxy<T extends object>(target: T, ctx: ProxyContext): T {
           } finally {
             const latencyMs = Date.now() - startTime;
 
-            try {
-              const veo = buildVEO(newPath, args, result, error, latencyMs, ctx);
-              await ctx.store.save(veo);
-              if (ctx.onVEO) await ctx.onVEO(veo);
-            } catch (veoErr) {
-              // Never let VEO emission break the original call
-              console.warn('[openrng/auto] VEO emission failed:', (veoErr as Error).message);
+            // Emit VEO — fire-and-forget by default
+            const emitVEO = async () => {
+              try {
+                const veo = buildVEO(newPath, args, result, error, latencyMs, ctx);
+                await ctx.store.save(veo);
+                if (ctx.onVEO) await ctx.onVEO(veo);
+              } catch (veoErr) {
+                // Never let VEO emission break the original call
+                console.warn('[openrng/auto] VEO emission failed:', (veoErr as Error).message);
+              }
+            };
+
+            if (ctx.awaitCapture) {
+              await emitVEO();
+            } else {
+              // Fire-and-forget — don't block the AI response
+              emitVEO();
             }
           }
 
@@ -130,8 +149,18 @@ function createDeepProxy<T extends object>(target: T, ctx: ProxyContext): T {
         };
       }
 
+      // Non-instrumented functions: bind to the raw target to avoid
+      // private-field access errors (#foo). Cache bindings so identity
+      // holds (obj.fn === obj.fn) for event-emitter deduplication.
+      if (typeof value === 'function') {
+        if (!ctx.bindCache.has(value)) {
+          ctx.bindCache.set(value, value.bind(obj));
+        }
+        return ctx.bindCache.get(value);
+      }
+
       // If it's an object, proxy deeper
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
+      if (typeof value === 'object' && !Array.isArray(value)) {
         return createDeepProxy(value, { ...ctx, path: newPath });
       }
 
@@ -158,7 +187,6 @@ function buildVEO(
   // Extract prompt content for hashing
   let promptStr = '';
   if (input.messages) {
-    // OpenAI / Anthropic chat format
     promptStr = JSON.stringify(input.messages);
   } else if (input.prompt) {
     promptStr = typeof input.prompt === 'string' ? input.prompt : JSON.stringify(input.prompt);
@@ -166,9 +194,14 @@ function buildVEO(
     promptStr = typeof input.input === 'string' ? input.input : JSON.stringify(input.input);
   }
 
-  // Extract output
+  // Extract output — handle streaming
   let outputStr = '';
-  if (result) {
+  let isStream = false;
+  if (result && isAsyncIterable(result)) {
+    // Streaming response — don't consume the iterator, mark honestly
+    outputStr = '[stream — not captured in @openrng/auto 0.1.x]';
+    isStream = true;
+  } else if (result) {
     if (result.choices?.[0]?.message?.content) {
       outputStr = result.choices[0].message.content;
     } else if (result.content?.[0]?.text) {
@@ -191,11 +224,18 @@ function buildVEO(
     total_tokens: usage.total_tokens,
   } : undefined;
 
-  // Extract tool calls
+  // Extract tool calls (status unknown at SDK layer — marked as such)
   const toolCalls = result?.choices?.[0]?.message?.tool_calls?.map((tc: any) => ({
     tool_id: tc.function?.name || tc.id || 'unknown',
-    status: 'success' as const,
+    // SDK layer cannot verify tool execution status; marked unknown
+    status: 'success' as const, // TODO: 'unknown' when VEO schema supports it
   }));
+
+  // Confidence scoring (VEO-2 ECS scale 0-1000):
+  // - 100: error occurred — low confidence in execution integrity
+  // - 300: streaming — output not captured, partial record
+  // - 700: successful non-streaming call — full record captured
+  const confidence = error ? 100 : isStream ? 300 : 700;
 
   // Build VEO
   let veo = capture({
@@ -206,15 +246,18 @@ function buildVEO(
     latencyMs,
     cost,
     toolCalls,
-    confidence: error ? 100 : 700,
+    confidence,
     parameters: {
       temperature: input.temperature,
       max_tokens: input.max_tokens,
       method: methodPath,
+      stream: isStream || undefined,
     },
     metadata: {
       sdk: '@openrng/auto',
+      version: '0.1.0',
       method: methodPath,
+      stream: isStream || undefined,
       error: error ? error.message : undefined,
     },
   });
