@@ -1,0 +1,690 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openrng.org/schemas/veo-2.schema.json",
+  "title": "Verifiable Execution Object (VEO-2)",
+  "description": "JSON Schema for VEO-2 objects as defined in RFC-0002. Validates all object classes (VEO-2A through VEO-2D).",
+  "type": "object",
+  "required": [
+    "standard",
+    "version",
+    "object_id",
+    "object_class",
+    "issued_at",
+    "provider",
+    "execution",
+    "proof",
+    "confidence"
+  ],
+  "properties": {
+    "standard": {
+      "type": "string",
+      "const": "VEO-2",
+      "description": "Protocol standard identifier. MUST be 'VEO-2'."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^2\\.",
+      "description": "Protocol version (e.g., '2.0')."
+    },
+    "object_id": {
+      "type": "string",
+      "pattern": "^veo_[0-9a-f]{32}$",
+      "description": "Unique identifier: 'veo_' + 32 hex characters."
+    },
+    "object_class": {
+      "type": "string",
+      "enum": ["VEO-2A", "VEO-2B", "VEO-2C", "VEO-2D"],
+      "description": "Object class per RFC-0002 Section 3."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of object creation."
+    },
+    "expires_at": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ],
+      "description": "Optional expiration timestamp."
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Provider/platform identifier."
+    },
+    "execution": {
+      "$ref": "#/$defs/ExecutionObject"
+    },
+    "proof": {
+      "$ref": "#/$defs/ProofObject"
+    },
+    "confidence": {
+      "$ref": "#/$defs/ConfidenceObject"
+    },
+    "anchor": {
+      "oneOf": [
+        { "$ref": "#/$defs/AnchorObject" },
+        { "type": "null" }
+      ],
+      "description": "Blockchain anchor package (RFC-0002 Section 11)."
+    },
+    "lineage": {
+      "oneOf": [
+        { "$ref": "#/$defs/LineageObject" },
+        { "type": "null" }
+      ],
+      "description": "Parent object references."
+    },
+    "parent_ids": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^veo_[0-9a-f]{32}$" }
+        },
+        { "type": "null" }
+      ],
+      "description": "VEO object_ids of parent executions."
+    },
+    "child_ids": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^veo_[0-9a-f]{32}$" }
+        },
+        { "type": "null" }
+      ],
+      "description": "VEO object_ids of child executions."
+    },
+    "human_approvals": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "$ref": "#/$defs/HumanApproval" }
+        },
+        { "type": "null" }
+      ],
+      "description": "Human approval records (RFC-0002 Section 10)."
+    },
+    "policy": {
+      "oneOf": [
+        { "$ref": "#/$defs/PolicyObject" },
+        { "type": "null" }
+      ],
+      "description": "Governance policy (RFC-0002 Section 10)."
+    },
+    "lifecycle": {
+      "oneOf": [
+        { "$ref": "#/$defs/LifecycleObject" },
+        { "type": "null" }
+      ],
+      "description": "Current lifecycle state (RFC-0002 Section 8)."
+    },
+    "tags": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        { "type": "null" }
+      ],
+      "description": "Freeform tags for categorization."
+    },
+    "metadata": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "null" }
+      ],
+      "description": "Arbitrary provider-specific metadata."
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": { "object_class": { "const": "VEO-2B" } }
+      },
+      "then": {
+        "required": ["child_ids"],
+        "properties": {
+          "child_ids": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "object_class": { "const": "VEO-2C" } }
+      },
+      "then": {
+        "required": ["anchor"],
+        "properties": {
+          "anchor": {
+            "$ref": "#/$defs/AnchorObject"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "object_class": { "const": "VEO-2D" } }
+      },
+      "then": {
+        "anyOf": [
+          {
+            "required": ["human_approvals"],
+            "properties": {
+              "human_approvals": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          },
+          {
+            "required": ["policy"],
+            "properties": {
+              "policy": {
+                "type": "object",
+                "required": ["enforced"],
+                "properties": {
+                  "enforced": { "const": true }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "ExecutionObject": {
+      "type": "object",
+      "description": "AI execution payload (RFC-0002 Section 5).",
+      "required": [
+        "model_id",
+        "prompt_hash",
+        "output_hash",
+        "latency_ms",
+        "started_at",
+        "completed_at"
+      ],
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Model identifier (e.g., 'gpt-4o-2024-08-06')."
+        },
+        "prompt_hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$",
+          "description": "SHA-256 hash of the input prompt/messages."
+        },
+        "output_hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$",
+          "description": "SHA-256 hash of the execution output."
+        },
+        "latency_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Execution latency in milliseconds."
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 execution start timestamp."
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 execution completion timestamp."
+        },
+        "prompt": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Raw prompt text (may be omitted for privacy)."
+        },
+        "output": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ],
+          "description": "Raw output text (may be omitted for privacy)."
+        },
+        "tool_calls": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/ToolCall" }
+            },
+            { "type": "null" }
+          ],
+          "description": "Tool/function calls during execution (RFC-0002 Section 6)."
+        },
+        "cost": {
+          "oneOf": [
+            { "$ref": "#/$defs/CostObject" },
+            { "type": "null" }
+          ],
+          "description": "Cost accounting (RFC-0002 Section 7)."
+        },
+        "tokens": {
+          "oneOf": [
+            { "$ref": "#/$defs/TokensObject" },
+            { "type": "null" }
+          ],
+          "description": "Token usage breakdown."
+        },
+        "parameters": {
+          "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ],
+          "description": "Model parameters (temperature, top_p, etc.)."
+        },
+        "error": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "code": { "type": "string" },
+                "message": { "type": "string" },
+                "details": { "type": "object" }
+              }
+            },
+            { "type": "null" }
+          ],
+          "description": "Error details if execution failed."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ToolCall": {
+      "type": "object",
+      "description": "A single tool/function call record (RFC-0002 Section 6).",
+      "required": ["tool_id", "tool_type", "input_hash", "output_hash", "status", "timestamp"],
+      "properties": {
+        "tool_id": {
+          "type": "string",
+          "description": "Tool/function name."
+        },
+        "tool_type": {
+          "type": "string",
+          "enum": ["function", "api", "browser", "code_execution", "file_io", "other"],
+          "description": "Tool category."
+        },
+        "input_hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$",
+          "description": "SHA-256 of the tool input."
+        },
+        "output_hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$",
+          "description": "SHA-256 of the tool output."
+        },
+        "input": {
+          "description": "Raw tool input (may be omitted)."
+        },
+        "output": {
+          "description": "Raw tool output (may be omitted)."
+        },
+        "latency_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Tool call latency."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["success", "error", "timeout"],
+          "description": "Tool call result status."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp."
+        }
+      },
+      "additionalProperties": false
+    },
+    "CostObject": {
+      "type": "object",
+      "description": "Cost accounting (RFC-0002 Section 7).",
+      "required": ["currency", "total"],
+      "properties": {
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code."
+        },
+        "total": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total cost."
+        },
+        "input_cost": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cost for input tokens."
+        },
+        "output_cost": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cost for output tokens."
+        },
+        "tool_cost": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cost for tool executions."
+        },
+        "anchor_cost": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cost for blockchain anchoring."
+        }
+      },
+      "additionalProperties": false
+    },
+    "TokensObject": {
+      "type": "object",
+      "description": "Token usage breakdown.",
+      "properties": {
+        "input": { "type": "integer", "minimum": 0 },
+        "output": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "ProofObject": {
+      "type": "object",
+      "description": "Provider proof/signature package.",
+      "required": ["proof_type", "proof_status"],
+      "properties": {
+        "proof_type": {
+          "type": "string",
+          "enum": ["provider_signature", "none"],
+          "description": "Type of proof."
+        },
+        "proof_status": {
+          "type": "string",
+          "enum": ["cryptographically_signed", "unsigned"],
+          "description": "Proof status."
+        },
+        "signature_algorithm": {
+          "type": "string",
+          "description": "Signing algorithm (e.g., 'secp256k1_eip191')."
+        },
+        "provider_public_key": {
+          "type": "string",
+          "description": "Provider's public key."
+        },
+        "provider_address": {
+          "type": "string",
+          "description": "Provider's Ethereum address."
+        },
+        "provider_signature": {
+          "type": "string",
+          "description": "EIP-191 signature."
+        },
+        "canonical_hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$",
+          "description": "SHA-256 hash of canonical payload."
+        },
+        "verification_endpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL for signature verification."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ConfidenceObject": {
+      "type": "object",
+      "description": "Execution Confidence Score — ECS v2 (RFC-0002 Section 9).",
+      "required": ["score", "grade", "version"],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "ECS score (0–1000)."
+        },
+        "grade": {
+          "type": "string",
+          "enum": ["A+", "A", "B", "C", "D", "F"],
+          "description": "Letter grade."
+        },
+        "version": {
+          "type": "string",
+          "const": "ECS-v2",
+          "description": "ECS version identifier."
+        },
+        "dimensions": {
+          "type": "object",
+          "properties": {
+            "provenance": { "type": "integer", "minimum": 0, "maximum": 250 },
+            "integrity": { "type": "integer", "minimum": 0, "maximum": 250 },
+            "reproducibility": { "type": "integer", "minimum": 0, "maximum": 150 },
+            "governance": { "type": "integer", "minimum": 0, "maximum": 150 },
+            "observability": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "timeliness": { "type": "integer", "minimum": 0, "maximum": 100 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "AnchorObject": {
+      "type": "object",
+      "description": "Blockchain anchor package (RFC-0002 Section 11).",
+      "required": [
+        "anchor_type",
+        "anchor_status",
+        "chain",
+        "contract",
+        "transaction_hash",
+        "block_number",
+        "batch_id",
+        "batch_size",
+        "merkle_root",
+        "anchor_timestamp"
+      ],
+      "properties": {
+        "anchor_type": {
+          "type": "string",
+          "const": "blockchain"
+        },
+        "anchor_status": {
+          "type": "string",
+          "enum": ["anchored", "pending", "failed"]
+        },
+        "chain": {
+          "type": "string",
+          "description": "Chain identifier (e.g., 'polygon-amoy')."
+        },
+        "contract": {
+          "type": "string",
+          "description": "Contract address."
+        },
+        "transaction_hash": {
+          "type": "string",
+          "description": "Anchor transaction hash."
+        },
+        "block_number": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Confirmation block number."
+        },
+        "batch_id": {
+          "type": "string",
+          "description": "On-chain batch identifier."
+        },
+        "batch_size": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of leaves in the Merkle tree."
+        },
+        "merkle_root": {
+          "type": "string",
+          "description": "Anchored Merkle root (bytes32)."
+        },
+        "anchor_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "On-chain anchor timestamp."
+        },
+        "merkle_proof": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Merkle proof path for batch-anchored objects."
+        }
+      },
+      "additionalProperties": false
+    },
+    "LineageObject": {
+      "type": "object",
+      "description": "Parent object references.",
+      "properties": {
+        "parent_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "derivation": {
+          "type": "string",
+          "description": "How this object was derived from parents."
+        }
+      },
+      "additionalProperties": false
+    },
+    "HumanApproval": {
+      "type": "object",
+      "description": "Human approval record (RFC-0002 Section 10).",
+      "required": ["approver_id", "decision", "timestamp"],
+      "properties": {
+        "approver_id": {
+          "type": "string",
+          "description": "Identifier of the human approver."
+        },
+        "approver_role": {
+          "type": "string",
+          "description": "Role of the approver."
+        },
+        "decision": {
+          "type": "string",
+          "enum": ["approved", "rejected", "escalated", "conditional"],
+          "description": "Approval decision."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Free-text reason."
+        },
+        "conditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Conditions for conditional approval."
+        },
+        "signature": {
+          "type": "string",
+          "description": "Cryptographic signature of the approver."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PolicyObject": {
+      "type": "object",
+      "description": "Governance policy (RFC-0002 Section 10).",
+      "required": ["policy_id", "policy_name", "enforced"],
+      "properties": {
+        "policy_id": {
+          "type": "string",
+          "description": "Unique policy identifier."
+        },
+        "policy_name": {
+          "type": "string",
+          "description": "Human-readable policy name."
+        },
+        "enforced": {
+          "type": "boolean",
+          "description": "Whether the policy was actively enforced."
+        },
+        "min_confidence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Minimum ECS score required."
+        },
+        "max_cost": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Maximum allowed cost."
+        },
+        "require_human_approval": {
+          "type": "boolean",
+          "description": "Whether human approval is required."
+        },
+        "require_anchor": {
+          "type": "boolean",
+          "description": "Whether blockchain anchoring is required."
+        },
+        "allowed_models": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Whitelist of permitted model IDs."
+        },
+        "assertions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["rule", "passed"],
+            "properties": {
+              "rule": { "type": "string" },
+              "expected": {},
+              "actual": {},
+              "passed": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          },
+          "description": "Policy assertion results."
+        }
+      },
+      "additionalProperties": false
+    },
+    "LifecycleObject": {
+      "type": "object",
+      "description": "VEO lifecycle state (RFC-0002 Section 8).",
+      "required": ["state"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["created", "signed", "anchored", "indexed", "verified"],
+          "description": "Current lifecycle state."
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "timestamp"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" },
+              "actor": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

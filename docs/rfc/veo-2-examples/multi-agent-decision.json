@@ -1,0 +1,89 @@
+{
+  "standard": "VEO-2",
+  "version": "2.0",
+  "object_id": "veo_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+  "object_class": "VEO-2B",
+  "issued_at": "2026-08-01T14:30:45.200Z",
+  "provider": "Acme AI Platform",
+  "execution": {
+    "model_id": "orchestrator-v3",
+    "prompt_hash": "0x5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+    "output_hash": "0xef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+    "latency_ms": 34520,
+    "started_at": "2026-08-01T14:30:10.680Z",
+    "completed_at": "2026-08-01T14:30:45.200Z",
+    "prompt": "Evaluate candidate architectures for the new microservice migration. Consider performance, cost, and team expertise. Consult the performance analyst, cost estimator, and architecture reviewer agents.",
+    "output": "Recommendation: Adopt Architecture B (event-driven with Kafka). Performance score: 8.7/10 (Analyst Agent). Projected annual cost: $142,000 — 23% below Architecture A (Cost Agent). Team readiness: 7/10 — requires 2-week Kafka training (Reviewer Agent). Consensus confidence: 0.87. Dissent: Cost Agent flagged Kafka operational overhead as underestimated risk.",
+    "tool_calls": null,
+    "cost": {
+      "currency": "USD",
+      "total": 0.4210,
+      "input_cost": 0.2100,
+      "output_cost": 0.1850,
+      "tool_cost": 0.0260
+    },
+    "tokens": {
+      "input": 12500,
+      "output": 8900,
+      "total": 21400
+    },
+    "parameters": {
+      "temperature": 0.2,
+      "consensus_threshold": 0.75
+    },
+    "error": null
+  },
+  "proof": {
+    "proof_type": "provider_signature",
+    "proof_status": "cryptographically_signed",
+    "signature_algorithm": "secp256k1_eip191",
+    "provider_public_key": "0x04b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890abcd",
+    "provider_address": "0x8Ba1f109551bD432803012645Ac136ddd64DBA72",
+    "provider_signature": "0xe5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f61b",
+    "canonical_hash": "0x4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdbe514"
+  },
+  "confidence": {
+    "score": 870,
+    "grade": "B",
+    "version": "ECS-v2",
+    "dimensions": {
+      "provenance": 220,
+      "integrity": 240,
+      "reproducibility": 110,
+      "governance": 60,
+      "observability": 100,
+      "timeliness": 80
+    }
+  },
+  "anchor": null,
+  "lineage": null,
+  "parent_ids": null,
+  "child_ids": [
+    "veo_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+    "veo_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+    "veo_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1"
+  ],
+  "human_approvals": null,
+  "policy": null,
+  "lifecycle": {
+    "state": "signed",
+    "transitions": [
+      {
+        "from": "created",
+        "to": "signed",
+        "timestamp": "2026-08-01T14:30:45.500Z",
+        "actor": "Acme AI Platform"
+      }
+    ]
+  },
+  "tags": ["multi-agent", "architecture-review", "consensus", "composite"],
+  "metadata": {
+    "agent_ids": [
+      "performance-analyst-v2",
+      "cost-estimator-v1",
+      "architecture-reviewer-v3"
+    ],
+    "consensus_method": "weighted_vote",
+    "consensus_score": 0.87
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "standard": "VEO-2",
+  "version": "2.0",
+  "object_id": "veo_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+  "object_class": "VEO-2A",
+  "issued_at": "2026-08-01T11:00:05.320Z",
+  "provider": "OpenRNG",
+  "execution": {
+    "model_id": "openrng-entropy-v1",
+    "prompt_hash": "0x5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "output_hash": "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "latency_ms": 342,
+    "started_at": "2026-08-01T11:00:04.978Z",
+    "completed_at": "2026-08-01T11:00:05.320Z",
+    "prompt": "{\"type\":\"entropy_request\",\"bits\":256,\"sources\":[\"drand\",\"bitcoin\"],\"policy\":\"gaming-grade\"}",
+    "output": "0x7a3b9c4d2e1f0a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+    "tool_calls": [
+      {
+        "tool_id": "drand_beacon",
+        "tool_type": "api",
+        "input_hash": "0x4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdbe514",
+        "output_hash": "0xef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+        "input": {"round": 29830144},
+        "output": {"randomness": "0x3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b"},
+        "latency_ms": 89,
+        "status": "success",
+        "timestamp": "2026-08-01T11:00:05.067Z"
+      },
+      {
+        "tool_id": "bitcoin_block_hash",
+        "tool_type": "api",
+        "input_hash": "0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658",
+        "output_hash": "0x5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "input": {"block": "latest"},
+        "output": {"hash": "0x00000000000000000002a7c4c1e48d76c5a37902165a270156b7a8d72f8fc36d"},
+        "latency_ms": 145,
+        "status": "success",
+        "timestamp": "2026-08-01T11:00:05.212Z"
+      }
+    ],
+    "cost": {
+      "currency": "USD",
+      "total": 0.0008,
+      "input_cost": 0.0,
+      "output_cost": 0.0,
+      "tool_cost": 0.0008
+    },
+    "tokens": {
+      "input": 0,
+      "output": 0,
+      "total": 0
+    },
+    "parameters": {
+      "entropy_bits": 256,
+      "aggregation_method": "sha256_concat"
+    },
+    "error": null
+  },
+  "proof": {
+    "proof_type": "provider_signature",
+    "proof_status": "cryptographically_signed",
+    "signature_algorithm": "secp256k1_eip191",
+    "provider_public_key": "0x04a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+    "provider_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18",
+    "provider_signature": "0xd0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e11b",
+    "canonical_hash": "0x4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce"
+  },
+  "confidence": {
+    "score": 890,
+    "grade": "B",
+    "version": "ECS-v2",
+    "dimensions": {
+      "provenance": 245,
+      "integrity": 245,
+      "reproducibility": 140,
+      "governance": 30,
+      "observability": 90,
+      "timeliness": 100
+    }
+  },
+  "anchor": null,
+  "lineage": null,
+  "parent_ids": null,
+  "child_ids": null,
+  "human_approvals": null,
+  "policy": null,
+  "lifecycle": {
+    "state": "signed",
+    "transitions": [
+      {
+        "from": "created",
+        "to": "signed",
+        "timestamp": "2026-08-01T11:00:05.400Z",
+        "actor": "OpenRNG"
+      }
+    ]
+  },
+  "tags": ["entropy", "gaming", "dice-roll", "drand", "bitcoin", "veo1-compat"],
+  "metadata": {
+    "veo1_compat": {
+      "original_standard": "VEO-1",
+      "entropy": "0x7a3b9c4d2e1f0a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+      "entropy_hash": "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "sources": [
+        {
+          "source_id": "drand-mainnet",
+          "source_type": "drand",
+          "source_reference": "drand-round-29830144",
+          "timestamp": "2026-08-01T11:00:05.067Z",
+          "entropy_hash": "0xef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d"
+        },
+        {
+          "source_id": "bitcoin-mainnet",
+          "source_type": "blockchain",
+          "source_reference": "bitcoin-block-latest",
+          "timestamp": "2026-08-01T11:00:05.212Z",
+          "entropy_hash": "0x5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+        }
+      ],
+      "aggregation": {
+        "method": "sha256_concat",
+        "input_order": ["drand-mainnet", "bitcoin-mainnet"],
+        "aggregation_hash": "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+      }
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "standard": "VEO-2",
+  "version": "2.0",
+  "object_id": "veo_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+  "object_class": "VEO-2C",
+  "issued_at": "2026-07-30T08:45:12.100Z",
+  "provider": "MedAI Trust Platform",
+  "execution": {
+    "model_id": "med-llm-v4-radiology",
+    "prompt_hash": "0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_hash": "0xca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+    "latency_ms": 3200,
+    "started_at": "2026-07-30T08:45:08.900Z",
+    "completed_at": "2026-07-30T08:45:12.100Z",
+    "prompt": "[REDACTED — Patient data protected under HIPAA. See prompt_hash for integrity verification.]",
+    "output": "Findings: Right lower lobe opacity consistent with community-acquired pneumonia. Confidence: 94.2%. Differential: atelectasis (4.1%), pulmonary edema (1.7%). Recommendation: Clinical correlation with CBC, CRP. Follow-up imaging in 4-6 weeks if symptoms persist. CAD overlay generated and attached to PACS study.",
+    "tool_calls": [
+      {
+        "tool_id": "dicom_reader",
+        "tool_type": "api",
+        "input_hash": "0x2c624232cdd221771294dfbb310aca000a0df6ac8b166e8b32c4bd4d6a44fb97",
+        "output_hash": "0x19581e27de7ced00ff1ce50b2047e7a567c76b1cbaebabe5ef03f7c3017bb5b7",
+        "latency_ms": 450,
+        "status": "success",
+        "timestamp": "2026-07-30T08:45:09.350Z"
+      },
+      {
+        "tool_id": "radiology_classifier",
+        "tool_type": "function",
+        "input_hash": "0x4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
+        "output_hash": "0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658",
+        "latency_ms": 1800,
+        "status": "success",
+        "timestamp": "2026-07-30T08:45:11.150Z"
+      }
+    ],
+    "cost": {
+      "currency": "USD",
+      "total": 0.1540,
+      "input_cost": 0.0890,
+      "output_cost": 0.0450,
+      "tool_cost": 0.0200
+    },
+    "tokens": {
+      "input": 4200,
+      "output": 890,
+      "total": 5090
+    },
+    "parameters": {
+      "temperature": 0.0,
+      "max_tokens": 2048
+    },
+    "error": null
+  },
+  "proof": {
+    "proof_type": "provider_signature",
+    "proof_status": "cryptographically_signed",
+    "signature_algorithm": "secp256k1_eip191",
+    "provider_public_key": "0x04c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4",
+    "provider_address": "0x1aE0EA34a72D944a8C7603FfB3eC30a6669E454C",
+    "provider_signature": "0xf6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a71c",
+    "canonical_hash": "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+  },
+  "confidence": {
+    "score": 920,
+    "grade": "A",
+    "version": "ECS-v2",
+    "dimensions": {
+      "provenance": 240,
+      "integrity": 250,
+      "reproducibility": 140,
+      "governance": 60,
+      "observability": 95,
+      "timeliness": 95
+    }
+  },
+  "anchor": {
+    "anchor_type": "blockchain",
+    "anchor_status": "anchored",
+    "chain": "polygon-mainnet",
+    "contract": "0xA79E149C35Ad47Ed270Bf4b16B80170eBF7B88F8",
+    "transaction_hash": "0x8a35acfbc15ff81a39ae7d344fd709f28e8600b4aa8c65c6b64bfe7fe36bd19b",
+    "block_number": 62847391,
+    "batch_id": "batch_medai_20260730_084512",
+    "batch_size": 1,
+    "merkle_root": "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "anchor_timestamp": "2026-07-30T08:45:18.000Z"
+  },
+  "lineage": null,
+  "parent_ids": null,
+  "child_ids": null,
+  "human_approvals": null,
+  "policy": null,
+  "lifecycle": {
+    "state": "anchored",
+    "transitions": [
+      {
+        "from": "created",
+        "to": "signed",
+        "timestamp": "2026-07-30T08:45:12.200Z",
+        "actor": "MedAI Trust Platform"
+      },
+      {
+        "from": "signed",
+        "to": "anchored",
+        "timestamp": "2026-07-30T08:45:18.100Z",
+        "actor": "MedAI Trust Platform"
+      }
+    ]
+  },
+  "tags": ["healthcare", "radiology", "chest-xray", "hipaa", "anchored"],
+  "metadata": {
+    "clinical_context": "emergency_department",
+    "modality": "chest_xray",
+    "regulatory_framework": "FDA_510k_cleared",
+    "patient_data_redacted": true
+  }
+}

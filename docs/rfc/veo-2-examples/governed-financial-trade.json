@@ -1,0 +1,190 @@
+{
+  "standard": "VEO-2",
+  "version": "2.0",
+  "object_id": "veo_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+  "object_class": "VEO-2D",
+  "issued_at": "2026-07-31T16:05:33.750Z",
+  "provider": "QuantumTrade AI",
+  "execution": {
+    "model_id": "qt-trading-agent-v7",
+    "prompt_hash": "0xd7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
+    "output_hash": "0x9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "latency_ms": 2890,
+    "started_at": "2026-07-31T16:05:30.860Z",
+    "completed_at": "2026-07-31T16:05:33.750Z",
+    "prompt": "Analyze current TSMC (2330.TW) position. Portfolio exposure: 8.2%. Recent earnings beat by 12%. Sector momentum positive. Evaluate rebalancing to 10% allocation with $2.4M incremental buy.",
+    "output": "RECOMMENDATION: EXECUTE — Increase TSMC allocation to 10.0%. Action: Market buy 1,200 shares at ~$198.50 (est. $238,200). Rationale: (1) Earnings momentum — 12% beat signals sustained AI chip demand. (2) Sector tailwind — SOX index +4.2% MTD. (3) Portfolio underweight vs benchmark (10.5% target). Risk flags: (1) Concentration risk approaches 10% threshold. (2) USD/TWD exposure increases. (3) Q3 guidance uncertainty. Confidence: 0.82. Requires human approval per policy FIN-TRADE-001.",
+    "tool_calls": [
+      {
+        "tool_id": "market_data_feed",
+        "tool_type": "api",
+        "input_hash": "0xef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+        "output_hash": "0x7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451",
+        "latency_ms": 120,
+        "status": "success",
+        "timestamp": "2026-07-31T16:05:31.000Z"
+      },
+      {
+        "tool_id": "portfolio_analyzer",
+        "tool_type": "function",
+        "input_hash": "0x2c624232cdd221771294dfbb310aca000a0df6ac8b166e8b32c4bd4d6a44fb97",
+        "output_hash": "0x19581e27de7ced00ff1ce50b2047e7a567c76b1cbaebabe5ef03f7c3017bb5b7",
+        "latency_ms": 340,
+        "status": "success",
+        "timestamp": "2026-07-31T16:05:31.500Z"
+      },
+      {
+        "tool_id": "risk_model",
+        "tool_type": "function",
+        "input_hash": "0x4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+        "output_hash": "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+        "latency_ms": 890,
+        "status": "success",
+        "timestamp": "2026-07-31T16:05:32.800Z"
+      }
+    ],
+    "cost": {
+      "currency": "USD",
+      "total": 0.2340,
+      "input_cost": 0.1200,
+      "output_cost": 0.0890,
+      "tool_cost": 0.0250
+    },
+    "tokens": {
+      "input": 6800,
+      "output": 3200,
+      "total": 10000
+    },
+    "parameters": {
+      "temperature": 0.1,
+      "max_tokens": 4096
+    },
+    "error": null
+  },
+  "proof": {
+    "proof_type": "provider_signature",
+    "proof_status": "cryptographically_signed",
+    "signature_algorithm": "secp256k1_eip191",
+    "provider_public_key": "0x04d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5",
+    "provider_address": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4",
+    "provider_signature": "0xa7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b81b",
+    "canonical_hash": "0xd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+  },
+  "confidence": {
+    "score": 940,
+    "grade": "A",
+    "version": "ECS-v2",
+    "dimensions": {
+      "provenance": 240,
+      "integrity": 245,
+      "reproducibility": 130,
+      "governance": 145,
+      "observability": 95,
+      "timeliness": 85
+    }
+  },
+  "anchor": {
+    "anchor_type": "blockchain",
+    "anchor_status": "anchored",
+    "chain": "polygon-mainnet",
+    "contract": "0xA79E149C35Ad47Ed270Bf4b16B80170eBF7B88F8",
+    "transaction_hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "block_number": 62901245,
+    "batch_id": "batch_qt_20260731_160533",
+    "batch_size": 1,
+    "merkle_root": "0xd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+    "anchor_timestamp": "2026-07-31T16:05:40.000Z"
+  },
+  "lineage": null,
+  "parent_ids": null,
+  "child_ids": null,
+  "human_approvals": [
+    {
+      "approver_id": "trader-jchen-8847",
+      "approver_role": "senior_portfolio_manager",
+      "decision": "approved",
+      "timestamp": "2026-07-31T16:12:45.000Z",
+      "reason": "Aligned with Q3 semiconductor thesis. Concentration within acceptable bounds. Proceeding with market order.",
+      "signature": "0xb8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c91c"
+    },
+    {
+      "approver_id": "compliance-mwong-2201",
+      "approver_role": "compliance_officer",
+      "decision": "approved",
+      "timestamp": "2026-07-31T16:14:10.000Z",
+      "reason": "Trade within concentration limits. No restricted list conflicts. Approved per FIN-TRADE-001 §4.2.",
+      "signature": "0xc9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d01c"
+    }
+  ],
+  "policy": {
+    "policy_id": "FIN-TRADE-001",
+    "policy_name": "Equity Trade Execution Policy",
+    "enforced": true,
+    "min_confidence": 800,
+    "max_cost": 1.00,
+    "require_human_approval": true,
+    "require_anchor": true,
+    "allowed_models": ["qt-trading-agent-v7", "qt-trading-agent-v6"],
+    "assertions": [
+      {
+        "rule": "min_confidence_score",
+        "expected": 800,
+        "actual": 940,
+        "passed": true
+      },
+      {
+        "rule": "max_single_trade_usd",
+        "expected": 500000,
+        "actual": 238200,
+        "passed": true
+      },
+      {
+        "rule": "max_position_concentration_pct",
+        "expected": 12.0,
+        "actual": 10.0,
+        "passed": true
+      },
+      {
+        "rule": "dual_approval_required",
+        "expected": 2,
+        "actual": 2,
+        "passed": true
+      },
+      {
+        "rule": "model_on_allowed_list",
+        "expected": true,
+        "actual": true,
+        "passed": true
+      }
+    ]
+  },
+  "lifecycle": {
+    "state": "verified",
+    "transitions": [
+      {
+        "from": "created",
+        "to": "signed",
+        "timestamp": "2026-07-31T16:05:34.000Z",
+        "actor": "QuantumTrade AI"
+      },
+      {
+        "from": "signed",
+        "to": "anchored",
+        "timestamp": "2026-07-31T16:05:40.200Z",
+        "actor": "QuantumTrade AI"
+      },
+      {
+        "from": "anchored",
+        "to": "verified",
+        "timestamp": "2026-07-31T16:15:00.000Z",
+        "actor": "QuantumTrade Compliance Engine"
+      }
+    ]
+  },
+  "tags": ["trading", "equities", "governed", "dual-approval", "semiconductor"],
+  "metadata": {
+    "trade_id": "QT-2026-07-31-TSMC-BUY-001",
+    "execution_venue": "TWSE",
+    "regulatory_framework": "MiFID_II"
+  }
+}

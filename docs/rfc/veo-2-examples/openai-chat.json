@@ -1,0 +1,65 @@
+{
+  "standard": "VEO-2",
+  "version": "2.0",
+  "object_id": "veo_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+  "object_class": "VEO-2A",
+  "issued_at": "2026-08-01T09:15:03.421Z",
+  "provider": "OpenRNG",
+  "execution": {
+    "model_id": "gpt-4o-2024-08-06",
+    "prompt_hash": "0x9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "output_hash": "0xa591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e",
+    "latency_ms": 1847,
+    "started_at": "2026-08-01T09:15:01.574Z",
+    "completed_at": "2026-08-01T09:15:03.421Z",
+    "prompt": "Summarize the key differences between transformer and diffusion architectures for a technical audience.",
+    "output": "Transformers use self-attention mechanisms to process sequences in parallel, excelling at text and structured data. Diffusion models iteratively denoise samples from a learned distribution, dominating image and video generation. Key tradeoffs: transformers scale with sequence length (quadratic attention cost), while diffusion models scale with denoising steps (linear but slow inference). Recent hybrid architectures like DiT combine both approaches.",
+    "tool_calls": null,
+    "cost": {
+      "currency": "USD",
+      "total": 0.0034,
+      "input_cost": 0.0019,
+      "output_cost": 0.0015
+    },
+    "tokens": {
+      "input": 24,
+      "output": 87,
+      "total": 111
+    },
+    "parameters": {
+      "temperature": 0.7,
+      "max_tokens": 512,
+      "top_p": 1.0
+    },
+    "error": null
+  },
+  "proof": {
+    "proof_type": "none",
+    "proof_status": "unsigned"
+  },
+  "confidence": {
+    "score": 780,
+    "grade": "C",
+    "version": "ECS-v2",
+    "dimensions": {
+      "provenance": 200,
+      "integrity": 210,
+      "reproducibility": 90,
+      "governance": 30,
+      "observability": 85,
+      "timeliness": 95
+    }
+  },
+  "anchor": null,
+  "lineage": null,
+  "parent_ids": null,
+  "child_ids": null,
+  "human_approvals": null,
+  "policy": null,
+  "lifecycle": {
+    "state": "created",
+    "transitions": []
+  },
+  "tags": ["chat-completion", "openai", "gpt-4o"],
+  "metadata": null
+}

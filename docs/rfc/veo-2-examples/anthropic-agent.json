@@ -1,0 +1,111 @@
+{
+  "standard": "VEO-2",
+  "version": "2.0",
+  "object_id": "veo_b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
+  "object_class": "VEO-2A",
+  "issued_at": "2026-08-01T10:22:18.903Z",
+  "provider": "OpenRNG",
+  "execution": {
+    "model_id": "claude-opus-4-20250514",
+    "prompt_hash": "0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+    "output_hash": "0x486ea46224d1bb4fb680f34f7c9ad96a8f24ec88be73ea8e5a6c65260e9cb8a7",
+    "latency_ms": 12450,
+    "started_at": "2026-08-01T10:22:06.453Z",
+    "completed_at": "2026-08-01T10:22:18.903Z",
+    "prompt": "Research current lithium-ion battery recycling rates in the EU and summarize the key regulatory frameworks. Use web search to find the latest data.",
+    "output": "Based on my research, EU lithium-ion battery recycling is governed by the new Battery Regulation (EU) 2023/1542, which replaced the 2006 Battery Directive. Key findings: Current collection rates average 47% across member states. The regulation mandates 73% collection by 2030 and 51% lithium recovery by 2027. Extended Producer Responsibility (EPR) schemes now cover all battery types. France and Germany lead with 52% and 49% collection rates respectively.",
+    "tool_calls": [
+      {
+        "tool_id": "web_search",
+        "tool_type": "api",
+        "input_hash": "0x7d793037a0760186574b0282f2f435e7afa4d6cefc3bf6f5b7b2c3e2db1e0f6a",
+        "output_hash": "0x3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278",
+        "input": {"query": "EU lithium-ion battery recycling rates 2026 regulation"},
+        "output": "10 search results returned",
+        "latency_ms": 890,
+        "status": "success",
+        "timestamp": "2026-08-01T10:22:08.100Z"
+      },
+      {
+        "tool_id": "web_fetch",
+        "tool_type": "api",
+        "input_hash": "0x8b9e12a5c3f7d1e6a4b2c8d0e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1",
+        "output_hash": "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+        "input": {"url": "https://environment.ec.europa.eu/topics/waste-and-recycling/batteries_en"},
+        "output": "Page content extracted (3847 chars)",
+        "latency_ms": 2340,
+        "status": "success",
+        "timestamp": "2026-08-01T10:22:11.200Z"
+      },
+      {
+        "tool_id": "web_fetch",
+        "tool_type": "api",
+        "input_hash": "0x4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+        "output_hash": "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+        "input": {"url": "https://www.europarl.europa.eu/news/en/press-room/batteries-regulation"},
+        "output": "Page content extracted (5123 chars)",
+        "latency_ms": 1870,
+        "status": "success",
+        "timestamp": "2026-08-01T10:22:14.500Z"
+      }
+    ],
+    "cost": {
+      "currency": "USD",
+      "total": 0.0892,
+      "input_cost": 0.0450,
+      "output_cost": 0.0312,
+      "tool_cost": 0.0130
+    },
+    "tokens": {
+      "input": 3200,
+      "output": 1450,
+      "total": 4650
+    },
+    "parameters": {
+      "temperature": 0.3,
+      "max_tokens": 4096
+    },
+    "error": null
+  },
+  "proof": {
+    "proof_type": "provider_signature",
+    "proof_status": "cryptographically_signed",
+    "signature_algorithm": "secp256k1_eip191",
+    "provider_public_key": "0x04a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+    "provider_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18",
+    "provider_signature": "0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa35a7e6c1c0e1b2a3f4d5e6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c71c",
+    "canonical_hash": "0x3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b"
+  },
+  "confidence": {
+    "score": 845,
+    "grade": "B",
+    "version": "ECS-v2",
+    "dimensions": {
+      "provenance": 230,
+      "integrity": 240,
+      "reproducibility": 80,
+      "governance": 45,
+      "observability": 100,
+      "timeliness": 90
+    }
+  },
+  "anchor": null,
+  "lineage": null,
+  "parent_ids": null,
+  "child_ids": null,
+  "human_approvals": null,
+  "policy": null,
+  "lifecycle": {
+    "state": "signed",
+    "transitions": [
+      {
+        "from": "created",
+        "to": "signed",
+        "timestamp": "2026-08-01T10:22:19.050Z",
+        "actor": "OpenRNG"
+      }
+    ]
+  },
+  "tags": ["research", "anthropic", "claude", "tool-use", "web-research"],
+  "metadata": null
+}
