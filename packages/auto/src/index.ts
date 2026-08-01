@@ -15,3 +15,4 @@
 
 export { auto, type AutoOptions, type VEOHandler } from './auto';
 export { type VEOStore, MemoryStore } from './store';
+export { VEOCallbackHandler, type VEOCallbackOptions } from './langchain';
