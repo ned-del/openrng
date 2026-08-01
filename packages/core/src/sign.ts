@@ -120,8 +120,9 @@ export function verifySignature(veo: VEO, publicKeyOrOpts?: string | VerifyOptio
   let resolvedKey = explicitKey || embeddedKey;
   if (!resolvedKey) return false;
 
-  // If trustedKeys provided, embedded key must match one of them
-  if (trustedKeys && trustedKeys.length > 0) {
+  // If trustedKeys provided (even empty), enforce it — fail closed
+  if (trustedKeys !== undefined) {
+    if (trustedKeys.length === 0) return false; // empty allowlist = trust no one
     if (!embeddedKey) return false;
     const embeddedHex = /^[a-f0-9]{64}$/i.test(embeddedKey) ? embeddedKey : extractPublicKeyHex(embeddedKey);
     const isAllowed = trustedKeys.some(tk => {

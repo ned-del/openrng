@@ -140,6 +140,20 @@ describe('VEO Signing', () => {
     expect(verifySignature(signed, { trustedKeys: [keys.publicKey] })).toBe(true);
   });
 
+  test('trustedKeys: [] rejects everything (fail closed)', () => {
+    const veo = baseVEO();
+    const signed = signVEO(veo, keys.privateKey);
+    // Empty allowlist = trust no one, even legitimately signed VEOs
+    expect(verifySignature(signed, { trustedKeys: [] })).toBe(false);
+  });
+
+  test('trustedKeys: [] rejects attacker VEO (fail closed)', () => {
+    const attackerKeys = generateSigningKeys();
+    const forged = capture({ provider: 'legit', prompt: 'x', output: 'y', model: 'z' });
+    const forgedSigned = signVEO(forged, attackerKeys.privateKey);
+    expect(verifySignature(forgedSigned, { trustedKeys: [] })).toBe(false);
+  });
+
   test('trustedKeys works with multiple keys', () => {
     const otherKeys = generateSigningKeys();
     const veo = baseVEO();
