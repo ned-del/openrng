@@ -535,6 +535,148 @@ export function createRouter(poolManager: PoolManager) {
   });
 
   // ============================================================
+  // GET /v1/recent
+  // Public — recent batches for verify.openrng.io landing page
+  // ============================================================
+  router.get('/recent', async (_req, res) => {
+    try {
+      if (isDatabaseConnected()) {
+        const batches = await repo.getRecentBatches(20);
+        return res.json(batches.map(b => ({
+          batch_id: b.batch_id,
+          merkle_root: b.merkle_root,
+          created_at: b.created_at,
+          tokens_consumed: b.tokens_consumed,
+          batch_size: b.batch_size,
+          status: b.status,
+          anchor_tx_hash: b.anchor_tx_hash,
+          anchor_block_number: b.anchor_block_number,
+          polygon_scan: b.anchor_tx_hash
+            ? `https://amoy.polygonscan.com/tx/${b.anchor_tx_hash}`
+            : null,
+        })));
+      }
+
+      // Fallback: in-memory stats
+      const stats = poolManager.getStats();
+      res.json({
+        note: 'Database not available. Showing in-memory stats.',
+        completed_batches: stats.generatorStats.completedBatches,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to fetch recent data', message: err.message });
+    }
+  });
+
+  // ============================================================
+  // GET /v1/verify/:input
+  // Public — lookup by leafHash, batchId, or txHash
+  // ============================================================
+  router.get('/verify/:input', async (req, res) => {
+    const { input } = req.params;
+
+    try {
+      if (!isDatabaseConnected()) {
+        return res.status(503).json({ error: 'Database not available for verification' });
+      }
+
+      // Try as batch_id first
+      let batch = await repo.getBatch(input);
+      if (batch) {
+        const memBatch = (poolManager as any).generator?.getBatch(input);
+        return res.json({
+          type: 'batch',
+          batch_id: batch.batch_id,
+          merkle_root: batch.merkle_root,
+          status: batch.status,
+          batch_size: batch.batch_size,
+          tokens_consumed: batch.tokens_consumed,
+          created_at: batch.created_at,
+          anchor_tx_hash: batch.anchor_tx_hash,
+          anchor_block_number: batch.anchor_block_number,
+          polygon_scan: batch.anchor_tx_hash
+            ? `https://amoy.polygonscan.com/tx/${batch.anchor_tx_hash}`
+            : null,
+          proof_available: !!memBatch?.levels,
+          polygon_contract: process.env.MERKLE_ANCHOR_CONTRACT,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      // Try as leaf_hash (token)
+      const token = await repo.getToken(input);
+      if (token) {
+        batch = await repo.getBatch(token.batch_id);
+        const memBatch = (poolManager as any).generator?.getBatch(token.batch_id);
+        let proofValid: boolean | null = null;
+        let proofPath: any[] | null = null;
+
+        if (memBatch?.levels) {
+          proofPath = MerkleTreeBuilder.getProof(memBatch.leaves, token.node_index, memBatch.levels);
+          proofValid = MerkleTreeBuilder.verifyProof(input, proofPath, memBatch.merkleRoot);
+        }
+
+        return res.json({
+          type: 'token',
+          verified: true,
+          leaf_hash: input,
+          batch_id: token.batch_id,
+          token: {
+            node_id: token.node_id,
+            node_index: token.node_index,
+            value: token.value,
+            consumed: token.consumed,
+            consumed_at: token.consumed_at,
+            consumed_by: token.consumed_by,
+          },
+          batch: batch ? {
+            merkle_root: batch.merkle_root,
+            status: batch.status,
+            anchor_tx_hash: batch.anchor_tx_hash,
+            anchor_block_number: batch.anchor_block_number,
+            polygon_scan: batch.anchor_tx_hash
+              ? `https://amoy.polygonscan.com/tx/${batch.anchor_tx_hash}`
+              : null,
+          } : null,
+          proof: proofValid !== null ? { valid: proofValid, proof_path: proofPath }
+            : { note: 'Proof reconstruction requires in-memory batch data' },
+          polygon_contract: process.env.MERKLE_ANCHOR_CONTRACT,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      // Try as tx hash
+      const batchByTx = await repo.getBatchByTxHash(input);
+      if (batchByTx) {
+        return res.json({
+          type: 'transaction',
+          batch_id: batchByTx.batch_id,
+          merkle_root: batchByTx.merkle_root,
+          status: batchByTx.status,
+          batch_size: batchByTx.batch_size,
+          tokens_consumed: batchByTx.tokens_consumed,
+          created_at: batchByTx.created_at,
+          anchor_tx_hash: batchByTx.anchor_tx_hash,
+          anchor_block_number: batchByTx.anchor_block_number,
+          polygon_scan: `https://amoy.polygonscan.com/tx/${batchByTx.anchor_tx_hash}`,
+          polygon_contract: process.env.MERKLE_ANCHOR_CONTRACT,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      return res.status(404).json({
+        error: 'Not found',
+        input,
+        hint: 'Provide a valid leaf_hash, batch_id, or transaction hash',
+      });
+
+    } catch (err: any) {
+      res.status(500).json({ error: 'Verification lookup failed', message: err.message });
+    }
+  });
+
+  // ============================================================
   // GET /v1/stats
   // Operator dashboard
   // ============================================================

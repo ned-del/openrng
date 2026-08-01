@@ -202,6 +202,38 @@ export async function markTokenConsumed(
   }
 }
 
+export async function getRecentBatches(limit: number = 20): Promise<any[]> {
+  const pool = getPool();
+  if (!pool) return [];
+
+  try {
+    const result = await pool.query(
+      'SELECT * FROM batches ORDER BY created_at DESC LIMIT $1',
+      [limit]
+    );
+    return result.rows;
+  } catch (err: any) {
+    logger.error(`DB: failed to get recent batches: ${err.message}`);
+    return [];
+  }
+}
+
+export async function getBatchByTxHash(txHash: string): Promise<any | null> {
+  const pool = getPool();
+  if (!pool) return null;
+
+  try {
+    const result = await pool.query(
+      'SELECT * FROM batches WHERE anchor_tx_hash = $1 LIMIT 1',
+      [txHash]
+    );
+    return result.rows[0] || null;
+  } catch (err: any) {
+    logger.error(`DB: failed to get batch by tx hash ${txHash}: ${err.message}`);
+    return null;
+  }
+}
+
 export async function getTokensByBatch(batchId: string): Promise<any[]> {
   const pool = getPool();
   if (!pool) return [];
