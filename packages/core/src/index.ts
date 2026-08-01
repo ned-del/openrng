@@ -10,6 +10,6 @@ export type { CaptureOptions } from './capture';
 export { createVEO, createVEOHash, canonicalize } from './veo';
 export { validateVEO, isValidVEO } from './validate';
 export { signVEO, signVEOHmac, verifySignature, verifyIntegrity, hashContent, hashBuffer, generateSigningKeys } from './sign';
-export type { KeyPair } from './sign';
+export type { KeyPair, VerifyOptions } from './sign';
 export { capture } from './capture';
 export { VEO_VERSION, VEO_STANDARD, VEO_CLASSES } from './constants';

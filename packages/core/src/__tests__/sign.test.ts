@@ -109,4 +109,44 @@ describe('VEO Signing', () => {
     expect(signed.proof?.provider_public_key).toBeDefined();
     expect(signed.proof!.provider_public_key!.length).toBe(64); // 32 bytes hex
   });
+
+  // ─── FORGE TESTS (documenting security boundaries) ───
+
+  test('EXPECTED: zero-arg verify accepts attacker-forged VEO (consistency only, NOT provenance)', () => {
+    // This test documents that zero-arg verifySignature() proves internal
+    // consistency, NOT identity. An attacker can create a VEO with their own
+    // key and it will self-verify. This is by design — zero-arg is a
+    // consistency check. For provenance, use explicit keys or trustedKeys.
+    const attackerKeys = generateSigningKeys();
+    const forged = capture({ provider: 'legitimate-corp', prompt: 'evil', output: 'forged', model: 'gpt-4o' });
+    const forgedSigned = signVEO(forged, attackerKeys.privateKey);
+    // Zero-arg: passes (consistency only — this is expected!)
+    expect(verifySignature(forgedSigned)).toBe(true);
+    // Explicit legitimate key: FAILS (provenance check works)
+    expect(verifySignature(forgedSigned, keys.publicKey)).toBe(false);
+  });
+
+  test('trustedKeys rejects VEO signed by untrusted key', () => {
+    const attackerKeys = generateSigningKeys();
+    const forged = capture({ provider: 'legit', prompt: 'x', output: 'y', model: 'z' });
+    const forgedSigned = signVEO(forged, attackerKeys.privateKey);
+    // trustedKeys with legitimate key rejects attacker's VEO
+    expect(verifySignature(forgedSigned, { trustedKeys: [keys.publicKey] })).toBe(false);
+  });
+
+  test('trustedKeys accepts VEO signed by trusted key', () => {
+    const veo = baseVEO();
+    const signed = signVEO(veo, keys.privateKey);
+    expect(verifySignature(signed, { trustedKeys: [keys.publicKey] })).toBe(true);
+  });
+
+  test('trustedKeys works with multiple keys', () => {
+    const otherKeys = generateSigningKeys();
+    const veo = baseVEO();
+    const signed = signVEO(veo, keys.privateKey);
+    // Accepted when our key is in the list
+    expect(verifySignature(signed, { trustedKeys: [otherKeys.publicKey, keys.publicKey] })).toBe(true);
+    // Rejected when our key is NOT in the list
+    expect(verifySignature(signed, { trustedKeys: [otherKeys.publicKey] })).toBe(false);
+  });
 });

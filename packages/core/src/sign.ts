@@ -85,21 +85,55 @@ function extractPublicKeyHex(pem: string): string {
   }
 }
 
+export interface VerifyOptions {
+  /** Trusted public keys (PEM or hex). If provided, embedded key must match one. */
+  trustedKeys?: string[];
+}
+
 /**
  * Verify a VEO's Ed25519 signature and content integrity.
- * If publicKey is omitted, uses the embedded proof.provider_public_key.
+ *
+ * With explicit key: verifies provenance ("was this signed by THIS entity?").
+ * With trustedKeys: verifies the embedded key is in your allowlist.
+ * Without key (zero-arg): verifies INTERNAL CONSISTENCY only — proves the VEO
+ * hasn't been modified since signing, but NOT who signed it. Any competent
+ * attacker can produce a VEO that passes zero-arg verification.
+ *
+ * For third-party verification, always provide a trusted key or trustedKeys.
+ * For full provenance verification, use blockchain-anchored VEOs (@openrng/verify).
  */
-export function verifySignature(veo: VEO, publicKey?: string): boolean {
+export function verifySignature(veo: VEO, publicKeyOrOpts?: string | VerifyOptions): boolean {
   if (!veo.proof?.provider_signature) return false;
 
+  // Parse arguments
+  let explicitKey: string | undefined;
+  let trustedKeys: string[] | undefined;
+
+  if (typeof publicKeyOrOpts === 'string') {
+    explicitKey = publicKeyOrOpts;
+  } else if (publicKeyOrOpts && typeof publicKeyOrOpts === 'object') {
+    trustedKeys = publicKeyOrOpts.trustedKeys;
+  }
+
   // Resolve public key: explicit > embedded > fail
-  let resolvedKey = publicKey || veo.proof.provider_public_key;
+  const embeddedKey = veo.proof.provider_public_key;
+  let resolvedKey = explicitKey || embeddedKey;
   if (!resolvedKey) return false;
+
+  // If trustedKeys provided, embedded key must match one of them
+  if (trustedKeys && trustedKeys.length > 0) {
+    if (!embeddedKey) return false;
+    const embeddedHex = /^[a-f0-9]{64}$/i.test(embeddedKey) ? embeddedKey : extractPublicKeyHex(embeddedKey);
+    const isAllowed = trustedKeys.some(tk => {
+      const tkHex = /^[a-f0-9]{64}$/i.test(tk) ? tk : extractPublicKeyHex(tk);
+      return tkHex === embeddedHex;
+    });
+    if (!isAllowed) return false;
+  }
 
   // If it's raw hex (32 bytes = 64 hex chars), reconstruct PEM
   if (/^[a-f0-9]{64}$/i.test(resolvedKey)) {
     try {
-      // Ed25519 SPKI DER prefix (12 bytes) + 32 byte key
       const prefix = Buffer.from('302a300506032b6570032100', 'hex');
       const keyBuf = Buffer.concat([prefix, Buffer.from(resolvedKey, 'hex')]);
       const pem = '-----BEGIN PUBLIC KEY-----\n' + keyBuf.toString('base64') + '\n-----END PUBLIC KEY-----';
