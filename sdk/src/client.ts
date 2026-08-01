@@ -31,7 +31,7 @@ export class HttpClient {
   private readonly timeoutMs: number;
 
   constructor(config: OpenRNGConfig) {
-    this.baseUrl = config.endpoint.replace(/\/$/, '');
+    this.baseUrl = (config.endpoint || config.baseUrl || 'https://api.openrng.io').replace(/\/$/, '');
     this.apiKey = config.apiKey || '';
     this.maxRetries = config.maxRetries ?? 3;
     this.retryBaseDelayMs = config.retryBaseDelayMs ?? 200;

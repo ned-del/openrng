@@ -1,9 +1,13 @@
 /**
- * OpenRNG SDK — Main class
+ * OpenRNG SDK v0.2.0 — Decision Engine Client
+ *
+ * Supports both the legacy token pool API and the new Decision Engine API
+ * (games, betting, raw RNG, verification).
  *
  * Usage:
- *   const rng = new OpenRNG({ agentId: 'my-agent', endpoint: 'http://localhost:3000' })
- *   const result = await rng.number({ min: 1, max: 100 })
+ *   const rng = new OpenRNG({ apiKey: 'orn_xxx' })
+ *   const bet = await rng.placeSicBoBet('big', 10)
+ *   const result = await rng.waitForResult(bet.game_id)
  */
 
 import { HttpClient } from './client';
@@ -19,7 +23,21 @@ import type {
   VerifyResult,
   NumberOptions,
   ChooseOptions,
+  HealthResponse,
+  EntropyResponse,
+  GameCatalog,
+  BetResponse,
+  BetOptions,
+  RngGenerateResponse,
+  GameResult,
+  GameResolved,
+  VerifyGameResponse,
+  RecentResponse,
+  StatsResponse,
+  ServiceInfo,
 } from './types';
+
+// ── Legacy internal types ────────────────────────────────
 
 interface RawToken {
   value: number;
@@ -86,31 +104,175 @@ function batchProofToProof(p: BatchTokenResponse['proofs'][0]): Proof {
 }
 
 export class OpenRNG {
-  private readonly config: Required<Pick<OpenRNGConfig, 'agentId' | 'endpoint' | 'vertical'>> & OpenRNGConfig;
+  private readonly config: OpenRNGConfig;
   private readonly http: HttpClient;
   private initialized: boolean = false;
 
-  constructor(config: OpenRNGConfig) {
+  constructor(config: OpenRNGConfig = {}) {
     this.config = {
       ...config,
-      vertical: config.vertical || 'agent',
+      // Normalize: support both baseUrl and legacy endpoint
+      baseUrl: config.baseUrl || config.endpoint || 'https://api.openrng.io',
     };
-    this.http = new HttpClient(config);
+    this.http = new HttpClient({
+      ...this.config,
+      // Pass baseUrl as endpoint for HttpClient compat
+      endpoint: this.config.baseUrl!,
+    });
   }
 
-  // ── Lazy init: auto-register on first call ──────────────────
+  // ══════════════════════════════════════════════════════════
+  //  Decision Engine API (v0.2.0)
+  // ══════════════════════════════════════════════════════════
+
+  /**
+   * GET / — Service info
+   */
+  async getServiceInfo(): Promise<ServiceInfo> {
+    return this.http.request<ServiceInfo>({ method: 'GET', path: '/' });
+  }
+
+  /**
+   * GET /health — Health check
+   */
+  async getHealth(): Promise<HealthResponse> {
+    return this.http.request<HealthResponse>({ method: 'GET', path: '/health' });
+  }
+
+  /**
+   * GET /api/v1/entropy — Current VDF entropy
+   */
+  async getEntropy(): Promise<EntropyResponse> {
+    return this.http.request<EntropyResponse>({ method: 'GET', path: '/api/v1/entropy' });
+  }
+
+  /**
+   * GET /api/v1/games — List available game types
+   */
+  async getGames(): Promise<GameCatalog> {
+    return this.http.request<GameCatalog>({ method: 'GET', path: '/api/v1/games' });
+  }
+
+  /**
+   * POST /api/v1/games/sicbo/bet — Place a Sic Bo bet
+   *
+   * @param betType - big | small | odd | even | total | single | double | triple | anyTriple | combo
+   * @param amount - Bet amount
+   * @param opts - Optional: clientSeed, playerId, value, values
+   */
+  async placeSicBoBet(betType: string, amount: number, opts?: BetOptions): Promise<BetResponse> {
+    return this.http.request<BetResponse>({
+      method: 'POST',
+      path: '/api/v1/games/sicbo/bet',
+      body: {
+        bet_type: betType,
+        amount,
+        client_seed: opts?.clientSeed,
+        player_id: opts?.playerId,
+        value: opts?.value,
+        values: opts?.values,
+      },
+    });
+  }
+
+  /**
+   * POST /api/v1/games/dice/bet — Place a Dice bet
+   *
+   * @param betType - exact | over7 | under7 | odd | even
+   * @param amount - Bet amount
+   * @param opts - Optional: clientSeed, playerId, value
+   */
+  async placeDiceBet(betType: string, amount: number, opts?: BetOptions): Promise<BetResponse> {
+    return this.http.request<BetResponse>({
+      method: 'POST',
+      path: '/api/v1/games/dice/bet',
+      body: {
+        bet_type: betType,
+        amount,
+        client_seed: opts?.clientSeed,
+        player_id: opts?.playerId,
+        value: opts?.value,
+      },
+    });
+  }
+
+  /**
+   * POST /api/v1/rng/generate — Generate raw verified entropy
+   *
+   * @param clientSeed - Optional client seed for derivation
+   */
+  async generateRng(clientSeed?: string): Promise<RngGenerateResponse> {
+    return this.http.request<RngGenerateResponse>({
+      method: 'POST',
+      path: '/api/v1/rng/generate',
+      body: clientSeed ? { client_seed: clientSeed } : {},
+    });
+  }
+
+  /**
+   * GET /api/v1/games/:id — Get game status/result
+   */
+  async getGame(gameId: string): Promise<GameResult> {
+    return this.http.request<GameResult>({ method: 'GET', path: `/api/v1/games/${gameId}` });
+  }
+
+  /**
+   * GET /api/v1/verify/:id — Verify a game's proof
+   */
+  async verifyGame(gameId: string): Promise<VerifyGameResponse> {
+    return this.http.request<VerifyGameResponse>({ method: 'GET', path: `/api/v1/verify/${gameId}` });
+  }
+
+  /**
+   * GET /api/v1/recent — Recent resolved games
+   */
+  async getRecent(): Promise<RecentResponse> {
+    return this.http.request<RecentResponse>({ method: 'GET', path: '/api/v1/recent' });
+  }
+
+  /**
+   * GET /api/v1/stats — Platform statistics
+   */
+  async getStats(): Promise<StatsResponse> {
+    return this.http.request<StatsResponse>({ method: 'GET', path: '/api/v1/stats' });
+  }
+
+  /**
+   * Poll getGame() until the game resolves or timeout.
+   *
+   * @param gameId - Game ID to poll
+   * @param timeoutMs - Max wait time (default: 30000ms)
+   * @param intervalMs - Poll interval (default: 2000ms)
+   * @returns Resolved game result
+   * @throws Error if timeout exceeded
+   */
+  async waitForResult(gameId: string, timeoutMs: number = 30000, intervalMs: number = 2000): Promise<GameResolved> {
+    const deadline = Date.now() + timeoutMs;
+
+    while (Date.now() < deadline) {
+      const result = await this.getGame(gameId);
+      if (result.status === 'resolved') {
+        return result as GameResolved;
+      }
+      // Wait before next poll
+      await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+
+    throw new Error(`Game ${gameId} did not resolve within ${timeoutMs}ms`);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  Legacy Token Pool API (v0.1.0 compat)
+  // ══════════════════════════════════════════════════════════
 
   private async ensureInit(): Promise<void> {
     if (this.initialized) return;
-    // The server auto-registers clients, so just mark as initialized.
-    // First token request will trigger auto-registration server-side.
     this.initialized = true;
   }
 
-  // ── Core API ───────────────────────────────────────────────
-
   /**
    * Get a random number in [min, max] with cryptographic proof
+   * @deprecated Use generateRng() for the Decision Engine API
    */
   async number(opts: NumberOptions = {}): Promise<NumberResult> {
     await this.ensureInit();
@@ -138,11 +300,11 @@ export class OpenRNG {
 
   /**
    * Weighted random choice from an array
+   * @deprecated Use generateRng() for the Decision Engine API
    */
   async choose<T>(items: T[], opts: ChooseOptions = {}): Promise<ChooseResult<T>> {
     await this.ensureInit();
 
-    // Get a raw number 0-1000000 and normalize
     const resp = await this.http.request<TokenResponse>({
       method: 'POST',
       path: '/v1/tokens/request',
@@ -159,11 +321,10 @@ export class OpenRNG {
 
     let index: number;
     if (opts.weights && opts.weights.length === items.length) {
-      // Weighted selection
       const totalWeight = opts.weights.reduce((a, b) => a + b, 0);
       const normalized = opts.weights.map(w => w / totalWeight);
       let cumulative = 0;
-      index = items.length - 1; // default to last
+      index = items.length - 1;
       for (let i = 0; i < normalized.length; i++) {
         cumulative += normalized[i];
         if (normalizedValue < cumulative) {
@@ -172,7 +333,6 @@ export class OpenRNG {
         }
       }
     } else {
-      // Uniform selection
       index = Math.floor(normalizedValue * items.length);
       if (index >= items.length) index = items.length - 1;
     }
@@ -187,6 +347,7 @@ export class OpenRNG {
 
   /**
    * Fisher-Yates shuffle with one proof per swap
+   * @deprecated Use generateRng() for the Decision Engine API
    */
   async shuffle<T>(items: T[]): Promise<ShuffleResult<T>> {
     await this.ensureInit();
@@ -194,7 +355,6 @@ export class OpenRNG {
     const n = items.length;
     if (n <= 1) return { result: [...items], proofs: [] };
 
-    // Need n-1 random numbers for Fisher-Yates
     const resp = await this.http.request<TokenResponse>({
       method: 'POST',
       path: '/v1/tokens/request',
@@ -221,6 +381,7 @@ export class OpenRNG {
 
   /**
    * Roll dice: e.g. dice(2, 6) = 2d6
+   * @deprecated Use placeDiceBet() for the Decision Engine API
    */
   async dice(count: number, sides: number): Promise<DiceResult> {
     await this.ensureInit();
@@ -248,6 +409,7 @@ export class OpenRNG {
 
   /**
    * Coin flip — boolean decision with proof
+   * @deprecated Use generateRng() for the Decision Engine API
    */
   async flip(): Promise<FlipResult> {
     await this.ensureInit();
@@ -272,6 +434,7 @@ export class OpenRNG {
 
   /**
    * Batch request — efficient bulk random numbers
+   * @deprecated Use generateRng() for the Decision Engine API
    */
   async batch(count: number, opts: NumberOptions = {}): Promise<BatchResult> {
     await this.ensureInit();
@@ -296,16 +459,17 @@ export class OpenRNG {
     };
   }
 
-  // ── Static verification ───────────────────────────────────
+  // ── Static verification (legacy) ─────────────────────────
 
   /**
    * Verify a proof against the OpenRNG server (no auth required)
+   * @deprecated Use verifyGame(gameId) for the Decision Engine API
    */
   static async verify(
     proof: Proof,
     endpoint?: string
   ): Promise<VerifyResult> {
-    const baseUrl = (endpoint || 'http://localhost:3000').replace(/\/$/, '');
+    const baseUrl = (endpoint || 'https://api.openrng.io').replace(/\/$/, '');
 
     const resp = await fetch(`${baseUrl}/v1/tokens/verify`, {
       method: 'POST',

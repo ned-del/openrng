@@ -1,7 +1,7 @@
 {
-  "name": "@openrng/sdk",
-  "version": "0.1.0",
-  "description": "OpenRNG SDK — Verifiable random numbers for AI agents, games, and lotteries",
+  "name": "openrng",
+  "version": "0.3.0",
+  "description": "OpenRNG SDK \u2014 Verifiable random numbers for AI agents, games, and lotteries",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -20,7 +20,15 @@
     "test": "jest --runInBand",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["rng", "random", "verifiable", "merkle", "blockchain", "ai-agent", "openrng"],
+  "keywords": [
+    "rng",
+    "random",
+    "verifiable",
+    "merkle",
+    "blockchain",
+    "ai-agent",
+    "openrng"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^29.5.10",
