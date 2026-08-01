@@ -1,0 +1,51 @@
+{
+  "name": "@openrng/core",
+  "version": "1.0.0",
+  "description": "VEO-2 types, schema, and shared primitives for OpenRNG",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "import": "./dist/schema.mjs",
+      "require": "./dist/schema.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "veo-2.schema.json"
+  ],
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.esm.json",
+    "test": "jest --runInBand"
+  },
+  "keywords": [
+    "openrng",
+    "veo",
+    "verifiable",
+    "execution",
+    "ai",
+    "trust",
+    "observability"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ned-del/openrng",
+    "directory": "packages/core"
+  },
+  "homepage": "https://openrng.io",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.1.2",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12",
+    "typescript": "^5.9.3"
+  }
+}
