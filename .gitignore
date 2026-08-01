@@ -13,3 +13,15 @@ docs/outreach/
 docs/whitepaper/
 marketing/
 bot/.env
+
+# Internal strategy & business docs — NEVER commit
+PLAN-AUDIT*
+docs/STRATEGIC-BRIEF*
+docs/ORNG-Tokenomics*
+docs/COMPETITIVE*
+docs/fashion-*
+docs/*onboarding*
+docs/*Onboarding*
+docs/CTI-BIBLE*
+docs/network/*Outreach*
+*.docx
