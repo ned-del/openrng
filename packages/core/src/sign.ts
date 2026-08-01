@@ -5,7 +5,7 @@
  * Optional: HMAC-SHA256 (symmetric) — lightweight, shared-secret mode
  */
 
-import { createHash, createHmac, generateKeyPairSync, sign, verify, KeyObject } from 'crypto';
+import { createHash, createHmac, generateKeyPairSync, createPublicKey, sign, verify, KeyObject } from 'crypto';
 import type { VEO } from './types';
 import { createVEOHash } from './veo';
 
@@ -40,15 +40,27 @@ export function generateSigningKeys(): KeyPair {
 // ─── Ed25519 Signing (default — asymmetric) ───
 
 /** Sign a VEO with Ed25519 (asymmetric — verifier can't forge) */
-export function signVEO(veo: VEO, privateKey: string): VEO {
+export function signVEO(veo: VEO, privateKey: string, publicKey?: string): VEO {
   const contentHash = createVEOHash(veo);
   const signature = sign(null, Buffer.from(contentHash), privateKey).toString('hex');
+
+  // Extract public key from private key if not provided
+  let pubKeyHex: string | undefined;
+  if (publicKey) {
+    pubKeyHex = extractPublicKeyHex(publicKey);
+  } else {
+    try {
+      const keyObj = createPublicKey(privateKey);
+      pubKeyHex = keyObj.export({ type: 'spki', format: 'der' }).subarray(-32).toString('hex');
+    } catch { /* optional */ }
+  }
 
   const signed: VEO = JSON.parse(JSON.stringify(veo)); // deep clone
   signed.proof = {
     ...signed.proof,
     algorithm: 'Ed25519',
     provider_signature: signature,
+    provider_public_key: pubKeyHex,
   };
   signed.lifecycle = {
     ...signed.lifecycle!,
@@ -63,9 +75,37 @@ export function signVEO(veo: VEO, privateKey: string): VEO {
   return signed;
 }
 
-/** Verify a VEO's Ed25519 signature — only needs the PUBLIC key */
-export function verifySignature(veo: VEO, publicKey: string): boolean {
+/** Extract raw 32-byte Ed25519 public key hex from PEM */
+function extractPublicKeyHex(pem: string): string {
+  try {
+    const keyObj = createPublicKey(pem);
+    return keyObj.export({ type: 'spki', format: 'der' }).subarray(-32).toString('hex');
+  } catch {
+    return pem; // assume already hex
+  }
+}
+
+/**
+ * Verify a VEO's Ed25519 signature and content integrity.
+ * If publicKey is omitted, uses the embedded proof.provider_public_key.
+ */
+export function verifySignature(veo: VEO, publicKey?: string): boolean {
   if (!veo.proof?.provider_signature) return false;
+
+  // Resolve public key: explicit > embedded > fail
+  let resolvedKey = publicKey || veo.proof.provider_public_key;
+  if (!resolvedKey) return false;
+
+  // If it's raw hex (32 bytes = 64 hex chars), reconstruct PEM
+  if (/^[a-f0-9]{64}$/i.test(resolvedKey)) {
+    try {
+      // Ed25519 SPKI DER prefix (12 bytes) + 32 byte key
+      const prefix = Buffer.from('302a300506032b6570032100', 'hex');
+      const keyBuf = Buffer.concat([prefix, Buffer.from(resolvedKey, 'hex')]);
+      const pem = '-----BEGIN PUBLIC KEY-----\n' + keyBuf.toString('base64') + '\n-----END PUBLIC KEY-----';
+      resolvedKey = pem;
+    } catch { return false; }
+  }
 
   const storedHash = (veo.metadata as any)?._content_hash;
   if (!storedHash) return false;
@@ -78,7 +118,7 @@ export function verifySignature(veo: VEO, publicKey: string): boolean {
       const sigValid = verify(
         null,
         Buffer.from(storedHash),
-        publicKey,
+        resolvedKey,
         Buffer.from(veo.proof.provider_signature, 'hex'),
       );
       if (!sigValid) return false;
@@ -87,7 +127,7 @@ export function verifySignature(veo: VEO, publicKey: string): boolean {
     }
   } else if (algorithm === 'HMAC-SHA256') {
     // Legacy symmetric mode
-    const expected = createHmac('sha256', publicKey)
+    const expected = createHmac('sha256', resolvedKey!)
       .update(storedHash)
       .digest('hex');
     if (expected !== veo.proof.provider_signature) return false;
@@ -99,6 +139,7 @@ export function verifySignature(veo: VEO, publicKey: string): boolean {
   const stripped = JSON.parse(JSON.stringify(veo)); // deep clone — never mutate input
   delete stripped.proof.provider_signature;
   delete stripped.proof.algorithm;
+  delete stripped.proof.provider_public_key;
   stripped.lifecycle.state = 'created';
   delete stripped.lifecycle.signed_at;
   delete stripped.metadata._content_hash;
@@ -146,6 +187,7 @@ export function verifyIntegrity(veo: VEO): boolean {
   const stripped = JSON.parse(JSON.stringify(veo));
   delete stripped.proof?.provider_signature;
   delete stripped.proof?.algorithm;
+  delete stripped.proof?.provider_public_key;
   if (stripped.lifecycle) {
     stripped.lifecycle.state = 'created';
     delete stripped.lifecycle.signed_at;

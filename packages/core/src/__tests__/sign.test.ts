@@ -86,4 +86,27 @@ describe('VEO Signing', () => {
     signVEO(veo, keys.privateKey);
     expect(JSON.stringify(veo)).toBe(before);
   });
+
+  test('Ed25519 embedded public key: verify without explicit key', () => {
+    const veo = baseVEO();
+    const signed = signVEO(veo, keys.privateKey, keys.publicKey);
+    expect(signed.proof?.provider_public_key).toBeDefined();
+    // Verify using embedded key (no explicit key passed)
+    expect(verifySignature(signed)).toBe(true);
+  });
+
+  test('Ed25519 embedded key: tampered VEO still fails', () => {
+    const veo = baseVEO();
+    const signed = signVEO(veo, keys.privateKey, keys.publicKey);
+    const tampered = JSON.parse(JSON.stringify(signed));
+    tampered.execution.output_hash = 'EVIL';
+    expect(verifySignature(tampered)).toBe(false);
+  });
+
+  test('Ed25519 auto-extracts public key from private key', () => {
+    const veo = baseVEO();
+    const signed = signVEO(veo, keys.privateKey); // no explicit public key
+    expect(signed.proof?.provider_public_key).toBeDefined();
+    expect(signed.proof!.provider_public_key!.length).toBe(64); // 32 bytes hex
+  });
 });
