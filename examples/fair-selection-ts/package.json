@@ -1,0 +1,22 @@
+{
+  "name": "@openrng/example-fair-selection-ts",
+  "version": "0.1.0",
+  "description": "Provably fair selection in ~30 lines of TypeScript using OpenRNG commit/reveal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx tsx fair-selection.ts",
+    "start:client": "npx tsx fair-selection-client.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
+  }
+}

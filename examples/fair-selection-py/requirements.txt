@@ -1,0 +1,2 @@
+# No external dependencies — uses Python stdlib only (hashlib, json, time, urllib)
+# Requires: Python 3.8+
