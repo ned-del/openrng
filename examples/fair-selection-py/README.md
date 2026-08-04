@@ -2,7 +2,7 @@
 
 > **Prove the outcome wasn't chosen after the fact.**
 
-A complete, runnable example of commit/reveal randomness using OpenRNG. In ~30 lines of pure Python (stdlib only), you can run a selection where no one — including the operator — could have known the winner before the candidates were locked.
+A complete, runnable example of commit/reveal randomness using Fairseal. In ~30 lines of pure Python (stdlib only), you can run a selection where no one — including the operator — could have known the winner before the candidates were locked.
 
 ## Quick Start
 

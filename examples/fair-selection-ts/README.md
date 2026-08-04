@@ -2,7 +2,7 @@
 
 > **Prove the outcome wasn't chosen after the fact.**
 
-A complete, runnable example of commit/reveal randomness using OpenRNG. In ~30 lines, you can run a selection where no one — including the operator — could have known the winner before the candidates were locked.
+A complete, runnable example of commit/reveal randomness using Fairseal. In ~30 lines, you can run a selection where no one — including the operator — could have known the winner before the candidates were locked.
 
 ## Quick Start
 
@@ -60,13 +60,13 @@ Given a `commitment_id`, anyone can:
 3. Confirm `commitment_hash_verified: true` — candidate hash matched
 4. Visit `verify_url` for the on-chain anchor
 
-Or use the OpenRNG verifier: [verify.openrng.io](https://verify.openrng.io)
+Or use the Fairseal verifier: [verify.fairseal.io](https://verify.fairseal.io)
 
 ---
 
 ## Using the SDK Wrapper (1 line)
 
-If you want the same flow without boilerplate, use `@openrng/client`:
+If you want the same flow without boilerplate, use `@fairseal/client` (planned; currently `@openrng/client`):
 
 ```typescript
 // fair-selection-client.ts
