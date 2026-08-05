@@ -1,6 +1,6 @@
 {
   "name": "@fairseal/commit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Trustless committed selections using drand beacons. No server, no trust \u2014 verify everything.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,15 +18,23 @@
   },
   "keywords": [
     "fairseal",
+    "provably-fair",
+    "verifiable",
+    "loot",
+    "loot-box",
+    "gacha",
+    "game",
+    "gaming",
+    "drop-rate",
+    "randomness",
     "drand",
     "commitment",
-    "verifiable",
     "selection",
     "trustless",
     "csr",
-    "veo",
-    "ai",
-    "agent"
+    "receipt",
+    "bls12-381",
+    "cryptographic"
   ],
   "license": "MIT",
   "repository": {
@@ -37,7 +45,8 @@
   "homepage": "https://fairseal.io",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "examples/demo-cli.js"
   ],
   "devDependencies": {
     "@types/jest": "^30.0.0",
@@ -50,5 +59,8 @@
   "dependencies": {
     "@noble/curves": "^2.2.0",
     "@noble/hashes": "^2.2.0"
+  },
+  "bin": {
+    "fairseal-demo": "./examples/demo-cli.js"
   }
 }
