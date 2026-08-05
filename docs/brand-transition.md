@@ -99,13 +99,14 @@ Note: @openrng/* packages were never published to npm, so no deprecation notices
 
 ---
 
-### Phase 4 — GitHub Rename (future)
+### Phase 4 — GitHub Rename ✅ COMPLETE (2026-08-05)
 
 Tasks:
-- [ ] Rename GitHub organization: openrng → fairseal
-- [ ] Rename repository: openrng → fairseal
-- [ ] Update all repository references in documentation
-- [ ] GitHub automatically redirects old URLs; no broken links expected
+- [x] Rename repository: ned-del/openrng → ned-del/fairseal
+- [x] Update git remotes on Mac mini + PC-Node
+- [x] GitHub automatically redirects old URLs; no broken links
+
+Note: No org rename needed — repo is under ned-del personal account.
 
 ---
 
