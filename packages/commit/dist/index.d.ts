@@ -250,16 +250,15 @@ declare class DrandBeaconSource implements BeaconSource {
      */
     fetchBeacon(round: number): Promise<BeaconRound>;
     /**
-     * Verify a beacon round's BLS signature.
+     * Verify a beacon round's BLS12-381 signature cryptographically.
      *
-     * For v0.1, we verify by re-fetching from a different relay and comparing.
-     * Full BLS verification (bls-unchained-g1-rfc9380) requires a BLS library
-     * and will be added in v0.2.
+     * This is REAL cryptographic verification using @noble/curves:
+     * 1. Constructs the signed message: SHA-256(round as 8-byte big-endian)
+     * 2. Hashes to G1 curve point using the quicknet DST
+     * 3. Verifies BLS pairing: e(sig, G2_gen) == e(H(msg), pubkey)
+     * 4. Confirms randomness = SHA-256(signature)
      *
-     * This is safe because:
-     * 1. drand relays are run by independent organizations (Cloudflare, Protocol Labs)
-     * 2. An attacker would need to compromise multiple relays simultaneously
-     * 3. The randomness is deterministic from the BLS signature — any mismatch is detectable
+     * No trust in any relay or server required.
      */
     verifyBeacon(beacon: BeaconRound): Promise<boolean>;
 }

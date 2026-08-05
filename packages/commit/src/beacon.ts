@@ -94,37 +94,28 @@ export class DrandBeaconSource implements BeaconSource {
   }
 
   /**
-   * Verify a beacon round's BLS signature.
+   * Verify a beacon round's BLS12-381 signature cryptographically.
    * 
-   * For v0.1, we verify by re-fetching from a different relay and comparing.
-   * Full BLS verification (bls-unchained-g1-rfc9380) requires a BLS library
-   * and will be added in v0.2.
+   * This is REAL cryptographic verification using @noble/curves:
+   * 1. Constructs the signed message: SHA-256(round as 8-byte big-endian)
+   * 2. Hashes to G1 curve point using the quicknet DST
+   * 3. Verifies BLS pairing: e(sig, G2_gen) == e(H(msg), pubkey)
+   * 4. Confirms randomness = SHA-256(signature)
    * 
-   * This is safe because:
-   * 1. drand relays are run by independent organizations (Cloudflare, Protocol Labs)
-   * 2. An attacker would need to compromise multiple relays simultaneously
-   * 3. The randomness is deterministic from the BLS signature — any mismatch is detectable
+   * No trust in any relay or server required.
    */
   async verifyBeacon(beacon: BeaconRound): Promise<boolean> {
-    // Cross-verify against a different relay
-    for (const relay of this.config.relays) {
-      try {
-        const url = `${relay}/${this.config.chainHash}/public/${beacon.round}`;
-        const resp = await fetch(url, { signal: AbortSignal.timeout(10_000) });
-        if (!resp.ok) continue;
-
-        const data = await resp.json() as { round: number; randomness: string; signature: string };
-        
-        if (data.round === beacon.round &&
-            data.randomness === beacon.randomness &&
-            data.signature === beacon.signature) {
-          return true;
-        }
-      } catch {
-        continue;
-      }
+    try {
+      const { verifyDrandBeacon } = await import('./bls-verify.js');
+      return await verifyDrandBeacon(
+        beacon.round,
+        beacon.signature,
+        beacon.randomness,
+        this.config.publicKey,
+      );
+    } catch {
+      return false;
     }
-    return false;
   }
 }
 

@@ -136,7 +136,7 @@ const receipt = createReceipt(commitment, resolution);
 **PARTIAL** = your players can verify the math. Good for trust-building.  
 **VALID** = a third party (regulator, auditor, dispute resolver) can prove timing. Required for compliance.
 
-**Need VALID?** → Use the [Fairseal service](https://fairseal.io) for batched on-chain anchoring at ~100x lower cost than self-anchoring.
+**Need VALID?** On-chain anchoring (`anchorCommitment`) is coming in v0.2. In the meantime, you can self-anchor the `commitment.commitHash` to any EVM chain. The [Fairseal service](https://fairseal.io) will offer batched anchoring at ~100x lower cost.
 
 ## Use Cases
 

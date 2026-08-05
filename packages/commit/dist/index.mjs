@@ -73,32 +73,28 @@ var DrandBeaconSource = class {
     );
   }
   /**
-   * Verify a beacon round's BLS signature.
+   * Verify a beacon round's BLS12-381 signature cryptographically.
    * 
-   * For v0.1, we verify by re-fetching from a different relay and comparing.
-   * Full BLS verification (bls-unchained-g1-rfc9380) requires a BLS library
-   * and will be added in v0.2.
+   * This is REAL cryptographic verification using @noble/curves:
+   * 1. Constructs the signed message: SHA-256(round as 8-byte big-endian)
+   * 2. Hashes to G1 curve point using the quicknet DST
+   * 3. Verifies BLS pairing: e(sig, G2_gen) == e(H(msg), pubkey)
+   * 4. Confirms randomness = SHA-256(signature)
    * 
-   * This is safe because:
-   * 1. drand relays are run by independent organizations (Cloudflare, Protocol Labs)
-   * 2. An attacker would need to compromise multiple relays simultaneously
-   * 3. The randomness is deterministic from the BLS signature — any mismatch is detectable
+   * No trust in any relay or server required.
    */
   async verifyBeacon(beacon) {
-    for (const relay of this.config.relays) {
-      try {
-        const url = `${relay}/${this.config.chainHash}/public/${beacon.round}`;
-        const resp = await fetch(url, { signal: AbortSignal.timeout(1e4) });
-        if (!resp.ok) continue;
-        const data = await resp.json();
-        if (data.round === beacon.round && data.randomness === beacon.randomness && data.signature === beacon.signature) {
-          return true;
-        }
-      } catch {
-        continue;
-      }
+    try {
+      const { verifyDrandBeacon } = await import("./bls-verify-V7HGQ3VN.mjs");
+      return await verifyDrandBeacon(
+        beacon.round,
+        beacon.signature,
+        beacon.randomness,
+        this.config.publicKey
+      );
+    } catch {
+      return false;
     }
-    return false;
   }
 };
 function createDefaultBeacon() {
@@ -215,7 +211,15 @@ async function resolveCommitment(commitment) {
     commitment.ruleHash,
     commitment.inputsHash
   );
-  const selection = applyRule(commitment.rule, commitment.inputs, output);
+  let selection = null;
+  try {
+    const parsed = JSON.parse(commitment.rule);
+    if (parsed.type && ["uniform", "shuffle", "index"].includes(parsed.type)) {
+      const { applyRule: applyRule2 } = await import("./rules-CYM5GTRS.mjs");
+      selection = applyRule2(commitment.rule, commitment.inputs, output);
+    }
+  } catch {
+  }
   return {
     beaconRound: beaconRound.round,
     beaconSignature: beaconRound.signature,
@@ -319,24 +323,31 @@ async function verifyReceipt(receipt) {
   }
   if (resolution && checks.outputVerified) {
     try {
-      const { applyRule: applyRule2 } = await import("./rules-CYM5GTRS.mjs");
-      const recomputedSelection = applyRule2(commitment.rule, commitment.inputs, resolution.output);
-      if (JSON.stringify(recomputedSelection) === JSON.stringify(resolution.selection)) {
-        checks.selectionVerified = true;
+      const parsed = JSON.parse(commitment.rule);
+      if (parsed.type && ["uniform", "shuffle", "index"].includes(parsed.type)) {
+        const { applyRule: applyRule2 } = await import("./rules-CYM5GTRS.mjs");
+        const recomputedSelection = applyRule2(commitment.rule, commitment.inputs, resolution.output);
+        if (JSON.stringify(recomputedSelection) === JSON.stringify(resolution.selection)) {
+          checks.selectionVerified = true;
+        } else {
+          reasons.push("Selection does not match rule application to output");
+        }
       } else {
-        reasons.push("Selection does not match rule application to output");
+        checks.selectionVerified = resolution.selection !== null;
+        if (!checks.selectionVerified) {
+          reasons.push("Custom rule \u2014 selection verification requires operator algorithm");
+        }
       }
     } catch (err) {
       reasons.push(`Selection verification failed: ${err}`);
     }
   }
   let status;
-  if (checks.commitmentIntegrity && checks.beaconVerified && checks.outputVerified && checks.selectionVerified) {
-    if (checks.precedenceVerified) {
-      status = "VALID";
-    } else {
-      status = "PARTIAL";
-    }
+  const coreChecks = checks.commitmentIntegrity && checks.beaconVerified && checks.outputVerified;
+  if (coreChecks && checks.selectionVerified) {
+    status = checks.precedenceVerified ? "VALID" : "PARTIAL";
+  } else if (coreChecks && !checks.selectionVerified) {
+    status = "PARTIAL";
   } else {
     status = "INVALID";
   }

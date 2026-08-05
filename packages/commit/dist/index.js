@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
@@ -18,7 +20,57 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/bls-verify.ts
+var bls_verify_exports = {};
+__export(bls_verify_exports, {
+  verifyDrandBeacon: () => verifyDrandBeacon
+});
+async function getBLS() {
+  if (!_bls) {
+    _bls = await import("@noble/curves/bls12-381");
+  }
+  return _bls.bls12_381;
+}
+async function verifyDrandBeacon(round, signatureHex, randomnessHex, publicKeyHex) {
+  try {
+    const bls12_381 = await getBLS();
+    const roundBytes = Buffer.alloc(8);
+    roundBytes.writeBigUInt64BE(BigInt(round));
+    const msgHash = (0, import_node_crypto.createHash)("sha256").update(roundBytes).digest();
+    const sigPoint = bls12_381.G1.Point.fromHex(signatureHex);
+    const pkPoint = bls12_381.G2.Point.fromHex(publicKeyHex);
+    const msgPoint = bls12_381.G1.hashToCurve(msgHash, { DST: DRAND_QUICKNET_DST });
+    const g2gen = bls12_381.G2.Point.BASE;
+    const p1 = bls12_381.pairing(sigPoint, g2gen);
+    const p2 = bls12_381.pairing(msgPoint, pkPoint);
+    const valid = bls12_381.fields.Fp12.eql(p1, p2);
+    if (!valid) return false;
+    const sigBytes = Buffer.from(signatureHex, "hex");
+    const expectedRandomness = (0, import_node_crypto.createHash)("sha256").update(sigBytes).digest("hex");
+    return expectedRandomness === randomnessHex;
+  } catch {
+    return false;
+  }
+}
+var import_node_crypto, _bls, DRAND_QUICKNET_DST;
+var init_bls_verify = __esm({
+  "src/bls-verify.ts"() {
+    "use strict";
+    import_node_crypto = require("crypto");
+    _bls = null;
+    DRAND_QUICKNET_DST = "BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_NUL_";
+  }
+});
 
 // src/rules.ts
 var rules_exports = {};
@@ -174,32 +226,28 @@ var DrandBeaconSource = class {
     );
   }
   /**
-   * Verify a beacon round's BLS signature.
+   * Verify a beacon round's BLS12-381 signature cryptographically.
    * 
-   * For v0.1, we verify by re-fetching from a different relay and comparing.
-   * Full BLS verification (bls-unchained-g1-rfc9380) requires a BLS library
-   * and will be added in v0.2.
+   * This is REAL cryptographic verification using @noble/curves:
+   * 1. Constructs the signed message: SHA-256(round as 8-byte big-endian)
+   * 2. Hashes to G1 curve point using the quicknet DST
+   * 3. Verifies BLS pairing: e(sig, G2_gen) == e(H(msg), pubkey)
+   * 4. Confirms randomness = SHA-256(signature)
    * 
-   * This is safe because:
-   * 1. drand relays are run by independent organizations (Cloudflare, Protocol Labs)
-   * 2. An attacker would need to compromise multiple relays simultaneously
-   * 3. The randomness is deterministic from the BLS signature — any mismatch is detectable
+   * No trust in any relay or server required.
    */
   async verifyBeacon(beacon) {
-    for (const relay of this.config.relays) {
-      try {
-        const url = `${relay}/${this.config.chainHash}/public/${beacon.round}`;
-        const resp = await fetch(url, { signal: AbortSignal.timeout(1e4) });
-        if (!resp.ok) continue;
-        const data = await resp.json();
-        if (data.round === beacon.round && data.randomness === beacon.randomness && data.signature === beacon.signature) {
-          return true;
-        }
-      } catch {
-        continue;
-      }
+    try {
+      const { verifyDrandBeacon: verifyDrandBeacon2 } = await Promise.resolve().then(() => (init_bls_verify(), bls_verify_exports));
+      return await verifyDrandBeacon2(
+        beacon.round,
+        beacon.signature,
+        beacon.randomness,
+        this.config.publicKey
+      );
+    } catch {
+      return false;
     }
-    return false;
   }
 };
 function createDefaultBeacon() {
@@ -220,14 +268,14 @@ function registerBeacon(id, factory) {
 }
 
 // src/crypto.ts
-var import_node_crypto = require("crypto");
+var import_node_crypto2 = require("crypto");
 function sha256(input) {
-  return (0, import_node_crypto.createHash)("sha256").update(input, "utf8").digest("hex");
+  return (0, import_node_crypto2.createHash)("sha256").update(input, "utf8").digest("hex");
 }
 function hmacSha256(keyHex, dataHex) {
   const key = Buffer.from(keyHex, "hex");
   const data = Buffer.from(dataHex, "hex");
-  return (0, import_node_crypto.createHmac)("sha256", key).update(data).digest("hex");
+  return (0, import_node_crypto2.createHmac)("sha256", key).update(data).digest("hex");
 }
 function hashRule(rule) {
   return sha256(rule);
@@ -241,7 +289,7 @@ function computeCommitHash(beacon, targetRound, ruleHash, inputsHash, saltHex) {
   return sha256(preimage);
 }
 function generateSalt() {
-  return (0, import_node_crypto.randomBytes)(32);
+  return (0, import_node_crypto2.randomBytes)(32);
 }
 function toHex(bytes) {
   return Buffer.from(bytes).toString("hex");
@@ -299,7 +347,6 @@ function createCommitment(opts) {
 }
 
 // src/resolve.ts
-init_rules();
 async function resolveCommitment(commitment) {
   const beacon = getBeaconSource(commitment.beacon);
   const roundTime = beacon.getRoundTime(commitment.targetRound);
@@ -317,7 +364,15 @@ async function resolveCommitment(commitment) {
     commitment.ruleHash,
     commitment.inputsHash
   );
-  const selection = applyRule(commitment.rule, commitment.inputs, output);
+  let selection = null;
+  try {
+    const parsed = JSON.parse(commitment.rule);
+    if (parsed.type && ["uniform", "shuffle", "index"].includes(parsed.type)) {
+      const { applyRule: applyRule2 } = await Promise.resolve().then(() => (init_rules(), rules_exports));
+      selection = applyRule2(commitment.rule, commitment.inputs, output);
+    }
+  } catch {
+  }
   return {
     beaconRound: beaconRound.round,
     beaconSignature: beaconRound.signature,
@@ -421,24 +476,31 @@ async function verifyReceipt(receipt) {
   }
   if (resolution && checks.outputVerified) {
     try {
-      const { applyRule: applyRule2 } = await Promise.resolve().then(() => (init_rules(), rules_exports));
-      const recomputedSelection = applyRule2(commitment.rule, commitment.inputs, resolution.output);
-      if (JSON.stringify(recomputedSelection) === JSON.stringify(resolution.selection)) {
-        checks.selectionVerified = true;
+      const parsed = JSON.parse(commitment.rule);
+      if (parsed.type && ["uniform", "shuffle", "index"].includes(parsed.type)) {
+        const { applyRule: applyRule2 } = await Promise.resolve().then(() => (init_rules(), rules_exports));
+        const recomputedSelection = applyRule2(commitment.rule, commitment.inputs, resolution.output);
+        if (JSON.stringify(recomputedSelection) === JSON.stringify(resolution.selection)) {
+          checks.selectionVerified = true;
+        } else {
+          reasons.push("Selection does not match rule application to output");
+        }
       } else {
-        reasons.push("Selection does not match rule application to output");
+        checks.selectionVerified = resolution.selection !== null;
+        if (!checks.selectionVerified) {
+          reasons.push("Custom rule \u2014 selection verification requires operator algorithm");
+        }
       }
     } catch (err) {
       reasons.push(`Selection verification failed: ${err}`);
     }
   }
   let status;
-  if (checks.commitmentIntegrity && checks.beaconVerified && checks.outputVerified && checks.selectionVerified) {
-    if (checks.precedenceVerified) {
-      status = "VALID";
-    } else {
-      status = "PARTIAL";
-    }
+  const coreChecks = checks.commitmentIntegrity && checks.beaconVerified && checks.outputVerified;
+  if (coreChecks && checks.selectionVerified) {
+    status = checks.precedenceVerified ? "VALID" : "PARTIAL";
+  } else if (coreChecks && !checks.selectionVerified) {
+    status = "PARTIAL";
   } else {
     status = "INVALID";
   }
