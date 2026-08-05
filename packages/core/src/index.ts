@@ -1,5 +1,5 @@
 /**
- * @openrng/core — VEO-2 types, schema, and shared primitives
+ * @fairseal/core — VEO-2 types, schema, and shared primitives
  *
  * VEO = Verifiable Execution Object
  * Every AI decision, provable and replayable.

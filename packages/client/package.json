@@ -1,5 +1,5 @@
 {
-  "name": "@openrng/client",
+  "name": "@fairseal/client",
   "version": "0.1.0",
   "description": "One-line provably fair selection using OpenRNG commit/reveal",
   "main": "dist/index.js",

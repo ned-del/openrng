@@ -1,5 +1,5 @@
 import { auto, MemoryStore } from '../index';
-import { generateSigningKeys, verifySignature } from '@openrng/core';
+import { generateSigningKeys, verifySignature } from '@fairseal/core';
 
 // Mock OpenAI-like client
 function createMockOpenAI() {
@@ -43,7 +43,7 @@ function createMockAnthropic() {
   };
 }
 
-describe('@openrng/auto', () => {
+describe('@fairseal/auto', () => {
   test('wraps OpenAI client and emits VEO on chat.completions.create', async () => {
     const store = new MemoryStore();
     const client = auto(createMockOpenAI(), { store, provider: 'test' });

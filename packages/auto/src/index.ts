@@ -1,14 +1,14 @@
 /**
- * @openrng/auto — Auto-instrument AI SDK calls to emit VEO-2 objects
+ * @fairseal/auto — Auto-instrument AI SDK calls to emit VEO-2 objects
  *
  * Usage:
- *   import { auto } from '@openrng/auto';
+ *   import { auto } from '@fairseal/auto';
  *   const client = auto(new OpenAI());
  *   // Every chat.completions.create() now emits a VEO
  *
  * Or with signing:
- *   import { auto } from '@openrng/auto';
- *   import { generateSigningKeys } from '@openrng/core';
+ *   import { auto } from '@fairseal/auto';
+ *   import { generateSigningKeys } from '@fairseal/core';
  *   const keys = generateSigningKeys();
  *   const client = auto(new OpenAI(), { privateKey: keys.privateKey });
  */

@@ -1,5 +1,5 @@
 {
-  "name": "@openrng/core",
+  "name": "@fairseal/core",
   "version": "1.3.2",
   "description": "VEO-2 types, schema, and shared primitives for OpenRNG",
   "main": "dist/index.js",

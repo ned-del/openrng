@@ -2,7 +2,7 @@
  * VEO storage interface + in-memory default
  */
 
-import type { VEO } from '@openrng/core';
+import type { VEO } from '@fairseal/core';
 
 /** Interface for storing emitted VEOs */
 export interface VEOStore {

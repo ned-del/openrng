@@ -1,5 +1,5 @@
 /**
- * @openrng/client — One-line provably fair selection
+ * @fairseal/client — One-line provably fair selection
  *
  * const client = new OpenRNGClient();
  * const result = await client.fairSelect({ candidates: ['alice', 'bob', 'charlie'] });

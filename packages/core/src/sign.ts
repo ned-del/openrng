@@ -100,7 +100,7 @@ export interface VerifyOptions {
  * attacker can produce a VEO that passes zero-arg verification.
  *
  * For third-party verification, always provide a trusted key or trustedKeys.
- * For full provenance verification, use blockchain-anchored VEOs (@openrng/verify).
+ * For full provenance verification, use blockchain-anchored VEOs (@fairseal/verify).
  */
 export function verifySignature(veo: VEO, publicKeyOrOpts?: string | VerifyOptions): boolean {
   if (!veo.proof?.provider_signature) return false;

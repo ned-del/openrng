@@ -1,5 +1,5 @@
 /**
- * @openrng/auto — Proxy-based auto-instrumentation for AI SDKs
+ * @fairseal/auto — Proxy-based auto-instrumentation for AI SDKs
  *
  * Uses ES Proxy to intercept AI SDK method calls and emit VEO-2 objects.
  * SDK-level capture provides ergonomic context (model, tokens, tools).
@@ -9,7 +9,7 @@
  * True spoof-resistance requires an external boundary (anchoring, co-signatures, TEE).
  */
 
-import { capture, signVEO, hashContent, type VEO } from '@openrng/core';
+import { capture, signVEO, hashContent, type VEO } from '@fairseal/core';
 import { MemoryStore, type VEOStore } from './store';
 
 /** Callback for each emitted VEO */
@@ -199,7 +199,7 @@ function buildVEO(
   let isStream = false;
   if (result && isAsyncIterable(result)) {
     // Streaming response — don't consume the iterator, mark honestly
-    outputStr = '[stream — not captured in @openrng/auto 0.1.x]';
+    outputStr = '[stream — not captured in @fairseal/auto 0.1.x]';
     isStream = true;
   } else if (result) {
     if (result.choices?.[0]?.message?.content) {
@@ -254,7 +254,7 @@ function buildVEO(
       stream: isStream || undefined,
     },
     metadata: {
-      sdk: '@openrng/auto',
+      sdk: '@fairseal/auto',
       version: '0.1.0',
       method: methodPath,
       stream: isStream || undefined,

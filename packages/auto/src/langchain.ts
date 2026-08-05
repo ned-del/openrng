@@ -1,20 +1,20 @@
 /**
- * @openrng/auto — LangChain Callback Handler
+ * @fairseal/auto — LangChain Callback Handler
  *
  * Automatically captures VEO-2 objects from LangChain chain/agent executions.
  *
  * Usage:
- *   import { VEOCallbackHandler } from '@openrng/auto/langchain';
+ *   import { VEOCallbackHandler } from '@fairseal/auto/langchain';
  *   const handler = new VEOCallbackHandler({ provider: 'my-app' });
  *   const chain = new LLMChain({ llm, prompt, callbacks: [handler] });
  *
  * Or globally:
- *   import { VEOCallbackHandler } from '@openrng/auto/langchain';
+ *   import { VEOCallbackHandler } from '@fairseal/auto/langchain';
  *   // Add to any LangChain invocation
  *   await chain.invoke({ input: "..." }, { callbacks: [new VEOCallbackHandler()] });
  */
 
-import { capture, signVEO, hashContent, type VEO } from '@openrng/core';
+import { capture, signVEO, hashContent, type VEO } from '@fairseal/core';
 import { MemoryStore, type VEOStore } from './store';
 
 export interface VEOCallbackOptions {

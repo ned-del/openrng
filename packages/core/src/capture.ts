@@ -47,7 +47,7 @@ export interface CaptureOptions {
  *
  * @example
  * ```typescript
- * import { capture } from '@openrng/core';
+ * import { capture } from '@fairseal/core';
  *
  * const veo = capture({
  *   provider: 'my-app',
