@@ -68,26 +68,32 @@ Updated:
 
 ---
 
-### Phase 2 — DNS & API Domain Migration (this week)
+### Phase 2 — DNS & API Domain Migration ✅ COMPLETE (2026-08-05)
 
 Tasks:
-- [ ] Configure DNS for fairseal.io
-- [ ] Set up api.fairseal.io → api.openrng.io reverse proxy (for backward compatibility)
-- [ ] Set up verify.fairseal.io
-- [ ] Update API documentation to reference fairseal.io
-- [ ] Add 301 redirects: openrng.io → fairseal.io
-- [ ] Update website content and landing page
+- [x] Configure DNS for fairseal.io (GoDaddy A records → 157.180.96.236)
+- [x] Set up api.fairseal.io (nginx proxy to :3000)
+- [x] Set up x402.fairseal.io (nginx proxy to :8402/:3003)
+- [x] Set up verify.fairseal.io (static frontend)
+- [x] SSL certs via Let's Encrypt (all 5 domains)
+- [x] Update API documentation to reference fairseal.io
+- [x] Add 301 redirects: all openrng.io subdomains → fairseal.io equivalents
+- [x] Update website content and landing page
+- [x] Update x402 manifest and openapi.json
 
 ---
 
-### Phase 3 — npm Scope Migration (next week)
+### Phase 3 — npm Scope Migration ✅ COMPLETE (2026-08-05)
 
 Tasks:
-- [ ] Publish `@fairseal/core` as new canonical package (with same API as @openrng/core)
-- [ ] Publish `@fairseal/client` (currently @openrng/client)
-- [ ] Publish `@elizaos/plugin-fairseal` (currently @openrng/eliza-plugin)
-- [ ] Add deprecation notices to @openrng/* packages pointing to @fairseal/*
-- [ ] Update all documentation to reference @fairseal/* packages
+- [x] Publish `@fairseal/core@1.3.2`
+- [x] Publish `@fairseal/auto@0.1.1`
+- [x] Publish `@fairseal/store-sqlite@0.1.0`
+- [x] Publish `@fairseal/verify@0.1.0`
+- [ ] Publish `@elizaos/plugin-fairseal` (pending — future)
+- [x] Update all source imports and documentation to reference @fairseal/*
+
+Note: @openrng/* packages were never published to npm, so no deprecation notices needed.
 
 **Backward compatibility:** @openrng/core will continue to be published and receive updates during a transition window (minimum 90 days). Existing integrations do not break.
 
