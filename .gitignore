@@ -25,3 +25,5 @@ docs/*Onboarding*
 docs/CTI-BIBLE*
 docs/network/*Outreach*
 *.docx
+packages/commit/node_modules/
+packages/commit/first-csr.ts

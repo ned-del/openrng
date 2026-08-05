@@ -1,0 +1,36 @@
+{
+  "name": "@fairseal/commit",
+  "version": "0.1.0",
+  "description": "Trustless committed selections using drand beacons. No server, no trust — verify everything.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "test": "jest --runInBand",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["fairseal", "drand", "commitment", "verifiable", "selection", "trustless", "csr", "veo", "ai", "agent"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ned-del/fairseal.git",
+    "directory": "packages/commit"
+  },
+  "homepage": "https://fairseal.io",
+  "files": ["dist", "README.md"],
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.1.2",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}
